@@ -3,460 +3,562 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Shazam Quran — Reconnaissance Coranique</title>
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cormorant+Garamond:wght@300;400;600&family=Noto+Naskh+Arabic:wght@400;600;700&display=swap" rel="stylesheet"/>
+<title>Shazam Quran</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Noto+Naskh+Arabic:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
-:root {
-  --bg: #080a0d;
-  --bg2: #0d1117;
-  --bg3: #131920;
-  --gold: #c9a84c;
-  --gold2: #e8c97e;
-  --gold3: #f5e4b0;
-  --green: #1e6b4a;
-  --green2: #2ecc8a;
-  --red: #c0392b;
-  --text: #e8dfc8;
-  --text2: #8a7a5a;
-  --border: rgba(201,168,76,0.15);
-  --border2: rgba(201,168,76,0.32);
-}
+:root{--bg:#080a0d;--bg2:#0d1117;--bg3:#131920;--gold:#c9a84c;--gold2:#e8c97e;--gold3:#f5e4b0;--green2:#2ecc8a;--text:#e8dfc8;--text2:#8a7a5a;--border:rgba(201,168,76,0.15);--border2:rgba(201,168,76,0.32);}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',serif;min-height:100vh;overflow-x:hidden;}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 40% at 50% 0%,rgba(201,168,76,0.06) 0%,transparent 60%),radial-gradient(ellipse 40% 30% at 80% 80%,rgba(46,204,138,0.03) 0%,transparent 50%);pointer-events:none;z-index:0;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 40% at 50% 0%,rgba(201,168,76,0.06),transparent 60%);pointer-events:none;z-index:0;}
 
-#splash{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;padding:40px;transition:opacity 0.7s ease;}
-.splash-bismillah{font-family:'Noto Naskh Arabic',serif;font-size:2.4rem;color:var(--gold);text-shadow:0 0 40px rgba(201,168,76,0.35);text-align:center;}
-.splash-title{font-size:clamp(2rem,6vw,3.4rem);font-weight:300;color:var(--gold3);letter-spacing:0.1em;text-align:center;}
-.splash-title b{color:var(--gold);font-weight:600;}
-.splash-desc{font-size:1rem;color:var(--text2);letter-spacing:0.05em;text-align:center;max-width:300px;line-height:1.8;}
-.splash-btn{margin-top:12px;padding:18px 52px;background:linear-gradient(135deg,var(--gold),#a8792a);border:none;border-radius:14px;color:#080a0d;font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:700;letter-spacing:0.12em;cursor:pointer;box-shadow:0 4px 30px rgba(201,168,76,0.3);transition:all 0.3s;}
-.splash-btn:hover{transform:translateY(-2px);box-shadow:0 8px 40px rgba(201,168,76,0.4);}
-.splash-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
-.splash-note{font-size:0.78rem;color:var(--text2);opacity:0.5;text-align:center;letter-spacing:0.04em;}
+/* SPLASH */
+#splash{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding:40px;transition:opacity 0.7s;}
+.sp-ar{font-family:'Noto Naskh Arabic',serif;font-size:2.2rem;color:var(--gold);text-shadow:0 0 40px rgba(201,168,76,0.3);}
+.sp-title{font-size:clamp(2rem,6vw,3.2rem);font-weight:300;color:var(--gold3);letter-spacing:0.1em;text-align:center;}
+.sp-title b{color:var(--gold);font-weight:600;}
+.sp-desc{font-size:0.95rem;color:var(--text2);text-align:center;max-width:280px;line-height:1.8;letter-spacing:0.04em;}
+.sp-btn{margin-top:8px;padding:16px 48px;background:linear-gradient(135deg,var(--gold),#a8792a);border:none;border-radius:14px;color:#080a0d;font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:700;letter-spacing:0.1em;cursor:pointer;box-shadow:0 4px 30px rgba(201,168,76,0.28);transition:all 0.3s;}
+.sp-btn:hover{transform:translateY(-2px);}
+.sp-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.sp-note{font-size:0.75rem;color:var(--text2);opacity:0.45;text-align:center;}
 
-.container{position:relative;z-index:1;max-width:820px;margin:0 auto;padding:0 20px 80px;}
-header{text-align:center;padding:52px 0 40px;}
-.header-bismillah{font-family:'Noto Naskh Arabic',serif;font-size:1.9rem;color:var(--gold);opacity:0.8;margin-bottom:24px;text-shadow:0 0 25px rgba(201,168,76,0.25);animation:fadeDown 1s ease both;}
-.header-logo{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:12px;animation:fadeDown 1s ease 0.1s both;}
-.header-icon{width:48px;height:48px;background:linear-gradient(135deg,var(--gold),#a8792a);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;box-shadow:0 0 25px rgba(201,168,76,0.22);}
-h1{font-size:clamp(1.8rem,5vw,3rem);font-weight:300;color:var(--gold3);letter-spacing:0.08em;}
-h1 span{color:var(--gold);font-weight:600;}
-.header-sub{font-size:0.95rem;color:var(--text2);letter-spacing:0.06em;animation:fadeDown 1s ease 0.2s both;}
-.divider{width:100px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:24px auto 0;animation:fadeDown 1s ease 0.25s both;}
+/* LAYOUT */
+.wrap{position:relative;z-index:1;max-width:800px;margin:0 auto;padding:0 18px 80px;}
+header{text-align:center;padding:48px 0 36px;}
+.h-ar{font-family:'Noto Naskh Arabic',serif;font-size:1.8rem;color:var(--gold);opacity:0.75;margin-bottom:20px;text-shadow:0 0 24px rgba(201,168,76,0.22);animation:fd 1s ease both;}
+.h-logo{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:10px;animation:fd 1s ease 0.1s both;}
+.h-icon{width:46px;height:46px;background:linear-gradient(135deg,var(--gold),#a8792a);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;box-shadow:0 0 22px rgba(201,168,76,0.2);}
+h1{font-size:clamp(1.8rem,5vw,2.8rem);font-weight:300;color:var(--gold3);letter-spacing:0.08em;}
+h1 b{color:var(--gold);font-weight:600;}
+.h-sub{font-size:0.92rem;color:var(--text2);letter-spacing:0.05em;animation:fd 1s ease 0.2s both;}
+.hdiv{width:90px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:20px auto 0;animation:fd 1s ease 0.25s both;}
 
-.card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:36px;box-shadow:0 0 60px rgba(0,0,0,0.5),inset 0 1px 0 rgba(201,168,76,0.07);animation:fadeUp 1s ease 0.3s both;}
+/* CARD */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:32px;box-shadow:0 0 60px rgba(0,0,0,0.5),inset 0 1px 0 rgba(201,168,76,0.07);animation:fu 1s ease 0.3s both;}
 
-.tabs{display:flex;background:var(--bg);border-radius:12px;padding:4px;margin-bottom:32px;border:1px solid var(--border);}
-.tab{flex:1;padding:11px 16px;background:none;border:none;border-radius:9px;color:var(--text2);font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:500;letter-spacing:0.04em;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:7px;}
-.tab.active{background:linear-gradient(135deg,rgba(201,168,76,0.14),rgba(201,168,76,0.07));color:var(--gold2);border:1px solid var(--border2);}
-.tab:hover:not(.active){color:var(--text);}
+/* TABS */
+.tabs{display:flex;background:var(--bg);border-radius:11px;padding:4px;margin-bottom:28px;border:1px solid var(--border);}
+.tab{flex:1;padding:10px 14px;background:none;border:none;border-radius:8px;color:var(--text2);font-family:'Cormorant Garamond',serif;font-size:0.98rem;font-weight:500;letter-spacing:0.04em;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.tab.on{background:linear-gradient(135deg,rgba(201,168,76,0.14),rgba(201,168,76,0.07));color:var(--gold2);border:1px solid var(--border2);}
+.tab:hover:not(.on){color:var(--text);}
 
-.panel{display:none;}.panel.active{display:block;}
+/* PANELS */
+.pnl{display:none;}.pnl.on{display:block;}
 
-.record-center{display:flex;flex-direction:column;align-items:center;gap:22px;padding:16px 0;}
-.viz-wrap{width:100%;height:56px;display:flex;align-items:center;justify-content:center;gap:3px;opacity:0;transition:opacity 0.5s;}
-.viz-wrap.active{opacity:1;}
-.bar{width:4px;background:linear-gradient(to top,var(--gold),var(--gold2));border-radius:2px;height:5px;transition:height 0.08s;}
-.record-btn{width:106px;height:106px;border-radius:50%;border:2px solid var(--border2);background:radial-gradient(circle at 40% 35%,rgba(201,168,76,0.13),transparent 70%);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;transition:all 0.3s;}
-.record-btn:hover{border-color:var(--gold);box-shadow:0 0 28px rgba(201,168,76,0.18);transform:scale(1.04);}
-.record-btn.recording{border-color:#e05555;animation:pulseRec 1.4s infinite;}
-@keyframes pulseRec{0%,100%{box-shadow:0 0 0 0 rgba(224,85,85,0.4);}50%{box-shadow:0 0 0 16px rgba(224,85,85,0);}}
-.rec-icon{font-size:2.1rem;transition:all 0.3s;}
-.rec-lbl{font-size:0.7rem;letter-spacing:0.12em;color:var(--text2);text-transform:uppercase;}
-.record-btn.recording .rec-lbl{color:#e05555;}
-.rec-status{font-size:0.92rem;color:var(--text2);letter-spacing:0.04em;min-height:22px;text-align:center;}
+/* RECORD */
+.rc{display:flex;flex-direction:column;align-items:center;gap:20px;padding:12px 0;}
+.viz{width:100%;height:52px;display:flex;align-items:center;justify-content:center;gap:3px;opacity:0;transition:opacity 0.4s;}
+.viz.on{opacity:1;}
+.bar{width:4px;background:linear-gradient(to top,var(--gold),var(--gold2));border-radius:2px;height:4px;transition:height 0.07s;}
+.rbtn{width:100px;height:100px;border-radius:50%;border:2px solid var(--border2);background:radial-gradient(circle at 40% 35%,rgba(201,168,76,0.12),transparent 70%);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:all 0.3s;}
+.rbtn:hover{border-color:var(--gold);box-shadow:0 0 26px rgba(201,168,76,0.16);transform:scale(1.04);}
+.rbtn.rec{border-color:#e05555;animation:pr 1.4s infinite;}
+@keyframes pr{0%,100%{box-shadow:0 0 0 0 rgba(224,85,85,0.4);}50%{box-shadow:0 0 0 14px rgba(224,85,85,0);}}
+.ri{font-size:2rem;}.rl{font-size:0.68rem;letter-spacing:0.12em;color:var(--text2);text-transform:uppercase;}
+.rbtn.rec .rl{color:#e05555;}
+.rs{font-size:0.9rem;color:var(--text2);letter-spacing:0.04em;min-height:20px;text-align:center;}
 
-.upload-zone{border:2px dashed var(--border2);border-radius:16px;padding:44px 28px;text-align:center;cursor:pointer;transition:all 0.3s;}
-.upload-zone:hover,.upload-zone.drag-over{border-color:var(--gold);background:rgba(201,168,76,0.03);}
-.upload-icon{font-size:2.8rem;margin-bottom:14px;opacity:0.65;}
-.upload-text{font-size:1.05rem;color:var(--text);margin-bottom:6px;}
-.upload-hint{font-size:0.82rem;color:var(--text2);letter-spacing:0.04em;}
-.upload-label{display:inline-block;margin-top:18px;padding:9px 26px;background:rgba(201,168,76,0.1);border:1px solid var(--border2);border-radius:8px;color:var(--gold2);font-family:'Cormorant Garamond',serif;font-size:0.93rem;letter-spacing:0.06em;cursor:pointer;transition:all 0.3s;}
-.upload-label:hover{background:rgba(201,168,76,0.18);}
-#fileInput{display:none;}
-.file-info{margin-top:16px;padding:12px 18px;background:rgba(201,168,76,0.06);border:1px solid var(--border);border-radius:10px;display:none;align-items:center;gap:10px;}
-.file-info.show{display:flex;}
-.file-name{font-size:0.88rem;color:var(--text);flex:1;}
-.file-size{font-size:0.78rem;color:var(--text2);}
+/* UPLOAD */
+.uz{border:2px dashed var(--border2);border-radius:14px;padding:40px 24px;text-align:center;cursor:pointer;transition:all 0.3s;}
+.uz:hover,.uz.dov{border-color:var(--gold);background:rgba(201,168,76,0.03);}
+.ui{font-size:2.6rem;margin-bottom:12px;opacity:0.6;}
+.ut{font-size:1rem;color:var(--text);margin-bottom:5px;}
+.uh{font-size:0.8rem;color:var(--text2);}
+.ul{display:inline-block;margin-top:16px;padding:8px 24px;background:rgba(201,168,76,0.1);border:1px solid var(--border2);border-radius:8px;color:var(--gold2);font-family:'Cormorant Garamond',serif;font-size:0.9rem;letter-spacing:0.06em;cursor:pointer;transition:all 0.3s;}
+.ul:hover{background:rgba(201,168,76,0.18);}
+#fi{display:none;}
+.fi{margin-top:14px;padding:11px 16px;background:rgba(201,168,76,0.06);border:1px solid var(--border);border-radius:9px;display:none;align-items:center;gap:9px;}
+.fi.on{display:flex;}
+.fn{font-size:0.86rem;color:var(--text);flex:1;}
+.fs{font-size:0.76rem;color:var(--text2);}
 
-.analyze-btn{width:100%;margin-top:26px;padding:15px;background:linear-gradient(135deg,var(--gold),#a8792a);border:none;border-radius:12px;color:#080a0d;font-family:'Cormorant Garamond',serif;font-size:1.12rem;font-weight:700;letter-spacing:0.1em;cursor:pointer;transition:all 0.3s;display:none;align-items:center;justify-content:center;gap:9px;box-shadow:0 4px 20px rgba(201,168,76,0.22);}
-.analyze-btn.show{display:flex;}
-.analyze-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(201,168,76,0.32);}
-.analyze-btn:disabled{opacity:0.55;cursor:not-allowed;transform:none;}
+/* ANALYZE BTN */
+.abtn{width:100%;margin-top:24px;padding:14px;background:linear-gradient(135deg,var(--gold),#a8792a);border:none;border-radius:11px;color:#080a0d;font-family:'Cormorant Garamond',serif;font-size:1.08rem;font-weight:700;letter-spacing:0.1em;cursor:pointer;transition:all 0.3s;display:none;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 18px rgba(201,168,76,0.2);}
+.abtn.on{display:flex;}
+.abtn:hover{transform:translateY(-2px);box-shadow:0 7px 26px rgba(201,168,76,0.3);}
+.abtn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
 
-.loading{display:none;flex-direction:column;align-items:center;gap:18px;padding:36px 0;animation:fadeUp 0.4s ease;}
-.loading.show{display:flex;}
-.spinner{width:52px;height:52px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin 0.85s linear infinite;}
+/* LOADING */
+.ld{display:none;flex-direction:column;align-items:center;gap:16px;padding:32px 0;animation:fu 0.4s ease;}
+.ld.on{display:flex;}
+.sp{width:48px;height:48px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin 0.85s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
-.loading-text{font-size:1rem;color:var(--text2);letter-spacing:0.06em;font-style:italic;}
-.loading-step{font-size:0.82rem;color:var(--text2);opacity:0.55;text-align:center;min-height:20px;}
+.lt{font-size:0.95rem;color:var(--text2);letter-spacing:0.06em;font-style:italic;}
+.ls{font-size:0.8rem;color:var(--text2);opacity:0.5;text-align:center;min-height:18px;}
 
-.error-box{display:none;background:rgba(192,57,43,0.08);border:1px solid rgba(192,57,43,0.3);border-radius:12px;padding:18px 22px;color:#e08080;font-size:0.92rem;line-height:1.7;margin-top:18px;animation:fadeUp 0.4s ease;}
-.error-box.show{display:block;}
+/* ERROR */
+.eb{display:none;background:rgba(192,57,43,0.08);border:1px solid rgba(192,57,43,0.28);border-radius:11px;padding:16px 20px;color:#e08080;font-size:0.9rem;line-height:1.7;margin-top:16px;animation:fu 0.4s ease;}
+.eb.on{display:block;}
 
-.results{display:none;animation:fadeUp 0.6s ease;}
-.results.show{display:block;}
+/* RESULTS */
+.res{display:none;animation:fu 0.6s ease;}
+.res.on{display:block;}
+.rt{display:flex;align-items:center;gap:12px;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border);}
+.rb{width:44px;height:44px;background:linear-gradient(135deg,#1e6b4a,var(--green2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;box-shadow:0 0 16px rgba(46,204,138,0.22);}
+.rn{font-size:1.2rem;color:var(--gold3);font-weight:600;letter-spacing:0.04em;}
+.rsub{font-size:0.8rem;color:var(--text2);margin-top:2px;}
+.cw{margin-left:auto;text-align:right;}
+.cv{font-size:1.5rem;font-weight:600;}
+.cl{font-size:0.68rem;color:var(--text2);letter-spacing:0.08em;text-transform:uppercase;}
 
-.result-top{display:flex;align-items:center;gap:13px;margin-bottom:26px;padding-bottom:18px;border-bottom:1px solid var(--border);}
-.result-badge{width:46px;height:46px;background:linear-gradient(135deg,var(--green),var(--green2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;box-shadow:0 0 18px rgba(46,204,138,0.25);}
-.result-name{font-size:1.25rem;color:var(--gold3);font-weight:600;letter-spacing:0.04em;}
-.result-sub{font-size:0.82rem;color:var(--text2);letter-spacing:0.04em;margin-top:2px;}
-.conf-wrap{margin-left:auto;text-align:right;}
-.conf-val{font-size:1.55rem;font-weight:600;}
-.conf-lbl{font-size:0.7rem;color:var(--text2);letter-spacing:0.08em;text-transform:uppercase;}
+.ig{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
+@media(max-width:500px){.ig{grid-template-columns:1fr;}}
+.ii{background:var(--bg3);border:1px solid var(--border);border-radius:11px;padding:14px 16px;transition:border-color 0.3s;}
+.ii:hover{border-color:var(--border2);}
+.il{font-size:0.68rem;color:var(--text2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;}
+.iv{font-size:1rem;color:var(--text);font-weight:500;}
+.ivar{font-family:'Noto Naskh Arabic',serif;font-size:1.3rem;color:var(--gold2);direction:rtl;text-align:right;margin-top:2px;}
 
-.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;}
-@media(max-width:520px){.info-grid{grid-template-columns:1fr;}}
-.info-item{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:16px 18px;transition:border-color 0.3s;}
-.info-item:hover{border-color:var(--border2);}
-.info-lbl{font-size:0.7rem;color:var(--text2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:7px;}
-.info-val{font-size:1.05rem;color:var(--text);font-weight:500;}
-.info-val-ar{font-family:'Noto Naskh Arabic',serif;font-size:1.35rem;color:var(--gold2);direction:rtl;text-align:right;margin-top:3px;}
+/* TRANSCRIPTION */
+.tb{background:rgba(201,168,76,0.04);border:1px solid var(--border);border-radius:11px;padding:14px 18px;margin-bottom:20px;}
+.tl{font-size:0.68rem;color:var(--text2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:7px;}
+.tt{font-family:'Noto Naskh Arabic',serif;font-size:1.25rem;color:var(--gold2);direction:rtl;text-align:right;line-height:2;}
 
-.transcription-box{background:rgba(201,168,76,0.04);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:22px;}
-.transcription-lbl{font-size:0.7rem;color:var(--text2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;}
-.transcription-text{font-family:'Noto Naskh Arabic',serif;font-size:1.3rem;color:var(--gold2);direction:rtl;text-align:right;line-height:2;}
+/* VERSES */
+.vb{background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:22px;margin-bottom:20px;}
+.vt{font-size:0.7rem;color:var(--text2);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.vi{padding:12px 0;border-bottom:1px solid rgba(201,168,76,0.06);}
+.vi:last-child{border-bottom:none;padding-bottom:0;}
+.vn{display:inline-block;padding:2px 9px;background:rgba(201,168,76,0.09);border:1px solid var(--border);border-radius:20px;font-size:0.7rem;color:var(--gold);letter-spacing:0.06em;margin-bottom:8px;}
+.va{font-family:'Noto Naskh Arabic',serif;font-size:1.5rem;color:var(--gold3);direction:rtl;text-align:right;line-height:2.1;margin-bottom:8px;}
+.vf{font-size:0.9rem;color:var(--text2);font-style:italic;line-height:1.75;}
 
-.verses-box{background:var(--bg3);border:1px solid var(--border);border-radius:16px;padding:26px;margin-bottom:22px;}
-.verses-title{font-size:0.75rem;color:var(--text2);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);}
-.verse-item{padding:14px 0;border-bottom:1px solid rgba(201,168,76,0.06);}
-.verse-item:last-child{border-bottom:none;padding-bottom:0;}
-.verse-num{display:inline-block;padding:2px 10px;background:rgba(201,168,76,0.09);border:1px solid var(--border);border-radius:20px;font-size:0.72rem;color:var(--gold);letter-spacing:0.06em;margin-bottom:9px;}
-.verse-ar{font-family:'Noto Naskh Arabic',serif;font-size:1.55rem;color:var(--gold3);direction:rtl;text-align:right;line-height:2.1;margin-bottom:9px;}
-.verse-fr{font-size:0.92rem;color:var(--text2);font-style:italic;line-height:1.75;}
-
-.play-btn{display:flex;align-items:center;gap:9px;padding:11px 22px;background:rgba(46,204,138,0.1);border:1px solid rgba(46,204,138,0.3);border-radius:10px;color:var(--green2);font-family:'Cormorant Garamond',serif;font-size:0.93rem;letter-spacing:0.06em;cursor:pointer;transition:all 0.3s;margin-top:6px;}
-.play-btn:hover{background:rgba(46,204,138,0.18);}
+/* PLAY */
+.pb{display:flex;align-items:center;gap:8px;padding:10px 20px;background:rgba(46,204,138,0.1);border:1px solid rgba(46,204,138,0.28);border-radius:9px;color:var(--green2);font-family:'Cormorant Garamond',serif;font-size:0.9rem;letter-spacing:0.06em;cursor:pointer;transition:all 0.3s;margin-top:4px;}
+.pb:hover{background:rgba(46,204,138,0.16);}
 audio{display:none;}
 
-.reset-btn{width:100%;margin-top:20px;padding:12px;background:none;border:1px solid var(--border);border-radius:10px;color:var(--text2);font-family:'Cormorant Garamond',serif;font-size:0.93rem;letter-spacing:0.06em;cursor:pointer;transition:all 0.3s;}
-.reset-btn:hover{border-color:var(--border2);color:var(--text);}
+.resetbtn{width:100%;margin-top:18px;padding:11px;background:none;border:1px solid var(--border);border-radius:9px;color:var(--text2);font-family:'Cormorant Garamond',serif;font-size:0.9rem;letter-spacing:0.06em;cursor:pointer;transition:all 0.3s;}
+.resetbtn:hover{border-color:var(--border2);color:var(--text);}
 
-footer{text-align:center;padding:36px 0 16px;font-size:0.76rem;color:var(--text2);opacity:0.45;letter-spacing:0.06em;}
+footer{text-align:center;padding:32px 0 14px;font-size:0.74rem;color:var(--text2);opacity:0.4;letter-spacing:0.06em;}
 
-@keyframes fadeDown{from{opacity:0;transform:translateY(-18px);}to{opacity:1;transform:translateY(0);}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fd{from{opacity:0;transform:translateY(-16px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fu{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
 ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
 </style>
 </head>
 <body>
 
+<!-- SPLASH -->
 <div id="splash">
-  <div class="splash-bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
-  <div class="splash-title">Shazam <b>Quran</b></div>
-  <div class="splash-desc">Identifiez instantanément toute récitation coranique grâce à l'intelligence artificielle</div>
-  <button class="splash-btn" id="splashBtn" onclick="startApp()">🎙️ Commencer</button>
-  <div class="splash-note">L'accès au microphone sera demandé</div>
+  <div class="sp-ar">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+  <div class="sp-title">Shazam <b>Quran</b></div>
+  <div class="sp-desc">Identifiez instantanément toute récitation coranique grâce à l'intelligence artificielle Whisper</div>
+  <button class="sp-btn" id="spBtn" onclick="startApp()">🎙️ Commencer</button>
+  <div class="sp-note">L'accès au microphone sera demandé</div>
 </div>
 
-<div class="container">
+<div class="wrap">
   <header>
-    <div class="header-bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
-    <div class="header-logo">
-      <div class="header-icon">🎙️</div>
-      <h1>Shazam <span>Quran</span></h1>
+    <div class="h-ar">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+    <div class="h-logo">
+      <div class="h-icon">🎙️</div>
+      <h1>Shazam <b>Quran</b></h1>
     </div>
-    <p class="header-sub">Reconnaissance de récitation coranique par intelligence artificielle</p>
-    <div class="divider"></div>
+    <p class="h-sub">Reconnaissance de récitation coranique par intelligence artificielle</p>
+    <div class="hdiv"></div>
   </header>
 
   <div class="card">
     <div class="tabs">
-      <button class="tab active" onclick="switchTab('record')">🎤 Enregistrer</button>
-      <button class="tab" onclick="switchTab('upload')">📂 Importer un fichier</button>
+      <button class="tab on" onclick="switchTab('rec')">🎤 Enregistrer</button>
+      <button class="tab" onclick="switchTab('up')">📂 Importer un fichier</button>
     </div>
 
-    <div class="panel active" id="panel-record">
-      <div class="record-center">
-        <div class="viz-wrap" id="vizWrap"></div>
-        <button class="record-btn" id="recordBtn" onclick="toggleRecord()">
-          <span class="rec-icon" id="recIcon">🎙️</span>
-          <span class="rec-lbl" id="recLbl">Appuyer</span>
+    <!-- RECORD PANEL -->
+    <div class="pnl on" id="pnl-rec">
+      <div class="rc">
+        <div class="viz" id="viz"></div>
+        <button class="rbtn" id="rbtn" onclick="toggleRec()">
+          <span class="ri" id="ri">🎙️</span>
+          <span class="rl" id="rl">Appuyer</span>
         </button>
-        <p class="rec-status" id="recStatus">Appuyez pour commencer l'enregistrement</p>
+        <p class="rs" id="rs">Appuyez pour commencer l'enregistrement</p>
       </div>
     </div>
 
-    <div class="panel" id="panel-upload">
-      <div class="upload-zone" id="uploadZone"
-        ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)"
-        onclick="document.getElementById('fileInput').click()">
-        <div class="upload-icon">🎵</div>
-        <p class="upload-text">Glissez votre fichier audio ici</p>
-        <p class="upload-hint">MP3, WAV, M4A, OGG — max 25 Mo</p>
-        <span class="upload-label">Parcourir les fichiers</span>
+    <!-- UPLOAD PANEL -->
+    <div class="pnl" id="pnl-up">
+      <div class="uz" id="uz"
+        ondragover="dov(event)" ondragleave="dlv()" ondrop="drp(event)"
+        onclick="document.getElementById('fi').click()">
+        <div class="ui">🎵</div>
+        <p class="ut">Glissez votre fichier audio ici</p>
+        <p class="uh">MP3, WAV, M4A, OGG — max 25 Mo</p>
+        <span class="ul">Parcourir les fichiers</span>
       </div>
-      <input type="file" id="fileInput" accept="audio/*" onchange="handleFileSelect(event)"/>
-      <div class="file-info" id="fileInfo">
+      <input type="file" id="fi" accept="audio/*" onchange="selFile(event)"/>
+      <div class="fi" id="finfo">
         <span>🎵</span>
-        <span class="file-name" id="fileName"></span>
-        <span class="file-size" id="fileSize"></span>
+        <span class="fn" id="fn"></span>
+        <span class="fs" id="fs"></span>
       </div>
     </div>
 
-    <button class="analyze-btn" id="analyzeBtn" onclick="analyzeAudio()">✨ Identifier la récitation</button>
+    <button class="abtn" id="abtn" onclick="analyze()">✨ Identifier la récitation</button>
 
-    <div class="loading" id="loading">
-      <div class="spinner"></div>
-      <p class="loading-text">Analyse en cours…</p>
-      <p class="loading-step" id="loadingStep">Initialisation</p>
+    <div class="ld" id="ld">
+      <div class="sp"></div>
+      <p class="lt">Analyse en cours…</p>
+      <p class="ls" id="ls"></p>
     </div>
 
-    <div class="error-box" id="errorBox"></div>
+    <div class="eb" id="eb"></div>
 
-    <div class="results" id="results">
-      <div class="result-top">
-        <div class="result-badge">✓</div>
+    <div class="res" id="res">
+      <div class="rt">
+        <div class="rb">✓</div>
         <div>
-          <div class="result-name" id="resName"></div>
-          <div class="result-sub" id="resSub"></div>
+          <div class="rn" id="rn"></div>
+          <div class="rsub" id="rsub"></div>
         </div>
-        <div class="conf-wrap">
-          <div class="conf-val" id="confVal"></div>
-          <div class="conf-lbl">Correspondance</div>
-        </div>
-      </div>
-
-      <div class="info-grid">
-        <div class="info-item">
-          <div class="info-lbl">📖 Sourate</div>
-          <div class="info-val" id="resSurahFr"></div>
-          <div class="info-val-ar" id="resSurahAr"></div>
-        </div>
-        <div class="info-item">
-          <div class="info-lbl">🔢 Numéro · Versets</div>
-          <div class="info-val" id="resNum"></div>
-        </div>
-        <div class="info-item">
-          <div class="info-lbl">📍 Révélation</div>
-          <div class="info-val" id="resRev"></div>
-        </div>
-        <div class="info-item">
-          <div class="info-lbl">🎯 Verset détecté</div>
-          <div class="info-val" id="resVerseMatch"></div>
+        <div class="cw">
+          <div class="cv" id="cv"></div>
+          <div class="cl">Correspondance</div>
         </div>
       </div>
 
-      <div class="transcription-box">
-        <div class="transcription-lbl">🔤 Texte transcrit par Whisper AI</div>
-        <div class="transcription-text" id="transcriptionText"></div>
+      <div class="ig">
+        <div class="ii">
+          <div class="il">📖 Sourate</div>
+          <div class="iv" id="iv-name"></div>
+          <div class="ivar" id="iv-ar"></div>
+        </div>
+        <div class="ii">
+          <div class="il">🔢 Numéro · Versets</div>
+          <div class="iv" id="iv-num"></div>
+        </div>
+        <div class="ii">
+          <div class="il">📍 Révélation</div>
+          <div class="iv" id="iv-rev"></div>
+        </div>
+        <div class="ii">
+          <div class="il">🎯 Verset détecté</div>
+          <div class="iv" id="iv-v"></div>
+        </div>
       </div>
 
-      <div class="verses-box">
-        <div class="verses-title">📜 Versets correspondants</div>
-        <div id="versesList"></div>
+      <div class="tb">
+        <div class="tl">🔤 Texte transcrit par Whisper AI</div>
+        <div class="tt" id="tt"></div>
       </div>
 
-      <button class="play-btn" id="playBtn" onclick="togglePlay()">▶ Écouter la récitation officielle</button>
-      <audio id="audioPlayer" onended="resetPlayBtn()"></audio>
+      <div class="vb">
+        <div class="vt">📜 Versets correspondants (arabe + français)</div>
+        <div id="vlist"></div>
+      </div>
 
-      <button class="reset-btn" onclick="resetAll()">↩ Nouvelle analyse</button>
+      <button class="pb" id="pb" onclick="togglePlay()">▶ Écouter avec Mohamed Al-Luhaidan</button>
+      <audio id="ap" onended="resetPB()"></audio>
+
+      <button class="resetbtn" onclick="resetAll()">↩ Nouvelle analyse</button>
     </div>
   </div>
 
-  <footer>Propulsé par Groq Whisper AI · API Quran.com · Open Source</footer>
+  <footer>Récitateur : Mohamed Al-Luhaidan · Whisper AI · API Quran.com · Open Source</footer>
 </div>
 
 <script>
-const GROQ_KEY = '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';
-let audioBlob=null, mediaRecorder=null, audioChunks=[], isRecording=false, micStream=null, animFrameId=null, currentSurah=null;
+// ⚠️ IMPORTANT: Remplacez cette clé par votre nouvelle clé Groq après avoir supprimé l'ancienne
+const GROQ = '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';
 
-// Visualizer
-const vizWrap=document.getElementById('vizWrap');
-for(let i=0;i<30;i++){const b=document.createElement('div');b.className='bar';vizWrap.appendChild(b);}
-function animBars(a){const bars=vizWrap.querySelectorAll('.bar'),data=new Uint8Array(a.frequencyBinCount);(function d(){animFrameId=requestAnimationFrame(d);a.getByteFrequencyData(data);bars.forEach((b,i)=>{b.style.height=Math.max(4,(data[Math.floor(i*data.length/30)]/255)*52)+'px';});})();}
-function stopAnim(){if(animFrameId)cancelAnimationFrame(animFrameId);vizWrap.querySelectorAll('.bar').forEach(b=>b.style.height='4px');}
+let blob=null,mr=null,chunks=[],recOn=false,micS=null,afId=null,curS=null;
 
-// Splash
+// ===== VISUALIZER =====
+const viz=document.getElementById('viz');
+for(let i=0;i<28;i++){const b=document.createElement('div');b.className='bar';viz.appendChild(b);}
+function startViz(an){
+  const bars=viz.querySelectorAll('.bar'),d=new Uint8Array(an.frequencyBinCount);
+  (function loop(){afId=requestAnimationFrame(loop);an.getByteFrequencyData(d);
+    bars.forEach((b,i)=>{b.style.height=Math.max(4,(d[Math.floor(i*d.length/28)]/255)*48)+'px';});
+  })();
+}
+function stopViz(){if(afId)cancelAnimationFrame(afId);viz.querySelectorAll('.bar').forEach(b=>b.style.height='4px');}
+
+// ===== SPLASH =====
 async function startApp(){
-  const btn=document.getElementById('splashBtn');
+  const btn=document.getElementById('spBtn');
   btn.textContent='⏳ Autorisation…';btn.disabled=true;
   try{
-    const s=await navigator.mediaDevices.getUserMedia({audio:true});
-    micStream=s;s.getTracks().forEach(t=>t.enabled=false);
-    document.getElementById('recStatus').textContent='✓ Microphone autorisé — appuyez pour enregistrer';
-  }catch(e){document.getElementById('recStatus').textContent='⚠️ Microphone refusé — vérifiez les permissions Safari';}
+    const s=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
+    micS=s;s.getTracks().forEach(t=>t.enabled=false);
+    document.getElementById('rs').textContent='✓ Microphone autorisé — appuyez pour enregistrer';
+  }catch(e){
+    document.getElementById('rs').textContent='⚠️ Microphone refusé — vérifiez les permissions Safari';
+  }
   const sp=document.getElementById('splash');sp.style.opacity='0';setTimeout(()=>sp.style.display='none',700);
 }
 
-// Tabs
-function switchTab(tab){
-  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',(i===0&&tab==='record')||(i===1&&tab==='upload')));
-  document.getElementById('panel-record').classList.toggle('active',tab==='record');
-  document.getElementById('panel-upload').classList.toggle('active',tab==='upload');
+// ===== TABS =====
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('on',(i===0&&t==='rec')||(i===1&&t==='up')));
+  document.getElementById('pnl-rec').classList.toggle('on',t==='rec');
+  document.getElementById('pnl-up').classList.toggle('on',t==='up');
 }
 
-// Record
-async function toggleRecord(){
-  if(!isRecording){
+// ===== RECORD =====
+async function toggleRec(){
+  if(!recOn){
     try{
       let stream;
-      if(micStream){micStream.getTracks().forEach(t=>t.enabled=true);stream=micStream;}
-      else{stream=await navigator.mediaDevices.getUserMedia({audio:true});micStream=stream;}
-      const ctx=new AudioContext(),src=ctx.createMediaStreamSource(stream),an=ctx.createAnalyser();
-      an.fftSize=256;src.connect(an);vizWrap.classList.add('active');animBars(an);
-      mediaRecorder=new MediaRecorder(stream);audioChunks=[];
-      mediaRecorder.ondataavailable=e=>audioChunks.push(e.data);
-      mediaRecorder.onstop=()=>{
-        audioBlob=new Blob(audioChunks,{type:'audio/webm'});
-        document.getElementById('analyzeBtn').classList.add('show');
-        stream.getTracks().forEach(t=>t.enabled=false);ctx.close();stopAnim();vizWrap.classList.remove('active');
+      if(micS){micS.getTracks().forEach(t=>t.enabled=true);stream=micS;}
+      else{stream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});micS=stream;}
+
+      const ctx=new(window.AudioContext||window.webkitAudioContext)();
+      const src=ctx.createMediaStreamSource(stream);
+      const an=ctx.createAnalyser();an.fftSize=256;src.connect(an);
+      viz.classList.add('on');startViz(an);
+
+      // Détecte le meilleur format audio pour Safari/Chrome
+      const mime=['audio/mp4;codecs=mp4a.40.2','audio/mp4','audio/aac','audio/webm;codecs=opus','audio/webm','audio/ogg'].find(t=>MediaRecorder.isTypeSupported(t))||'';
+      mr=new MediaRecorder(stream,mime?{mimeType:mime}:{});
+      chunks=[];
+      mr.ondataavailable=e=>{if(e.data.size>0)chunks.push(e.data);};
+      mr.onstop=async()=>{
+        blob=new Blob(chunks,{type:mr.mimeType||'audio/webm'});
+        document.getElementById('abtn').classList.add('on');
+        stream.getTracks().forEach(t=>t.enabled=false);
+        try{ctx.close();}catch(e){}
+        stopViz();viz.classList.remove('on');
       };
-      mediaRecorder.start();isRecording=true;
-      document.getElementById('recordBtn').classList.add('recording');
-      document.getElementById('recIcon').textContent='⏹';
-      document.getElementById('recLbl').textContent='Arrêter';
-      document.getElementById('recStatus').textContent='🔴 Enregistrement en cours…';
-    }catch(e){showError('Impossible d\'accéder au microphone.');}
+      mr.start(100); // collecte toutes les 100ms pour éviter les pertes
+      recOn=true;
+      document.getElementById('rbtn').classList.add('rec');
+      document.getElementById('ri').textContent='⏹';
+      document.getElementById('rl').textContent='Arrêter';
+      document.getElementById('rs').textContent='🔴 Enregistrement en cours…';
+    }catch(e){showErr('Impossible d\'accéder au microphone. Vérifiez les permissions.');}
   }else{
-    mediaRecorder.stop();isRecording=false;
-    document.getElementById('recordBtn').classList.remove('recording');
-    document.getElementById('recIcon').textContent='🎙️';
-    document.getElementById('recLbl').textContent='Appuyer';
-    document.getElementById('recStatus').textContent='✓ Enregistrement terminé — prêt à analyser';
+    mr.stop();recOn=false;
+    document.getElementById('rbtn').classList.remove('rec');
+    document.getElementById('ri').textContent='🎙️';
+    document.getElementById('rl').textContent='Appuyer';
+    document.getElementById('rs').textContent='✓ Enregistrement terminé — prêt à analyser';
   }
 }
 
-// Upload
-function handleDragOver(e){e.preventDefault();document.getElementById('uploadZone').classList.add('drag-over');}
-function handleDragLeave(){document.getElementById('uploadZone').classList.remove('drag-over');}
-function handleDrop(e){e.preventDefault();document.getElementById('uploadZone').classList.remove('drag-over');const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('audio/'))setFile(f);}
-function handleFileSelect(e){const f=e.target.files[0];if(f)setFile(f);}
-function setFile(f){audioBlob=f;document.getElementById('fileName').textContent=f.name;document.getElementById('fileSize').textContent=(f.size/1024/1024).toFixed(2)+' Mo';document.getElementById('fileInfo').classList.add('show');document.getElementById('analyzeBtn').classList.add('show');}
+// ===== UPLOAD =====
+function dov(e){e.preventDefault();document.getElementById('uz').classList.add('dov');}
+function dlv(){document.getElementById('uz').classList.remove('dov');}
+function drp(e){e.preventDefault();dlv();const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('audio/'))setF(f);}
+function selFile(e){const f=e.target.files[0];if(f)setF(f);}
+function setF(f){blob=f;document.getElementById('fn').textContent=f.name;document.getElementById('fs').textContent=(f.size/1024/1024).toFixed(2)+' Mo';document.getElementById('finfo').classList.add('on');document.getElementById('abtn').classList.add('on');}
 
-// MAIN ANALYSIS
-async function analyzeAudio(){
-  if(!audioBlob)return;
-  document.getElementById('analyzeBtn').classList.remove('show');
-  document.getElementById('errorBox').classList.remove('show');
-  document.getElementById('results').classList.remove('show');
-  document.getElementById('loading').classList.add('show');
+// ===== CONVERSION WAV (optimal pour Whisper) =====
+async function toWav(inputBlob){
+  const ab=await inputBlob.arrayBuffer();
+  const ctx=new(window.AudioContext||window.webkitAudioContext)();
+  let decoded;
+  try{decoded=await ctx.decodeAudioData(ab);}
+  catch(e){ctx.close();throw new Error('Format audio non supporté. Essayez avec un fichier MP3.');}
+  ctx.close();
+
+  const SR=16000,CH=1;
+  const samples=Math.floor(decoded.duration*SR);
+  if(samples<SR*2)throw new Error('Enregistrement trop court. Récitez au moins 3 secondes.');
+
+  const off=new OfflineAudioContext(CH,samples,SR);
+  const src=off.createBufferSource();src.buffer=decoded;src.connect(off.destination);src.start();
+  const rendered=await off.startRendering();
+  const pcm=rendered.getChannelData(0);
+
+  // Encode WAV
+  const buf=new ArrayBuffer(44+pcm.length*2);
+  const v=new DataView(buf);
+  const ws=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i));};
+  ws(0,'RIFF');v.setUint32(4,36+pcm.length*2,true);ws(8,'WAVE');ws(12,'fmt ');
+  v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,CH,true);
+  v.setUint32(24,SR,true);v.setUint32(28,SR*CH*2,true);v.setUint16(32,CH*2,true);v.setUint16(34,16,true);
+  ws(36,'data');v.setUint32(40,pcm.length*2,true);
+  let off2=44;
+  for(let i=0;i<pcm.length;i++,off2+=2){const s=Math.max(-1,Math.min(1,pcm[i]));v.setInt16(off2,s<0?s*0x8000:s*0x7FFF,true);}
+  return new Blob([buf],{type:'audio/wav'});
+}
+
+// ===== ANALYSE PRINCIPALE =====
+async function analyze(){
+  if(!blob)return;
+  document.getElementById('abtn').classList.remove('on');
+  document.getElementById('eb').classList.remove('on');
+  document.getElementById('res').classList.remove('on');
+  document.getElementById('ld').classList.add('on');
 
   try{
-    // STEP 1: Whisper transcription
-    setStep('🎙️ Transcription Whisper AI…');
+    // ÉTAPE 1 : Conversion en WAV 16kHz mono
+    step('🔄 Conversion audio en WAV 16kHz…');
+    let wavBlob;
+    try{wavBlob=await toWav(blob);}
+    catch(e){throw new Error(e.message);}
+
+    // ÉTAPE 2 : Transcription Whisper
+    step('🎙️ Transcription Whisper AI (arabe)…');
     const fd=new FormData();
-    fd.append('file',audioBlob,'audio.webm');
+    fd.append('file',wavBlob,'audio.wav');
     fd.append('model','whisper-large-v3');
     fd.append('language','ar');
     fd.append('response_format','json');
+    fd.append('temperature','0');
 
-    const wRes=await fetch('https://api.groq.com/openai/v1/audio/transcriptions',{
-      method:'POST',headers:{'Authorization':'Bearer '+GROQ_KEY},body:fd
+    const wr=await fetch('https://api.groq.com/openai/v1/audio/transcriptions',{
+      method:'POST',headers:{Authorization:'Bearer '+GROQ},body:fd
     });
-    if(!wRes.ok){const e=await wRes.json();throw new Error(e.error?.message||'Erreur Whisper');}
-    const wData=await wRes.json();
-    const transcription=(wData.text||'').trim();
-    if(!transcription||transcription.length<3)throw new Error('Audio non reconnu. Récitez plus clairement et plus près du micro.');
+    if(!wr.ok){
+      const e=await wr.json().catch(()=>({}));
+      throw new Error('Erreur Whisper: '+(e.error?.message||wr.status+' '+wr.statusText));
+    }
+    const wd=await wr.json();
+    const trans=(wd.text||'').trim().replace(/[^\u0600-\u06FF\s.,،؟!]/g,'').trim();
+    if(!trans||trans.length<4)throw new Error('Aucun texte arabe détecté. Parlez clairement, en arabe, plus près du micro.');
 
-    // STEP 2: LLM match — prompt amélioré avec liste complète des sourates
-    setStep('🧠 Identification précise de la sourate…');
-    const mRes=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+    // ÉTAPE 3 : Identification sourate + verset
+    step('🧠 Identification sourate & verset (LLaMA 70B)…');
+    const prompt=`Tu es un hafiz (mémoriseur) du Coran avec une connaissance parfaite des 114 sourates et 6236 versets.
+
+Texte arabe transcrit: "${trans}"
+
+Identifie PRECISEMENT la sourate et le premier verset. Analyse chaque mot pour être certain.
+
+Références importantes:
+- سبح اسم ربك الأعلى = Sourate 87, verset 1
+- والشمس وضحاها = Sourate 91, verset 1  
+- والضحى = Sourate 93, verset 1
+- ألم نشرح = Sourate 94, verset 1
+- والتين = Sourate 95, verset 1
+- اقرأ باسم ربك = Sourate 96, verset 1
+- إنا أنزلناه = Sourate 97, verset 1
+- لم يكن = Sourate 98, verset 1
+- إذا زلزلت = Sourate 99, verset 1
+- والعاديات = Sourate 100, verset 1
+- القارعة = Sourate 101, verset 1
+- ألهاكم = Sourate 102, verset 1
+- والعصر = Sourate 103, verset 1
+- ويل لكل همزة = Sourate 104, verset 1
+- ألم تر كيف = Sourate 105, verset 1
+- لإيلاف = Sourate 106, verset 1
+- أرأيت الذي = Sourate 107, verset 1
+- إنا أعطيناك = Sourate 108, verset 1
+- قل يا أيها الكافرون = Sourate 109, verset 1
+- إذا جاء نصر الله = Sourate 110, verset 1
+- تبت يدا = Sourate 111, verset 1
+- قل هو الله أحد = Sourate 112, verset 1
+- قل أعوذ برب الفلق = Sourate 113, verset 1
+- قل أعوذ برب الناس = Sourate 114, verset 1
+- الحمد لله رب العالمين = Sourate 1, verset 2
+- بسم الله الرحمن الرحيم = Sourate 1, verset 1
+
+JSON uniquement, sans texte autour:
+{"surah_number":X,"verse_start":X,"verse_end":X,"confidence":X,"explanation":"courte explication en français"}`;
+
+    const mr2=await fetch('https://api.groq.com/openai/v1/chat/completions',{
       method:'POST',
-      headers:{'Authorization':'Bearer '+GROQ_KEY,'Content-Type':'application/json'},
+      headers:{Authorization:'Bearer '+GROQ,'Content-Type':'application/json'},
       body:JSON.stringify({
         model:'llama-3.3-70b-versatile',
-        messages:[
-          {role:'system',content:`Tu es un hafiz (mémoriseur du Coran) expert avec une connaissance parfaite de tous les 114 chapitres et 6236 versets. 
-On te donne une transcription arabe d'une récitation. Tu DOIS identifier PRECISEMENT:
-- La sourate exacte (numéro 1-114) 
-- Le verset exact
-
-Voici quelques exemples pour t'aider:
-- "سبح اسم ربك الأعلى" = Sourate 87 (Al-Ala), verset 1
-- "قل هو الله أحد" = Sourate 112 (Al-Ikhlas), verset 1  
-- "الحمد لله رب العالمين" = Sourate 1 (Al-Fatiha), verset 2
-- "والعصر" = Sourate 103 (Al-Asr), verset 1
-- "إذا زلزلت الأرض" = Sourate 99 (Az-Zalzala), verset 1
-- "بسم الله الرحمن الرحيم" peut être le début de nombreuses sourates
-
-Analyse le texte ENTIER pour identifier la sourate, pas seulement les premiers mots.
-Réponds UNIQUEMENT en JSON valide sans aucun texte autour: {"surah_number":X,"verse_start":X,"verse_end":X,"confidence":X,"explanation":"..."}`},
-          {role:'user',content:'Texte arabe transcrit: "'+transcription+'"\n\nIdentifie la sourate et le verset.'}
-        ],
-        temperature:0.05,max_tokens:200
+        messages:[{role:'user',content:prompt}],
+        temperature:0.0,
+        max_tokens:200,
+        response_format:{type:'json_object'}
       })
     });
-    const mData=await mRes.json();
-    const mText=(mData.choices?.[0]?.message?.content||'').replace(/```json|```/g,'').trim();
+    const md=await mr2.json();
     let match;
     try{
-      // Essaie d'extraire le JSON même si l'IA a ajouté du texte autour
-      const jsonMatch=mText.match(/\{[^}]+\}/);
-      match=JSON.parse(jsonMatch?jsonMatch[0]:mText);
-    }catch(e){throw new Error('Impossible d\'identifier la sourate. Réessayez avec une récitation plus longue (au moins 5 secondes).');}
+      const raw=(md.choices?.[0]?.message?.content||'{}').replace(/```json|```/g,'').trim();
+      match=JSON.parse(raw);
+      if(!match.surah_number)throw new Error('JSON invalide');
+    }catch(e){throw new Error('Identification échouée. Réessayez avec une récitation plus longue et claire.');}
 
-    // STEP 3: Fetch surah info + versets au bon numéro
-    setStep('📡 Récupération des données coraniques…');
-    const sNum=Math.max(1,Math.min(114,match.surah_number||1));
-    const vStart=Math.max(1,match.verse_start||1);
+    // ÉTAPE 4 : Récupération données Quran.com
+    step('📡 Récupération des versets depuis Quran.com…');
+    const sn=Math.max(1,Math.min(114,Math.round(match.surah_number)));
+    const vs=Math.max(1,Math.round(match.verse_start||1));
 
-    const [surahsRes,versesRes]=await Promise.all([
+    const [sRes,vRes]=await Promise.all([
       fetch('https://api.qurancdn.com/api/qdc/chapters?language=fr'),
-      // On récupère les versets à partir du bon numéro de verset détecté
-      fetch(`https://api.qurancdn.com/api/qdc/verses/by_chapter/${sNum}?language=fr&words=true&per_page=5&translations=136&verse_number=${vStart}`)
+      fetch(`https://api.qurancdn.com/api/qdc/verses/by_chapter/${sn}?language=fr&words=true&per_page=5&translations=136&verse_number=${vs}`)
     ]);
-    const surahsData=await surahsRes.json();
-    const versesData=await versesRes.json();
-    const surah=surahsData.chapters?.find(s=>s.id===sNum)||{id:sNum,name_simple:'Sourate '+sNum,name_arabic:'',verses_count:'?',revelation_place:'makkah'};
 
-    document.getElementById('loading').classList.remove('show');
-    displayResults(surah,versesData.verses,transcription,match);
+    if(!sRes.ok||!vRes.ok)throw new Error('Erreur API Quran.com. Vérifiez votre connexion internet.');
+
+    const sd=await sRes.json();
+    const vd=await vRes.json();
+    const surah=sd.chapters?.find(s=>s.id===sn)||{id:sn,name_simple:'Sourate '+sn,name_arabic:'',verses_count:'?',revelation_place:'makkah'};
+
+    document.getElementById('ld').classList.remove('on');
+    display(surah,vd.verses,trans,match);
 
   }catch(err){
-    document.getElementById('loading').classList.remove('show');
-    showError(err.message||'Erreur inattendue.');
-    document.getElementById('analyzeBtn').classList.add('show');
+    document.getElementById('ld').classList.remove('on');
+    showErr(err.message||'Erreur inattendue. Vérifiez votre connexion.');
+    document.getElementById('abtn').classList.add('on');
   }
 }
 
-function displayResults(surah,verses,transcription,match){
-  currentSurah=surah;
-  const conf=Math.max(0,Math.min(100,match.confidence||0));
-  const color=conf>=80?'var(--green2)':conf>=50?'var(--gold2)':'#e08080';
-  document.getElementById('resName').textContent=surah.name_simple;
-  document.getElementById('resSub').textContent=match.explanation||'Récitation identifiée';
-  document.getElementById('confVal').textContent=conf+'%';
-  document.getElementById('confVal').style.color=color;
-  document.getElementById('resSurahFr').textContent=surah.name_simple;
-  document.getElementById('resSurahAr').textContent=surah.name_arabic||'';
-  document.getElementById('resNum').textContent='Sourate n°'+surah.id+' · '+surah.verses_count+' versets';
-  document.getElementById('resRev').textContent=surah.revelation_place==='makkah'||surah.revelation_place==='Makkah'?'🕋 Mecque':'🕌 Médine';
-  document.getElementById('resVerseMatch').textContent='Verset '+(match.verse_start||'?')+(match.verse_end&&match.verse_end!==match.verse_start?' — '+match.verse_end:'');
-  document.getElementById('transcriptionText').textContent=transcription;
+// ===== AFFICHAGE RÉSULTATS =====
+function display(surah,verses,trans,match){
+  curS=surah;
+  const conf=Math.max(0,Math.min(100,Math.round(match.confidence||0)));
+  const col=conf>=80?'var(--green2)':conf>=55?'var(--gold2)':'#e08080';
 
-  const list=document.getElementById('versesList');list.innerHTML='';
-  (verses||[]).slice(0,5).forEach(v=>{
-    const item=document.createElement('div');item.className='verse-item';
-    const tr=(v.translations?.[0]?.text||'(traduction non disponible)').replace(/<[^>]*>/g,'');
-    const ar=v.words?v.words.filter(w=>w.char_type_name==='word').map(w=>w.text_uthmani).join(' '):(v.text_uthmani||'');
-    item.innerHTML='<span class="verse-num">Verset '+v.verse_number+'</span><div class="verse-ar">'+ar+'</div><div class="verse-fr">'+tr+'</div>';
-    list.appendChild(item);
-  });
-  if(!verses||!verses.length)list.innerHTML='<p style="color:var(--text2);font-size:0.9rem;">Versets non disponibles.</p>';
+  document.getElementById('rn').textContent=surah.name_simple;
+  document.getElementById('rsub').textContent=match.explanation||'Récitation coranique identifiée';
+  document.getElementById('cv').textContent=conf+'%';
+  document.getElementById('cv').style.color=col;
+  document.getElementById('iv-name').textContent=surah.name_simple;
+  document.getElementById('iv-ar').textContent=surah.name_arabic||'';
+  document.getElementById('iv-num').textContent='Sourate n°'+surah.id+' · '+surah.verses_count+' versets';
+  
+  // Révélation correcte
+  const rev=(surah.revelation_place||'').toLowerCase();
+  document.getElementById('iv-rev').textContent=rev.includes('mak')?'🕋 Mecque':'🕌 Médine';
+  
+  document.getElementById('iv-v').textContent='Verset '+(match.verse_start||'?')+(match.verse_end&&match.verse_end!==match.verse_start?' — '+match.verse_end:'');
+  document.getElementById('tt').textContent=trans;
 
+  // Versets
+  const list=document.getElementById('vlist');list.innerHTML='';
+  if(verses&&verses.length){
+    verses.slice(0,5).forEach(v=>{
+      const d=document.createElement('div');d.className='vi';
+      const tr=(v.translations?.[0]?.text||'Traduction non disponible').replace(/<[^>]*>/g,'');
+      const ar=v.words?v.words.filter(w=>w.char_type_name==='word').map(w=>w.text_uthmani).join(' '):(v.text_uthmani||'');
+      d.innerHTML='<span class="vn">Verset '+v.verse_number+'</span>'+(ar?'<div class="va">'+ar+'</div>':'')+'<div class="vf">'+tr+'</div>';
+      list.appendChild(d);
+    });
+  }else{
+    list.innerHTML='<p style="color:var(--text2);font-size:0.88rem;">Versets non disponibles.</p>';
+  }
+
+  // Audio Mohamed Al-Luhaidan (CDN officiel QuranicAudio)
   const sid=String(surah.id).padStart(3,'0');
-  document.getElementById('audioPlayer').src='https://download.quranicaudio.com/quran/mishaari_raashid_al_3afaasee/'+sid+'.mp3';
-  document.getElementById('results').classList.add('show');
+  document.getElementById('ap').src='https://download.quranicaudio.com/quran/muhammad_alhaidan/'+sid+'.mp3';
+  document.getElementById('res').classList.add('on');
 }
 
-function togglePlay(){const a=document.getElementById('audioPlayer'),btn=document.getElementById('playBtn');if(a.paused){a.play().then(()=>{btn.textContent='⏸ Pause';}).catch(()=>{});}else{a.pause();btn.innerHTML='▶ Écouter la récitation officielle';}}
-function resetPlayBtn(){document.getElementById('playBtn').innerHTML='▶ Écouter la récitation officielle';}
-function setStep(t){document.getElementById('loadingStep').textContent=t;}
-function showError(msg){const e=document.getElementById('errorBox');e.textContent=msg;e.classList.add('show');}
+// ===== LECTURE AUDIO =====
+function togglePlay(){
+  const a=document.getElementById('ap'),btn=document.getElementById('pb');
+  if(a.paused){a.play().then(()=>{btn.innerHTML='⏸ Pause';}).catch(e=>{showErr('Impossible de lire l\'audio. Vérifiez votre connexion.');});}
+  else{a.pause();btn.innerHTML='▶ Écouter avec Mohamed Al-Luhaidan';}
+}
+function resetPB(){document.getElementById('pb').innerHTML='▶ Écouter avec Mohamed Al-Luhaidan';}
+
+// ===== UTILS =====
+function step(t){document.getElementById('ls').textContent=t;}
+function showErr(m){const e=document.getElementById('eb');e.textContent=m;e.classList.add('on');}
 function resetAll(){
-  audioBlob=null;isRecording=false;currentSurah=null;
-  ['results','errorBox','loading'].forEach(id=>document.getElementById(id).classList.remove('show'));
-  document.getElementById('analyzeBtn').classList.remove('show');
-  document.getElementById('fileInfo').classList.remove('show');
-  document.getElementById('fileInput').value='';
-  document.getElementById('recStatus').textContent='✓ Microphone autorisé — appuyez pour enregistrer';
-  document.getElementById('recIcon').textContent='🎙️';
-  document.getElementById('recLbl').textContent='Appuyer';
-  document.getElementById('recordBtn').classList.remove('recording');
-  document.getElementById('audioPlayer').pause();document.getElementById('audioPlayer').src='';
-  resetPlayBtn();stopAnim();vizWrap.classList.remove('active');
+  blob=null;recOn=false;curS=null;
+  ['res','eb','ld'].forEach(id=>document.getElementById(id).classList.remove('on'));
+  document.getElementById('abtn').classList.remove('on');
+  document.getElementById('finfo').classList.remove('on');
+  document.getElementById('fi').value='';
+  document.getElementById('rs').textContent='✓ Microphone autorisé — appuyez pour enregistrer';
+  document.getElementById('ri').textContent='🎙️';
+  document.getElementById('rl').textContent='Appuyer';
+  document.getElementById('rbtn').classList.remove('rec');
+  const a=document.getElementById('ap');a.pause();a.src='';
+  resetPB();stopViz();viz.classList.remove('on');
 }
 </script>
 </body>
