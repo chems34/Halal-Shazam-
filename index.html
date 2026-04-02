@@ -10,6 +10,8 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',serif;min-height:100vh;overflow-x:hidden;}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 40% at 50% 0%,rgba(201,168,76,0.06),transparent 60%);pointer-events:none;z-index:0;}
+
+/* SPLASH */
 #splash{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:40px;transition:opacity 0.7s;}
 .sp-ar{font-family:'Noto Naskh Arabic',serif;font-size:2.2rem;color:var(--gold);text-shadow:0 0 40px rgba(201,168,76,0.3);text-align:center;}
 .sp-title{font-size:clamp(2rem,7vw,3.4rem);font-weight:300;color:var(--gold3);letter-spacing:0.1em;text-align:center;}
@@ -22,34 +24,48 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .sp-note{font-size:0.7rem;color:var(--text2);opacity:0.4;text-align:center;}
 .sp-creator{font-size:0.8rem;color:var(--gold);opacity:0.7;text-align:center;letter-spacing:0.06em;margin-top:2px;}
 
+/* LAYOUT */
+.wrap{position:relative;z-index:1;max-width:820px;margin:0 auto;padding:0 16px 80px;}
+header{text-align:center;padding:42px 0 26px;}
+.h-ar{font-family:'Noto Naskh Arabic',serif;font-size:1.7rem;color:var(--gold);opacity:0.75;margin-bottom:14px;animation:fd 1s ease both;}
+.h-logo{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:8px;animation:fd 1s ease 0.1s both;}
+.h-icon{width:44px;height:44px;background:linear-gradient(135deg,var(--gold),#a8792a);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;}
+h1{font-size:clamp(1.7rem,5vw,2.7rem);font-weight:300;color:var(--gold3);letter-spacing:0.08em;}
+h1 b{color:var(--gold);font-weight:600;}
+.h-sub{font-size:0.88rem;color:var(--text2);letter-spacing:0.05em;animation:fd 1s ease 0.2s both;}
+.hdiv{width:88px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:14px auto 0;}
+
+/* CARD */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:26px;box-shadow:0 0 60px rgba(0,0,0,0.5),inset 0 1px 0 rgba(201,168,76,0.07);animation:fu 1s ease 0.3s both;}
+
+/* TABS */
 .tabs{display:flex;background:var(--bg);border-radius:11px;padding:4px;margin-bottom:22px;border:1px solid var(--border);}
 .tab{flex:1;padding:9px 10px;background:none;border:none;border-radius:8px;color:var(--text2);font-family:'Cormorant Garamond',serif;font-size:0.9rem;font-weight:500;letter-spacing:0.03em;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:5px;}
 .tab.on{background:linear-gradient(135deg,rgba(201,168,76,0.14),rgba(201,168,76,0.07));color:var(--gold2);border:1px solid var(--border2);}
 .tab:hover:not(.on){color:var(--text);}
 .pnl{display:none;}.pnl.on{display:block;}
 
+/* MODE AUTOMATIQUE */
+.aya-wrap{display:flex;flex-direction:column;align-items:center;gap:15px;padding:10px 0 4px;}
 .earphones-notice{width:100%;padding:11px 15px;background:rgba(201,168,76,0.06);border:1px solid var(--border2);border-radius:11px;display:flex;align-items:flex-start;gap:9px;margin-bottom:2px;}
 .en-icon{font-size:1.3rem;flex-shrink:0;margin-top:1px;}
 .en-text{font-size:0.83rem;color:var(--text2);line-height:1.6;}
 .en-text b{color:var(--gold2);}
 
-.rec-wrap{display:flex;flex-direction:column;align-items:center;gap:15px;padding:10px 0 4px;}
-.rec-btn{width:100%;padding:18px;background:linear-gradient(135deg,rgba(201,168,76,0.1),rgba(201,168,76,0.05));border:1px solid var(--border);border-radius:13px;color:var(--gold2);font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;letter-spacing:0.06em;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:10px;}
-.rec-btn:hover{background:linear-gradient(135deg,rgba(201,168,76,0.15),rgba(201,168,76,0.1));}
-.rec-btn.listening{background:linear-gradient(135deg,rgba(232,201,126,0.2),rgba(201,168,76,0.15));color:var(--gold3);}
-.rec-icon{font-size:1.4rem;}
-.rec-lbl{font-size:1.1rem;}
-.rec-status{font-size:0.9rem;color:var(--text2);letter-spacing:0.04em;text-align:center;min-height:20px;transition:color 0.3s;}
-.rec-status.active{color:var(--gold2);}
-.rec-status.analyzing{color:var(--green2);}
-.rec-status.retry{color:#e8a87e;}
-.rec-cycles{font-size:0.72rem;color:var(--text2);opacity:0.46;letter-spacing:0.06em;min-height:14px;text-align:center;}
+.aya-btn{width:144px;height:144px;border-radius:50%;border:2px solid var(--border2);background:radial-gradient(circle at 40% 35%,rgba(201,168,76,0.1),transparent 70%);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;transition:all 0.4s;outline:none;position:relative;}
+.aya-btn:hover{border-color:var(--gold);box-shadow:0 0 34px rgba(201,168,76,0.18);transform:scale(1.03);}
+.aya-btn.listening{border-color:var(--gold);}
+.aya-btn.listening::before,.aya-btn.listening::after{content:'';position:absolute;border-radius:50%;border:1.5px solid rgba(201,168,76,0.35);animation:ring-out 2.2s ease-out infinite;width:144px;height:144px;}
+.aya-btn.listening::after{animation-delay:1.1s;}
+@keyframes ring-out{0%{transform:scale(1);opacity:0.7;}100%{transform:scale(1.5);opacity:0;}}
+.aya-btn.analyzing{border-color:var(--green2);}
+.aya-btn.analyzing::before,.aya-btn.analyzing::after{border-color:rgba(46,204,138,0.35);animation:ring-out-g 1.3s ease-out infinite;}
+@keyframes ring-out-g{0%{transform:scale(1);opacity:0.7;}100%{transform:scale(1.4);opacity:0;}}
+.aya-icon{font-size:3rem;user-select:none;}
+.aya-lbl{font-size:0.68rem;letter-spacing:0.14em;color:var(--text2);text-transform:uppercase;font-weight:500;}
+.aya-btn.listening .aya-lbl{color:var(--gold);}
+.aya-btn.analyzing .aya-lbl{color:var(--green2);}
 
-.viz-rec{width:100%;height:44px;display:flex;align-items:center;justify-content:center;gap:3px;opacity:0;transition:opacity 0.4s;}
-.viz-rec.on{opacity:1;}
-.brec{width:4px;background:linear-gradient(to top,var(--gold),var(--gold2));border-radius:2px;height:4px;transition:height 0.07s;}
-
-.aya-wrap{display:flex;flex-direction:column;align-items:center;gap:15px;padding:10px 0 4px;}
 .viz-aya{width:100%;height:44px;display:flex;align-items:center;justify-content:center;gap:3px;opacity:0;transition:opacity 0.4s;}
 .viz-aya.on{opacity:1;}
 .baya{width:4px;background:linear-gradient(to top,var(--gold),var(--gold2));border-radius:2px;height:4px;transition:height 0.07s;}
@@ -59,6 +75,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .aya-status.retry{color:#e8a87e;}
 .aya-cycles{font-size:0.72rem;color:var(--text2);opacity:0.46;letter-spacing:0.06em;min-height:14px;text-align:center;}
 
+/* RÉSULTATS */
 .res{display:none;animation:fu 0.6s ease;margin-top:18px;}
 .res.on{display:block;}
 .rt{display:flex;align-items:center;gap:11px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);}
@@ -68,6 +85,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .cw{margin-left:auto;text-align:right;}
 .cv{font-size:1.38rem;font-weight:600;}
 .cl{font-size:0.63rem;color:var(--text2);letter-spacing:0.08em;text-transform:uppercase;}
+
 .ig{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px;}
 @media(max-width:500px){.ig{grid-template-columns:1fr;}}
 .ii{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:11px 13px;transition:border-color 0.3s;}
@@ -80,22 +98,48 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .tl{font-size:0.63rem;color:var(--text2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:5px;}
 .tt{font-family:'Noto Naskh Arabic',serif;font-size:1.15rem;color:var(--gold2);direction:rtl;text-align:right;line-height:2;}
 
+/* VERSES SECTION */
 .vb{background:var(--bg3);border:1px solid var(--border);border-radius:13px;padding:18px;margin-bottom:14px;}
 .vt{font-size:0.65rem;color:var(--text2);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
 
-.vi{margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);}
-.vi:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+/* Chaque verset */
+.vi{padding:14px 0;border-bottom:1px solid rgba(201,168,76,0.07);}
+.vi:last-child{border-bottom:none;padding-bottom:0;}
 .vi-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
-.vn{font-size:0.8rem;color:var(--gold2);font-weight:500;}
-.tafsir-btn{background:rgba(201,168,76,0.1);border:1px solid var(--border2);border-radius:6px;padding:4px 8px;font-size:0.7rem;color:var(--gold2);cursor:pointer;transition:all 0.2s;}
-.tafsir-btn:hover{background:rgba(201,168,76,0.15);}
-.va{font-family:'Noto Naskh Arabic',serif;font-size:1.3rem;color:var(--gold2);direction:rtl;text-align:right;margin:8px 0;line-height:2;}
-.vf{font-size:0.9rem;color:var(--text);line-height:1.7;margin-bottom:8px;}
-.tafsir-panel{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
-.tafsir-panel.on{display:block;}
-.tafsir-name{font-size:0.7rem;color:var(--text2);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;}
-.tafsir-loading{font-size:0.8rem;color:var(--text2);text-align:center;}
-.tafsir-fr{font-size:0.88rem;color:var(--text);line-height:1.8;}
+.vn{display:inline-block;padding:2px 9px;background:rgba(201,168,76,0.09);border:1px solid var(--border);border-radius:20px;font-size:0.66rem;color:var(--gold);letter-spacing:0.06em;}
+/* Bouton Tafsir */
+.tafsir-btn{padding:3px 12px;background:rgba(201,168,76,0.08);border:1px solid var(--border2);border-radius:20px;font-size:0.66rem;color:var(--gold2);font-family:'Cormorant Garamond',serif;letter-spacing:0.06em;cursor:pointer;transition:all 0.3s;}
+.tafsir-btn:hover{background:rgba(201,168,76,0.16);}
+.tafsir-btn.open{background:rgba(201,168,76,0.18);color:var(--gold3);}
+
+.va{font-family:'Noto Naskh Arabic',serif;font-size:1.4rem;color:var(--gold3);direction:rtl;text-align:right;line-height:2.2;margin-bottom:6px;}
+.vf{font-size:0.86rem;color:var(--text2);font-style:italic;line-height:1.7;margin-bottom:8px;}
+
+/* TAFSIR PANEL */
+.tafsir-panel{
+  display:none;
+  background:var(--bg4);border:1px solid rgba(201,168,76,0.2);border-radius:10px;
+  padding:14px 16px;margin-top:8px;
+  animation:fu 0.3s ease;
+}
+.tafsir-panel.open{display:block;}
+.tafsir-name{font-size:0.65rem;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid rgba(201,168,76,0.12);}
+.tafsir-ar{font-family:'Noto Naskh Arabic',serif;font-size:1.05rem;color:var(--text);direction:rtl;text-align:right;line-height:2.2;margin-bottom:10px;}
+.tafsir-loading{font-size:0.82rem;color:var(--text2);font-style:italic;text-align:center;padding:8px 0;}
+
+/* Bouton Continuer */
+.continue-btn{
+  width:100%;padding:13px;
+  background:linear-gradient(135deg,rgba(201,168,76,0.12),rgba(201,168,76,0.06));
+  border:1px solid var(--border2);border-radius:11px;
+  color:var(--gold2);font-family:'Cormorant Garamond',serif;font-size:1rem;
+  letter-spacing:0.08em;cursor:pointer;transition:all 0.3s;
+  display:none;align-items:center;justify-content:center;gap:8px;margin-top:6px;
+}
+.continue-btn.on{display:flex;}
+.continue-btn:hover{background:rgba(201,168,76,0.2);}
+.continue-loading{font-size:0.78rem;color:var(--text2);text-align:center;padding:10px;display:none;}
+.continue-loading.on{display:block;}
 
 .pb{display:flex;align-items:center;gap:8px;padding:9px 18px;background:rgba(46,204,138,0.1);border:1px solid rgba(46,204,138,0.28);border-radius:9px;color:var(--green2);font-family:'Cormorant Garamond',serif;font-size:0.87rem;letter-spacing:0.06em;cursor:pointer;transition:all 0.3s;margin-bottom:12px;}
 .pb:hover{background:rgba(46,204,138,0.18);}
@@ -107,41 +151,59 @@ audio{display:none;}
 .btn-gold{flex:1;padding:9px;background:rgba(201,168,76,0.1);border:1px solid var(--border2);border-radius:9px;color:var(--gold2);font-family:'Cormorant Garamond',serif;font-size:0.82rem;letter-spacing:0.06em;cursor:pointer;transition:all 0.3s;}
 .btn-gold:hover{background:rgba(201,168,76,0.18);}
 
-.uz{width:100%;padding:30px;background:var(--bg3);border:2px dashed var(--border);border-radius:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;cursor:pointer;transition:all 0.3s;}
-.uz.drag-over{background:rgba(201,168,76,0.05);border-color:var(--gold2);}
-.ui{font-size:2.5rem;color:var(--gold2);}
-.ut{font-size:1rem;color:var(--text);font-weight:500;}
-.uh{font-size:0.8rem;color:var(--text2);}
-.ul{font-size:0.85rem;color:var(--gold2);margin-top:6px;}
+/* MANUEL */
+.rc{display:flex;flex-direction:column;align-items:center;gap:15px;padding:10px 0;}
+.viz{width:100%;height:44px;display:flex;align-items:center;justify-content:center;gap:3px;opacity:0;transition:opacity 0.4s;}
+.viz.on{opacity:1;}
+.bar{width:4px;background:linear-gradient(to top,var(--gold),var(--gold2));border-radius:2px;height:4px;transition:height 0.07s;}
+.rbtn{width:94px;height:94px;border-radius:50%;border:2px solid var(--border2);background:radial-gradient(circle at 40% 35%,rgba(201,168,76,0.12),transparent 70%);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:all 0.3s;}
+.rbtn:hover{border-color:var(--gold);box-shadow:0 0 22px rgba(201,168,76,0.14);transform:scale(1.04);}
+.rbtn.rec{border-color:#e05555;animation:pr 1.4s infinite;}
+@keyframes pr{0%,100%{box-shadow:0 0 0 0 rgba(224,85,85,0.4);}50%{box-shadow:0 0 0 12px rgba(224,85,85,0);}}
+.ri{font-size:1.9rem;}.rl{font-size:0.65rem;letter-spacing:0.12em;color:var(--text2);text-transform:uppercase;}
+.rbtn.rec .rl{color:#e05555;}
+.rs{font-size:0.86rem;color:var(--text2);text-align:center;min-height:20px;}
+
+/* UPLOAD */
+.uz{border:2px dashed var(--border2);border-radius:13px;padding:30px 18px;text-align:center;cursor:pointer;transition:all 0.3s;}
+.uz:hover,.uz.dov{border-color:var(--gold);background:rgba(201,168,76,0.03);}
+.ui{font-size:2.2rem;margin-bottom:8px;opacity:0.6;}
+.ut{font-size:0.97rem;color:var(--text);margin-bottom:3px;}
+.uh{font-size:0.75rem;color:var(--text2);}
+.ul{display:inline-block;margin-top:12px;padding:7px 20px;background:rgba(201,168,76,0.1);border:1px solid var(--border2);border-radius:8px;color:var(--gold2);font-family:'Cormorant Garamond',serif;font-size:0.85rem;letter-spacing:0.06em;cursor:pointer;}
 #fi{display:none;}
-.finfo{display:none;width:100%;padding:12px 15px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;margin-bottom:12px;align-items:center;gap:10px;}
+.finfo{margin-top:10px;padding:9px 12px;background:rgba(201,168,76,0.06);border:1px solid var(--border);border-radius:9px;display:none;align-items:center;gap:7px;}
 .finfo.on{display:flex;}
-.fn{font-size:0.9rem;color:var(--text);flex-grow:1;}
-.fs{font-size:0.8rem;color:var(--text2);}
-.abtn{width:100%;padding:14px;background:linear-gradient(135deg,rgba(201,168,76,0.1),rgba(201,168,76,0.05));border:1px solid var(--border);border-radius:11px;color:var(--gold2);font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:600;letter-spacing:0.06em;cursor:pointer;transition:all 0.3s;}
-.abtn:hover{background:linear-gradient(135deg,rgba(201,168,76,0.15),rgba(201,168,76,0.1));}
-.abtn.on{background:linear-gradient(135deg,rgba(232,201,126,0.2),rgba(201,168,76,0.15));color:var(--gold3);}
-.ld{display:none;flex-direction:column;align-items:center;gap:12px;padding:20px;}
+.fn{font-size:0.82rem;color:var(--text);flex:1;}.fs{font-size:0.71rem;color:var(--text2);}
+
+.abtn{width:100%;margin-top:16px;padding:12px;background:linear-gradient(135deg,var(--gold),#a8792a);border:none;border-radius:11px;color:#080a0d;font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:700;letter-spacing:0.1em;cursor:pointer;transition:all 0.3s;display:none;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(201,168,76,0.2);}
+.abtn.on{display:flex;}
+.abtn:hover{transform:translateY(-2px);}
+
+.ld{display:none;flex-direction:column;align-items:center;gap:12px;padding:22px 0;animation:fu 0.4s ease;}
 .ld.on{display:flex;}
-.sp{width:30px;height:30px;border:3px solid var(--border);border-top-color:var(--gold2);border-radius:50%;animation:spin 1s linear infinite;}
+.sp{width:40px;height:40px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin 0.85s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
-.lt{font-size:0.9rem;color:var(--text);}
-.ls{font-size:0.8rem;color:var(--text2);}
-.eb{display:none;background:rgba(218,54,51,0.1);border:1px solid rgba(218,54,51,0.28);border-radius:10px;padding:12px;margin-bottom:14px;}
+.lt{font-size:0.87rem;color:var(--text2);letter-spacing:0.06em;font-style:italic;}
+.ls{font-size:0.73rem;color:var(--text2);opacity:0.5;text-align:center;min-height:16px;}
+
+.eb{display:none;background:rgba(192,57,43,0.08);border:1px solid rgba(192,57,43,0.28);border-radius:11px;padding:12px 15px;color:#e08080;font-size:0.84rem;line-height:1.7;margin-top:11px;}
 .eb.on{display:block;}
-.eb-icon{color:#da3633;font-size:1.2rem;margin-bottom:6px;}
-.eb-text{font-size:0.85rem;color:var(--text);line-height:1.6;}
 
-.notif{position:fixed;top:20px;right:20px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;max-width:320px;box-shadow:0 8px 32px rgba(0,0,0,0.3);display:none;z-index:1000;transition:opacity 0.3s,transform 0.3s;}
-.notif.on{display:flex;opacity:1;transform:translateY(0);}
-.notif.hide{opacity:0;transform:translateY(-20px);}
-.notif-icon{font-size:1.5rem;margin-right:12px;}
-.notif-title{font-size:1rem;color:var(--gold2);font-weight:600;margin-bottom:4px;}
-.notif-surah{font-size:0.9rem;color:var(--text);margin-bottom:2px;}
-.notif-detail{font-size:0.8rem;color:var(--text2);margin-bottom:6px;}
-.notif-ar{font-family:'Noto Naskh Arabic',serif;font-size:1.1rem;color:var(--gold2);direction:rtl;text-align:right;}
+/* NOTIFICATION */
+.notif{position:fixed;top:14px;left:50%;transform:translateX(-50%) translateY(-130px);background:linear-gradient(135deg,#0d1117,#131920);border:1px solid var(--gold);border-radius:16px;padding:12px 17px;min-width:260px;max-width:330px;box-shadow:0 8px 32px rgba(0,0,0,0.6),0 0 18px rgba(201,168,76,0.13);z-index:9999;transition:transform 0.5s cubic-bezier(0.34,1.56,0.64,1);display:flex;align-items:center;gap:10px;}
+.notif.show{transform:translateX(-50%) translateY(0);}
+.notif-icon{font-size:1.6rem;flex-shrink:0;}
+.notif-title{font-size:0.66rem;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;}
+.notif-surah{font-size:1.02rem;color:var(--gold3);font-weight:600;}
+.notif-detail{font-size:0.75rem;color:var(--text2);margin-top:1px;}
+.notif-ar{font-family:'Noto Naskh Arabic',serif;font-size:0.94rem;color:var(--gold2);direction:rtl;text-align:right;margin-top:3px;}
 
-@keyframes fu{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+footer{text-align:center;padding:22px 0 10px;font-size:0.68rem;color:var(--text2);opacity:0.35;letter-spacing:0.06em;}
+
+@keyframes fd{from{opacity:0;transform:translateY(-16px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fu{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
 </style>
 </head>
 <body>
@@ -178,155 +240,44 @@ audio{display:none;}
   </header>
 
   <div class="card">
-    <!-- MODIFICATION 1: INVERSION DES ONGLETS -->
     <div class="tabs">
-      <button class="tab on" onclick="switchTab('manual')">🎤 Écouter</button>
-      <button class="tab" onclick="switchTab('auto')">⚡ Automatique</button>
+      <button class="tab on" onclick="switchTab('auto')">⚡ Automatique</button>
+      <button class="tab" onclick="switchTab('manual')">🎤 Manuel</button>
       <button class="tab" onclick="switchTab('upload')">📂 Fichier</button>
     </div>
 
-    <!-- MANUEL (ÉCOUTER) - DEVIENT LE PREMIER ONGLET ACTIF -->
-    <div class="pnl on" id="pnl-manual">
-      <div class="earphones-notice">
-        <div class="en-icon">🎧</div>
-        <div class="en-text">Pour une reconnaissance optimale, utilisez des écouteurs avec micro intégré.</div>
-      </div>
-
-      <div class="rec-wrap">
-        <button class="rec-btn" id="recBtn" onclick="toggleRec()">
-          <div class="rec-icon" id="recIcon">🎙️</div>
-          <div class="rec-lbl" id="recLbl">Commencer l'écoute</div>
-        </button>
-        <div class="rec-status" id="recStatus">Prêt à écouter</div>
-        <div class="rec-cycles" id="recCycles"></div>
-      </div>
-
-      <div class="viz-rec">
-        <div class="viz-aya" id="vizRec">
-          <!-- Barres de visualisation audio -->
-        </div>
-      </div>
-
-      <div class="res" id="res-m">
-        <div class="rt">
-          <div class="rb">✓</div>
-          <div>
-            <div class="rn" id="rn-m"></div>
-            <div class="rsub" id="rsub-m"></div>
-          </div>
-          <div class="cw">
-            <div class="cv" id="cv-m"></div>
-            <div class="cl">Correspondance</div>
-          </div>
-        </div>
-        <div class="ig">
-          <div class="ii">
-            <div class="il">📖 Sourate</div>
-            <div class="iv" id="ivn-m"></div>
-            <div class="ivar" id="ivar-m"></div>
-          </div>
-          <div class="ii">
-            <div class="il">🔢 Numéro · Versets</div>
-            <div class="iv" id="ivnum-m"></div>
-          </div>
-          <div class="ii">
-            <div class="il">📍 Révélation</div>
-            <div class="iv" id="ivrev-m"></div>
-          </div>
-          <div class="ii">
-            <div class="il">🎯 Verset détecté</div>
-            <div class="iv" id="ivv-m"></div>
-          </div>
-        </div>
-        <div class="tb">
-          <div class="tl">🔤 Texte transcrit Whisper AI</div>
-          <div class="tt" id="tt-m"></div>
-        </div>
-        <div class="vb">
-          <div class="vt">📜 Versets — arabe · français · arabe · tafsir en français</div>
-          <div id="vlist-m"></div>
-          <div class="continue-loading" id="cl-m">Chargement des versets suivants…</div>
-          <button class="continue-btn" id="cb-m" onclick="loadMore('m')">📖 Voir les versets suivants</button>
-        </div>
-        <div class="reciter-wrap">
-          <span class="reciter-label">🎙️ Choisir le récitateur</span>
-          <div class="reciter-grid" id="rg-m"></div>
-        </div>
-        <button class="pb" id="pb-m" onclick="togglePlay('m')">▶ Écouter la récitation</button>
-        <audio id="ap-m" onended="resetPB('m')"></audio>
-        <div class="btn-row">
-          <button class="btn-gold" onclick="newRec()">🔄 Nouvelle reconnaissance</button>
-          <button class="btn-outline" onclick="resetRec()">↩ Réinitialiser</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- AUTOMATIQUE (DEVIENT LE DEUXIÈME ONGLET) -->
-    <div class="pnl" id="pnl-auto">
-      <div class="earphones-notice">
-        <div class="en-icon">🎧</div>
-        <div class="en-text">Pour une reconnaissance optimale, utilisez des écouteurs avec micro intégré.</div>
-      </div>
-
+    <!-- AUTOMATIQUE -->
+    <div class="pnl on" id="pnl-auto">
       <div class="aya-wrap">
-        <button class="rec-btn" id="ayaBtn" onclick="toggleAya()">
-          <div class="rec-icon" id="ayaIcon">🎙️</div>
-          <div class="rec-lbl" id="ayaLbl">Commencer l'écoute automatique</div>
+        <div class="earphones-notice">
+          <div class="en-icon">🎧</div>
+          <div class="en-text"><b>Important :</b> Branchez vos <b>écouteurs</b> avant d'activer. Le micro captera le son sans couper les autres applications.</div>
+        </div>
+        <div class="viz-aya" id="viz-aya"></div>
+        <button class="aya-btn" id="ayaBtn" onclick="toggleAya()">
+          <span class="aya-icon" id="ayaIcon">🎵</span>
+          <span class="aya-lbl" id="ayaLbl">Toucher</span>
         </button>
-        <div class="aya-status" id="ayaStatus">Prêt pour l'écoute automatique</div>
-        <div class="aya-cycles" id="ayaCycles"></div>
+        <p class="aya-status" id="ayaStatus">Appuyez pour identifier une récitation</p>
+        <p class="aya-cycles" id="ayaCycles"></p>
       </div>
-
-      <div class="viz-aya" id="vizAya">
-        <!-- Barres de visualisation -->
-      </div>
-
+      <div class="eb" id="eb-a"></div>
       <div class="res" id="res-a">
-        <div class="rt">
-          <div class="rb">✓</div>
-          <div>
-            <div class="rn" id="rn-a"></div>
-            <div class="rsub" id="rsub-a"></div>
-          </div>
-          <div class="cw">
-            <div class="cv" id="cv-a"></div>
-            <div class="cl">Correspondance</div>
-          </div>
-        </div>
+        <div class="rt"><div class="rb">✓</div><div><div class="rn" id="rn-a"></div><div class="rsub" id="rsub-a"></div></div><div class="cw"><div class="cv" id="cv-a"></div><div class="cl">Correspondance</div></div></div>
         <div class="ig">
-          <div class="ii">
-            <div class="il">📖 Sourate</div>
-            <div class="iv" id="ivn-a"></div>
-            <div class="ivar" id="ivar-a"></div>
-          </div>
-          <div class="ii">
-            <div class="il">🔢 Numéro · Versets</div>
-            <div class="iv" id="ivnum-a"></div>
-          </div>
-          <div class="ii">
-            <div class="il">📍 Révélation</div>
-            <div class="iv" id="ivrev-a"></div>
-          </div>
-          <div class="ii">
-            <div class="il">🎯 Verset détecté</div>
-            <div class="iv" id="ivv-a"></div>
-          </div>
+          <div class="ii"><div class="il">📖 Sourate</div><div class="iv" id="ivn-a"></div><div class="ivar" id="ivar-a"></div></div>
+          <div class="ii"><div class="il">🔢 Numéro · Versets</div><div class="iv" id="ivnum-a"></div></div>
+          <div class="ii"><div class="il">📍 Révélation</div><div class="iv" id="ivrev-a"></div></div>
+          <div class="ii"><div class="il">🎯 Verset détecté</div><div class="iv" id="ivv-a"></div></div>
         </div>
-        <div class="tb">
-          <div class="tl">🔤 Texte transcrit Whisper AI</div>
-          <div class="tt" id="tt-a"></div>
-        </div>
+        <div class="tb"><div class="tl">🔤 Texte transcrit Whisper AI</div><div class="tt" id="tt-a"></div></div>
         <div class="vb">
-          <div class="vt">📜 Versets — arabe · français · arabe · tafsir en français</div>
+          <div class="vt">📜 Versets complets — arabe · français · tafsir Ibn Kathir</div>
           <div id="vlist-a"></div>
           <div class="continue-loading" id="cl-a">Chargement des versets suivants…</div>
           <button class="continue-btn" id="cb-a" onclick="loadMore('a')">📖 Voir les versets suivants</button>
         </div>
-        <div class="reciter-wrap">
-          <span class="reciter-label">🎙️ Choisir le récitateur</span>
-          <div class="reciter-grid" id="rg-a"></div>
-        </div>
-        <button class="pb" id="pb-a" onclick="togglePlay('a')">▶ Écouter la récitation</button>
+        <button class="pb" id="pb-a" onclick="togglePlay('a')">▶ Écouter avec Mohamed Al-Luhaidan</button>
         <audio id="ap-a" onended="resetPB('a')"></audio>
         <div class="btn-row">
           <button class="btn-gold" onclick="newAya()">🔄 Nouvelle reconnaissance</button>
@@ -335,7 +286,41 @@ audio{display:none;}
       </div>
     </div>
 
-    <!-- FICHIER (RESTE TROISIÈME) -->
+    <!-- MANUEL -->
+    <div class="pnl" id="pnl-manual">
+      <div class="rc">
+        <div class="viz" id="viz"></div>
+        <button class="rbtn" id="rbtn" onclick="toggleRec()">
+          <span class="ri" id="ri">🎙️</span>
+          <span class="rl" id="rl">Appuyer</span>
+        </button>
+        <p class="rs" id="rs">Appuyez pour commencer l'enregistrement</p>
+      </div>
+      <button class="abtn" id="abtn-m" onclick="analyzeM()">✨ Identifier la récitation</button>
+      <div class="ld" id="ld-m"><div class="sp"></div><p class="lt">Analyse en cours…</p><p class="ls" id="ls-m"></p></div>
+      <div class="eb" id="eb-m"></div>
+      <div class="res" id="res-m">
+        <div class="rt"><div class="rb">✓</div><div><div class="rn" id="rn-m"></div><div class="rsub" id="rsub-m"></div></div><div class="cw"><div class="cv" id="cv-m"></div><div class="cl">Correspondance</div></div></div>
+        <div class="ig">
+          <div class="ii"><div class="il">📖 Sourate</div><div class="iv" id="ivn-m"></div><div class="ivar" id="ivar-m"></div></div>
+          <div class="ii"><div class="il">🔢 Numéro · Versets</div><div class="iv" id="ivnum-m"></div></div>
+          <div class="ii"><div class="il">📍 Révélation</div><div class="iv" id="ivrev-m"></div></div>
+          <div class="ii"><div class="il">🎯 Verset détecté</div><div class="iv" id="ivv-m"></div></div>
+        </div>
+        <div class="tb"><div class="tl">🔤 Texte transcrit</div><div class="tt" id="tt-m"></div></div>
+        <div class="vb">
+          <div class="vt">📜 Versets complets — arabe · français · tafsir Ibn Kathir</div>
+          <div id="vlist-m"></div>
+          <div class="continue-loading" id="cl-m">Chargement…</div>
+          <button class="continue-btn" id="cb-m" onclick="loadMore('m')">📖 Voir les versets suivants</button>
+        </div>
+        <button class="pb" id="pb-m" onclick="togglePlay('m')">▶ Écouter avec Mohamed Al-Luhaidan</button>
+        <audio id="ap-m" onended="resetPB('m')"></audio>
+        <div class="btn-row"><button class="btn-outline" onclick="resetM()">↩ Nouvelle analyse</button></div>
+      </div>
+    </div>
+
+    <!-- FICHIER -->
     <div class="pnl" id="pnl-upload">
       <div class="uz" id="uz" ondragover="dov(event)" ondragleave="dlv()" ondrop="drp(event)" onclick="document.getElementById('fi').click()">
         <div class="ui">🎵</div>
@@ -356,138 +341,450 @@ audio{display:none;}
           <div class="ii"><div class="il">📍 Révélation</div><div class="iv" id="ivrev-u"></div></div>
           <div class="ii"><div class="il">🎯 Verset détecté</div><div class="iv" id="ivv-u"></div></div>
         </div>
-        <div class="tb"><div class="tl">🔤 Texte transcrit Whisper AI</div><div class="tt" id="tt-u"></div></div>
+        <div class="tb"><div class="tl">🔤 Texte transcrit</div><div class="tt" id="tt-u"></div></div>
         <div class="vb">
-          <div class="vt">📜 Versets — arabe · français · arabe · tafsir en français</div>
+          <div class="vt">📜 Versets complets — arabe · français · tafsir Ibn Kathir</div>
           <div id="vlist-u"></div>
-          <div class="continue-loading" id="cl-u">Chargement des versets suivants…</div>
+          <div class="continue-loading" id="cl-u">Chargement…</div>
           <button class="continue-btn" id="cb-u" onclick="loadMore('u')">📖 Voir les versets suivants</button>
         </div>
-        <div class="reciter-wrap">
-          <span class="reciter-label">🎙️ Choisir le récitateur</span>
-          <div class="reciter-grid" id="rg-u"></div>
-        </div>
-        <button class="pb" id="pb-u" onclick="togglePlay('u')">▶ Écouter la récitation</button>
+        <button class="pb" id="pb-u" onclick="togglePlay('u')">▶ Écouter avec Mohamed Al-Luhaidan</button>
         <audio id="ap-u" onended="resetPB('u')"></audio>
-        <div class="btn-row">
-          <button class="btn-gold" onclick="newUpload()">🔄 Nouvelle reconnaissance</button>
-          <button class="btn-outline" onclick="resetU()">↩ Réinitialiser</button>
-        </div>
+        <div class="btn-row"><button class="btn-outline" onclick="resetU()">↩ Nouvelle analyse</button></div>
       </div>
     </div>
   </div>
+  <footer>Aya-Halal سورة · Créé par Assakour · Mohamed Al-Luhaidan · Whisper AI · Quran.com · Ibn Kathir</footer>
 </div>
 
 <script>
-// MODIFICATION 2: DÉTECTION AUTOMATIQUE APRÈS 6 SECONDES
-function toggleRec() {
-  if (recOn) {
-    stopRec();
-  } else {
-    startRec();
+// ⚠️ Remplacez par votre nouvelle clé Groq après avoir supprimé l'ancienne sur console.groq.com
+const GROQ='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';
+const CHUNK_SEC=6;
+const MIN_CONF=85;
+const PER_PAGE=5;
+
+// État pagination par mode
+const state={
+  a:{surahId:0,curPage:1,totalPages:1,totalVerses:0},
+  m:{surahId:0,curPage:1,totalPages:1,totalVerses:0},
+  u:{surahId:0,curPage:1,totalPages:1,totalVerses:0}
+};
+
+let micS=null,afId=null;
+let ayaOn=false,ayaMR=null,ayaChunks=[],ayaStream=null,ayaCtx=null,ayaCycleN=0,ayaBusy=false;
+let manBlob=null,manMR=null,manChunks=[],manRec=false;
+let upBlob=null;
+
+// ===== VISUALIZERS =====
+['viz-aya','viz'].forEach(id=>{
+  const v=document.getElementById(id);
+  for(let i=0;i<26;i++){const b=document.createElement('div');b.className=id==='viz-aya'?'baya':'bar';v.appendChild(b);}
+});
+function startViz(id,an){
+  const bars=document.getElementById(id).querySelectorAll('.baya,.bar');
+  const d=new Uint8Array(an.frequencyBinCount);
+  (function loop(){afId=requestAnimationFrame(loop);an.getByteFrequencyData(d);
+    bars.forEach((b,i)=>{b.style.height=Math.max(4,(d[Math.floor(i*d.length/26)]/255)*40)+'px';});
+  })();
+}
+function stopViz(id){document.getElementById(id).querySelectorAll('.baya,.bar').forEach(b=>b.style.height='4px');}
+
+// ===== NOTIFICATIONS =====
+async function askNotif(){if('Notification' in window&&Notification.permission==='default')await Notification.requestPermission();}
+function pushNotif(surah,match){
+  document.getElementById('notif-surah').textContent=surah.name_simple+' · Sourate '+surah.id;
+  document.getElementById('notif-detail').textContent='Verset '+(match.verse_start||'?')+' · '+match.confidence+'% de correspondance';
+  document.getElementById('notif-ar').textContent=surah.name_arabic||'';
+  const el=document.getElementById('notif');el.classList.add('show');setTimeout(()=>el.classList.remove('show'),7000);
+  if(Notification.permission==='granted'){try{new Notification('Aya-Halal — Récitation identifiée',{body:surah.name_simple+' (Sourate '+surah.id+') · Verset '+(match.verse_start||'?'),tag:'aya-halal',renotify:true});}catch(e){}}
+}
+
+// ===== SPLASH =====
+async function startApp(){
+  const btn=document.getElementById('spBtn');btn.textContent='⏳ Autorisations…';btn.disabled=true;
+  try{const s=await navigator.mediaDevices.getUserMedia({audio:true,video:false});micS=s;s.getTracks().forEach(t=>t.enabled=false);document.getElementById('rs').textContent='✓ Microphone autorisé';}
+  catch(e){document.getElementById('rs').textContent='⚠️ Microphone refusé';}
+  await askNotif();
+  const sp=document.getElementById('splash');sp.style.opacity='0';setTimeout(()=>sp.style.display='none',700);
+}
+
+// ===== TABS =====
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('on',['auto','manual','upload'][i]===t));
+  ['auto','manual','upload'].forEach(id=>document.getElementById('pnl-'+id).classList.toggle('on',id===t));
+  if(t!=='auto'&&ayaOn)stopAya();
+}
+
+// ===== WAV CONVERSION =====
+async function toWav(inputBlob){
+  const ab=await inputBlob.arrayBuffer();
+  const ctx=new(window.AudioContext||window.webkitAudioContext)();
+  let decoded;try{decoded=await ctx.decodeAudioData(ab);}catch(e){ctx.close();throw new Error('Format audio non supporté.');}
+  ctx.close();
+  const SR=16000,CH=1,samples=Math.floor(decoded.duration*SR);
+  if(samples<SR*1.5)throw new Error('Audio trop court — continuez à réciter.');
+  const off=new OfflineAudioContext(CH,samples,SR);
+  const src=off.createBufferSource();src.buffer=decoded;src.connect(off.destination);src.start();
+  const rendered=await off.startRendering();
+  const pcm=rendered.getChannelData(0);
+  const buf=new ArrayBuffer(44+pcm.length*2);const dv=new DataView(buf);
+  const ws=(o,s)=>{for(let i=0;i<s.length;i++)dv.setUint8(o+i,s.charCodeAt(i));};
+  ws(0,'RIFF');dv.setUint32(4,36+pcm.length*2,true);ws(8,'WAVE');ws(12,'fmt ');
+  dv.setUint32(16,16,true);dv.setUint16(20,1,true);dv.setUint16(22,1,true);
+  dv.setUint32(24,SR,true);dv.setUint32(28,SR*2,true);dv.setUint16(32,2,true);dv.setUint16(34,16,true);
+  ws(36,'data');dv.setUint32(40,pcm.length*2,true);
+  let o=44;for(let i=0;i<pcm.length;i++,o+=2){const s=Math.max(-1,Math.min(1,pcm[i]));dv.setInt16(o,s<0?s*0x8000:s*0x7FFF,true);}
+  return new Blob([buf],{type:'audio/wav'});
+}
+
+// ===== TAFSIR — Ibn Kathir arabe (API Quran.com tafsir id=169) =====
+// Cache pour éviter les requêtes dupliquées
+const tafsirCache={};
+async function fetchTafsir(surahNum,verseNum){
+  const key=surahNum+':'+verseNum;
+  if(tafsirCache[key])return tafsirCache[key];
+  try{
+    // Tafsir Ibn Kathir arabe via API Quran Foundation
+    const r=await fetch(`https://api.qurancdn.com/api/qdc/tafsirs/169/by_ayah/${surahNum}:${verseNum}`);
+    if(!r.ok)throw new Error();
+    const d=await r.json();
+    const text=(d.tafsir?.text||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
+    tafsirCache[key]=text||'Tafsir non disponible pour ce verset.';
+    return tafsirCache[key];
+  }catch(e){
+    tafsirCache[key]='Tafsir non disponible pour ce verset.';
+    return tafsirCache[key];
   }
 }
 
-function startRec() {
-  if (recOn) return;
-  recOn = true;
-  recBusy = true;
-  document.getElementById('recBtn').classList.add('listening');
-  document.getElementById('recIcon').textContent = '🔴';
-  document.getElementById('recLbl').textContent = 'Arrêter';
-  document.getElementById('recStatus').textContent = '🎙️ Écoute en cours...';
-  document.getElementById('recStatus').className = 'rec-status active';
+// ===== CONSTRUCTION D'UN VERSET =====
+function makeVerseEl(v,surahNum,suffix){
+  const d=document.createElement('div');d.className='vi';
+  const tr=(v.translations?.[0]?.text||'—').replace(/<[^>]*>/g,'');
+  const ar=v.words?v.words.filter(w=>w.char_type_name==='word').map(w=>w.text_uthmani).join(' '):(v.text_uthmani||'');
+  const vid='tafsir-'+suffix+'-'+surahNum+'-'+v.verse_number;
 
-  navigator.mediaDevices.getUserMedia({ audio: true })
-    .then(stream => {
-      recMR = new MediaRecorder(stream);
-      const audioChunks = [];
-      let startTime = Date.now();
+  d.innerHTML=`
+    <div class="vi-header">
+      <span class="vn">Verset ${v.verse_number}</span>
+      <button class="tafsir-btn" id="btn-${vid}" onclick="toggleTafsir('${vid}',${surahNum},${v.verse_number})">📚 Tafsir</button>
+    </div>
+    ${ar?`<div class="va">${ar}</div>`:''}
+    <div class="vf">${tr}</div>
+    <div class="tafsir-panel" id="${vid}">
+      <div class="tafsir-name">Tafsir Ibn Kathir — تفسير ابن كثير</div>
+      <div class="tafsir-loading">Chargement du tafsir…</div>
+      <div class="tafsir-ar" style="display:none"></div>
+    </div>
+  `;
+  return d;
+}
 
-      recMR.ondataavailable = e => {
-        audioChunks.push(e.data);
-        updateViz('vizRec', stream);
+async function toggleTafsir(vid,surahNum,verseNum){
+  const panel=document.getElementById(vid);
+  const btn=document.getElementById('btn-'+vid);
+  if(panel.classList.contains('open')){
+    panel.classList.remove('open');btn.classList.remove('open');btn.textContent='📚 Tafsir';
+    return;
+  }
+  panel.classList.add('open');btn.classList.add('open');btn.textContent='✖ Fermer';
+  const loadEl=panel.querySelector('.tafsir-loading');
+  const textEl=panel.querySelector('.tafsir-ar');
+  if(textEl.style.display==='none'){
+    loadEl.style.display='block';
+    const tafsirText=await fetchTafsir(surahNum,verseNum);
+    loadEl.style.display='none';
+    textEl.style.display='block';
+    textEl.textContent=tafsirText;
+  }
+}
 
-        // MODIFICATION: Détection automatique après 6 secondes
-        if (Date.now() - startTime >= 6000 && !recBusy) {
-          recBusy = true;
-          recMR.stop();
-          stream.getTracks().forEach(track => track.stop());
-        }
+// ===== CHARGER VERSETS PAGE =====
+async function fetchVersesPage(surahNum,page,suffix){
+  const r=await fetch(`https://api.qurancdn.com/api/qdc/verses/by_chapter/${surahNum}?language=fr&words=true&per_page=${PER_PAGE}&page=${page}&translations=136`);
+  if(!r.ok)throw new Error('API Quran.com indisponible.');
+  const d=await r.json();
+  return{verses:d.verses||[],pagination:d.pagination||{}};
+}
+
+// ===== AFFICHAGE RÉSULTATS INITIAL (5 premiers versets) =====
+async function buildRes(surah,verses,trans,match,x){
+  const conf=Math.max(0,Math.min(100,Math.round(match.confidence||0)));
+  const col=conf>=85?'var(--green2)':conf>=70?'var(--gold2)':'#e08080';
+  document.getElementById('rn-'+x).textContent=surah.name_simple;
+  document.getElementById('rsub-'+x).textContent=match.explanation||'Récitation identifiée';
+  document.getElementById('cv-'+x).textContent=conf+'%';document.getElementById('cv-'+x).style.color=col;
+  document.getElementById('ivn-'+x).textContent=surah.name_simple;
+  document.getElementById('ivar-'+x).textContent=surah.name_arabic||'';
+  document.getElementById('ivnum-'+x).textContent='Sourate n°'+surah.id+' · '+surah.verses_count+' versets';
+  const rev=(surah.revelation_place||'').toLowerCase();
+  document.getElementById('ivrev-'+x).textContent=rev.includes('mak')?'🕋 Mecque':'🕌 Médine';
+  document.getElementById('ivv-'+x).textContent='Verset '+(match.verse_start||'?')+(match.verse_end&&match.verse_end!==match.verse_start?' — '+match.verse_end:'');
+  document.getElementById('tt-'+x).textContent=trans;
+
+  // Initialise état pagination
+  state[x].surahId=surah.id;
+  state[x].curPage=1;
+  state[x].totalVerses=surah.verses_count||0;
+
+  const list=document.getElementById('vlist-'+x);list.innerHTML='';
+  const totalPages=Math.ceil((surah.verses_count||1)/PER_PAGE);
+  state[x].totalPages=totalPages;
+
+  if(verses&&verses.length){
+    verses.forEach(v=>list.appendChild(makeVerseEl(v,surah.id,x)));
+  }else{
+    list.innerHTML='<p style="color:var(--text2);font-size:0.83rem;">Versets non disponibles.</p>';
+  }
+
+  // Bouton continuer si plus de versets
+  const cb=document.getElementById('cb-'+x);
+  if(totalPages>1){cb.classList.add('on');}else{cb.classList.remove('on');}
+  cb.textContent='📖 Voir les versets suivants (page 2/'+totalPages+')';
+
+  document.getElementById('ap-'+x).src='https://download.quranicaudio.com/quran/muhammad_alhaidan/'+String(surah.id).padStart(3,'0')+'.mp3';
+  document.getElementById('res-'+x).classList.add('on');
+}
+
+// ===== CHARGER PLUS DE VERSETS =====
+async function loadMore(x){
+  const s=state[x];
+  if(s.curPage>=s.totalPages)return;
+  s.curPage++;
+  const cb=document.getElementById('cb-'+x);
+  const cl=document.getElementById('cl-'+x);
+  cb.classList.remove('on');cl.classList.add('on');
+  try{
+    const{verses,pagination}=await fetchVersesPage(s.surahId,s.curPage,x);
+    const list=document.getElementById('vlist-'+x);
+    verses.forEach(v=>list.appendChild(makeVerseEl(v,s.surahId,x)));
+    cl.classList.remove('on');
+    if(s.curPage<s.totalPages){
+      cb.classList.add('on');
+      cb.textContent='📖 Voir les versets suivants (page '+(s.curPage+1)+'/'+s.totalPages+')';
+    }else{
+      cb.textContent='✅ Sourate complète chargée';cb.classList.add('on');cb.disabled=true;
+      cb.style.opacity='0.5';cb.style.cursor='default';
+    }
+  }catch(e){
+    cl.classList.remove('on');
+    cb.classList.add('on');cb.textContent='⚠️ Erreur — Réessayer';
+    s.curPage--;
+  }
+}
+
+// ===== WHISPER + LLM =====
+const SURAH_HINTS=`بسم الله=1,1|الحمد لله رب العالمين=1,2|مالك يوم الدين=1,4|إياك نعبد=1,5|اهدنا الصراط=1,6|قل هو الله أحد=112,1|الله الصمد=112,2|لم يلد=112,3|قل أعوذ برب الفلق=113,1|قل أعوذ برب الناس=114,1|والضحى=93,1|ألم نشرح=94,1|والتين=95,1|اقرأ باسم ربك=96,1|إنا أنزلناه في ليلة القدر=97,1|لم يكن الذين كفروا=98,1|إذا زلزلت=99,1|والعاديات=100,1|القارعة=101,1|ألهاكم التكاثر=102,1|والعصر=103,1|ويل لكل همزة=104,1|ألم تر كيف=105,1|لإيلاف=106,1|أرأيت الذي=107,1|إنا أعطيناك الكوثر=108,1|قل يا أيها الكافرون=109,1|إذا جاء نصر الله=110,1|تبت يدا=111,1|سبح اسم ربك الأعلى=87,1|هل أتاك حديث الغاشية=88,1|والفجر=89,1|والشمس وضحاها=91,1|والليل إذا يغشى=92,1|والسماء والطارق=86,1|والسماء ذات البروج=85,1|إذا السماء انشقت=84,1|ويل للمطففين=83,1|إذا السماء انفطرت=82,1|إذا الشمس كورت=81,1|عبس وتولى=80,1|والنازعات=79,1|عم يتساءلون=78,1|والمرسلات=77,1|يا أيها المدثر=74,1|يا أيها المزمل=73,1|ن والقلم=68,1|تبارك الذي بيده الملك=67,1|إذا وقعت الواقعة=56,1|الرحمن علم القرآن=55,1|والنجم إذا هوى=53,1|قل يا أيها الكافرون=109,1|يس والقرآن=36,1`;
+
+async function identify(blob,stepFn){
+  stepFn('🔄 Conversion audio WAV 16kHz…');
+  const wav=await toWav(blob);
+  stepFn('🎙️ Transcription Whisper AI (arabe)…');
+  const fd=new FormData();
+  fd.append('file',wav,'audio.wav');fd.append('model','whisper-large-v3');
+  fd.append('language','ar');fd.append('response_format','json');fd.append('temperature','0');
+  const wr=await fetch('https://api.groq.com/openai/v1/audio/transcriptions',{method:'POST',headers:{Authorization:'Bearer '+GROQ},body:fd});
+  if(!wr.ok){const e=await wr.json().catch(()=>({}));throw new Error('Whisper: '+(e.error?.message||wr.status));}
+  const wd=await wr.json();
+  const trans=(wd.text||'').trim().replace(/[^\u0600-\u06FF\s.,،؟!\d]/g,'').trim();
+  if(!trans||trans.length<3)throw new Error('Aucun texte arabe détecté. Approchez les écouteurs du micro.');
+  stepFn('🧠 Identification sourate et verset…');
+  const prompt=`Tu es un hafiz du Coran. Texte arabe: "${trans}"
+Références: ${SURAH_HINTS}
+RÈGLES: analyse chaque mot, confiance HONNÊTE, jamais au hasard, si ambigu → confiance<50.
+JSON uniquement: {"surah_number":X,"verse_start":X,"verse_end":X,"confidence":X,"explanation":"..."}`;
+  const mr=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+    method:'POST',headers:{Authorization:'Bearer '+GROQ,'Content-Type':'application/json'},
+    body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'user',content:prompt}],temperature:0.0,max_tokens:200,response_format:{type:'json_object'}})
+  });
+  const md=await mr.json();
+  let match;
+  try{match=JSON.parse((md.choices?.[0]?.message?.content||'{}').replace(/```json|```/g,'').trim());if(!match.surah_number)throw 0;}
+  catch(e){throw new Error('Identification impossible. Réessai…');}
+  if((match.confidence||0)<MIN_CONF)throw new Error(`Confiance insuffisante (${match.confidence}%). Continuez à réciter…`);
+  stepFn('📡 Récupération versets Quran.com…');
+  const sn=Math.max(1,Math.min(114,Math.round(match.surah_number)));
+  const vs=Math.max(1,Math.round(match.verse_start||1));
+  const[sR,vR]=await Promise.all([
+    fetch('https://api.qurancdn.com/api/qdc/chapters?language=fr'),
+    fetch(`https://api.qurancdn.com/api/qdc/verses/by_chapter/${sn}?language=fr&words=true&per_page=${PER_PAGE}&page=1&translations=136&verse_number=${vs}`)
+  ]);
+  const sd=await sR.json(),vd=await vR.json();
+  const surah=sd.chapters?.find(s=>s.id===sn)||{id:sn,name_simple:'Sourate '+sn,name_arabic:'',verses_count:0,revelation_place:'makkah'};
+  return{surah,verses:vd.verses,trans,match};
+}
+
+// ===== MODE AUTOMATIQUE =====
+async function toggleAya(){
+  if(!ayaOn){
+    ayaOn=true;ayaCycleN=0;ayaBusy=false;
+    document.getElementById('ayaBtn').classList.add('listening');
+    document.getElementById('ayaIcon').textContent='🎙️';document.getElementById('ayaLbl').textContent='Écoute…';
+    document.getElementById('ayaStatus').textContent='🎙️ Écoute — approchez les écouteurs';
+    document.getElementById('ayaStatus').className='aya-status active';
+    document.getElementById('eb-a').classList.remove('on');
+    document.getElementById('viz-aya').classList.add('on');
+    try{
+      let stream;
+      if(micS){micS.getTracks().forEach(t=>t.enabled=true);stream=micS;}
+      else{stream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});micS=stream;}
+      ayaStream=stream;
+      ayaCtx=new(window.AudioContext||window.webkitAudioContext)();
+      const src=ayaCtx.createMediaStreamSource(stream);
+      const an=ayaCtx.createAnalyser();an.fftSize=256;src.connect(an);
+      startViz('viz-aya',an);ayaCycle(stream);
+    }catch(e){stopAya();document.getElementById('eb-a').textContent='Microphone inaccessible.';document.getElementById('eb-a').classList.add('on');}
+  }else{stopAya();}
+}
+
+function ayaCycle(stream){
+  if(!ayaOn||ayaBusy)return;
+  ayaChunks=[];
+  const mime=['audio/mp4;codecs=mp4a.40.2','audio/mp4','audio/aac','audio/webm;codecs=opus','audio/webm'].find(t=>MediaRecorder.isTypeSupported(t))||'';
+  ayaMR=new MediaRecorder(stream,mime?{mimeType:mime}:{});
+  ayaMR.ondataavailable=e=>{if(e.data.size>0)ayaChunks.push(e.data);};
+  ayaMR.onstop=async()=>{
+    if(!ayaOn)return;
+    ayaBusy=true;ayaCycleN++;
+    document.getElementById('ayaBtn').classList.remove('listening');
+    document.getElementById('ayaBtn').classList.add('analyzing');
+    document.getElementById('ayaIcon').textContent='🔍';document.getElementById('ayaLbl').textContent='Analyse…';
+    document.getElementById('ayaStatus').textContent='🧠 Identification en cours…';
+    document.getElementById('ayaStatus').className='aya-status analyzing';
+    document.getElementById('ayaCycles').textContent='Tentative '+ayaCycleN;
+    const blob=new Blob(ayaChunks,{type:ayaMR.mimeType||'audio/webm'});
+    try{
+      const{surah,verses,trans,match}=await identify(blob,t=>{document.getElementById('ayaStatus').textContent=t;});
+      stopAya();await buildRes(surah,verses,trans,match,'a');pushNotif(surah,match);
+      document.getElementById('ayaCycles').textContent='';
+    }catch(err){
+      ayaBusy=false;
+      if(ayaOn){
+        document.getElementById('ayaBtn').classList.remove('analyzing');
+        document.getElementById('ayaBtn').classList.add('listening');
+        document.getElementById('ayaIcon').textContent='🎙️';document.getElementById('ayaLbl').textContent='Écoute…';
+        document.getElementById('ayaStatus').textContent='🔄 '+err.message;
+        document.getElementById('ayaStatus').className='aya-status retry';
+        setTimeout(()=>{if(ayaOn&&!ayaBusy){document.getElementById('ayaStatus').textContent='🎙️ Écoute en cours…';document.getElementById('ayaStatus').className='aya-status active';ayaCycle(stream);}},1200);
+      }
+    }
+  };
+  ayaMR.start(100);
+  setTimeout(()=>{if(ayaMR&&ayaMR.state==='recording')ayaMR.stop();},CHUNK_SEC*1000);
+}
+
+function stopAya(){
+  ayaOn=false;ayaBusy=false;
+  if(ayaMR&&ayaMR.state!=='inactive'){try{ayaMR.stop();}catch(e){}}
+  if(micS)micS.getTracks().forEach(t=>t.enabled=false);
+  if(ayaCtx){try{ayaCtx.close();}catch(e){}}
+  if(afId){cancelAnimationFrame(afId);afId=null;}
+  stopViz('viz-aya');document.getElementById('viz-aya').classList.remove('on');
+  document.getElementById('ayaBtn').classList.remove('listening','analyzing');
+  document.getElementById('ayaIcon').textContent='🎵';document.getElementById('ayaLbl').textContent='Toucher';
+  document.getElementById('ayaStatus').textContent='Appuyez pour identifier une récitation';
+  document.getElementById('ayaStatus').className='aya-status';
+  document.getElementById('ayaCycles').textContent='';
+}
+
+function newAya(){document.getElementById('res-a').classList.remove('on');document.getElementById('eb-a').classList.remove('on');document.getElementById('ayaCycles').textContent='';ayaCycleN=0;const cb=document.getElementById('cb-a');cb.disabled=false;cb.style.opacity='1';cb.style.cursor='pointer';}
+function resetAya(){stopAya();newAya();const a=document.getElementById('ap-a');a.pause();a.src='';resetPB('a');}
+
+// ===== MODE MANUEL =====
+async function toggleRec(){
+  if(!manRec){
+    try{
+      let stream;if(micS){micS.getTracks().forEach(t=>t.enabled=true);stream=micS;}
+      else{stream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});micS=stream;}
+      const ctx=new(window.AudioContext||window.webkitAudioContext)();
+      const src=ctx.createMediaStreamSource(stream);const an=ctx.createAnalyser();an.fftSize=256;src.connect(an);
+      document.getElementById('viz').classList.add('on');startViz('viz',an);
+      const mime=['audio/mp4;codecs=mp4a.40.2','audio/mp4','audio/aac','audio/webm;codecs=opus','audio/webm'].find(t=>MediaRecorder.isTypeSupported(t))||'';
+      manMR=new MediaRecorder(stream,mime?{mimeType:mime}:{});manChunks=[];
+      manMR.ondataavailable=e=>{if(e.data.size>0)manChunks.push(e.data);};
+      manMR.onstop=()=>{
+        manBlob=new Blob(manChunks,{type:manMR.mimeType||'audio/webm'});
+        document.getElementById('abtn-m').classList.add('on');
+        stream.getTracks().forEach(t=>t.enabled=false);try{ctx.close();}catch(e){}
+        if(afId){cancelAnimationFrame(afId);afId=null;}
+        stopViz('viz');document.getElementById('viz').classList.remove('on');
       };
-
-      recMR.onstop = () => {
-        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-        identify(audioBlob, (status) => {
-          document.getElementById('recStatus').textContent = status;
-        })
-        .then(result => {
-          showResult('m', result);
-          showNotif(result);
-        })
-        .catch(err => {
-          document.getElementById('recStatus').textContent = '❌ ' + err.message;
-          document.getElementById('recStatus').className = 'rec-status retry';
-        })
-        .finally(() => {
-          recBusy = false;
-          recOn = false;
-          document.getElementById('recBtn').classList.remove('listening');
-          document.getElementById('recIcon').textContent = '🎙️';
-          document.getElementById('recLbl').textContent = 'Commencer l\'écoute';
-        });
-      };
-
-      recMR.start(100);
-      // Arrêt automatique après 7 secondes (6s + 1s de marge)
-      setTimeout(() => {
-        if (recMR && recMR.state === 'recording') {
-          recMR.stop();
-        }
-      }, 7000);
-    })
-    .catch(err => {
-      console.error(err);
-      stopRec();
-      document.getElementById('recStatus').textContent = '❌ Erreur micro: ' + err.message;
-      document.getElementById('recStatus').className = 'rec-status error';
-    });
-}
-
-function stopRec() {
-  if (!recMR || recMR.state === 'inactive') return;
-  recMR.stop();
-  if (recStream) {
-    recStream.getTracks().forEach(track => track.stop());
-  }
-  recOn = false;
-  recBusy = false;
-  document.getElementById('recBtn').classList.remove('listening');
-  document.getElementById('recIcon').textContent = '🎙️';
-  document.getElementById('recLbl').textContent = 'Commencer l\'écoute';
-  document.getElementById('recStatus').textContent = 'Écoute arrêtée';
-  document.getElementById('recStatus').className = 'rec-status';
-}
-
-// MODIFICATION 3: MISE À JOUR DE LA FONCTION switchTab
-function switchTab(tab) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
-  document.querySelectorAll('.pnl').forEach(p => p.classList.remove('on'));
-
-  if (tab === 'manual') {
-    document.querySelector('.tab[onclick="switchTab(\'manual\')"]').classList.add('on');
-    document.getElementById('pnl-manual').classList.add('on');
-  } else if (tab === 'auto') {
-    document.querySelector('.tab[onclick="switchTab(\'auto\')"]').classList.add('on');
-    document.getElementById('pnl-auto').classList.add('on');
-  } else if (tab === 'upload') {
-    document.querySelector('.tab[onclick="switchTab(\'upload\')"]').classList.add('on');
-    document.getElementById('pnl-upload').classList.add('on');
+      manMR.start(100);manRec=true;
+      document.getElementById('rbtn').classList.add('rec');
+      document.getElementById('ri').textContent='⏹';document.getElementById('rl').textContent='Arrêter';
+      document.getElementById('rs').textContent='🔴 Enregistrement en cours…';
+    }catch(e){document.getElementById('eb-m').textContent='Microphone inaccessible.';document.getElementById('eb-m').classList.add('on');}
+  }else{
+    manMR.stop();manRec=false;
+    document.getElementById('rbtn').classList.remove('rec');
+    document.getElementById('ri').textContent='🎙️';document.getElementById('rl').textContent='Appuyer';
+    document.getElementById('rs').textContent='✓ Terminé — prêt à analyser';
   }
 }
+async function analyzeM(){
+  if(!manBlob)return;
+  document.getElementById('abtn-m').classList.remove('on');
+  document.getElementById('eb-m').classList.remove('on');document.getElementById('res-m').classList.remove('on');
+  document.getElementById('ld-m').classList.add('on');
+  try{
+    const{surah,verses,trans,match}=await identify(manBlob,t=>document.getElementById('ls-m').textContent=t);
+    document.getElementById('ld-m').classList.remove('on');
+    await buildRes(surah,verses,trans,match,'m');pushNotif(surah,match);
+  }catch(err){
+    document.getElementById('ld-m').classList.remove('on');
+    document.getElementById('eb-m').textContent=err.message;document.getElementById('eb-m').classList.add('on');
+    document.getElementById('abtn-m').classList.add('on');
+  }
+}
+function resetM(){
+  manBlob=null;manRec=false;
+  ['res-m','eb-m','ld-m'].forEach(id=>document.getElementById(id).classList.remove('on'));
+  document.getElementById('abtn-m').classList.remove('on');
+  document.getElementById('rs').textContent='✓ Microphone autorisé';
+  document.getElementById('ri').textContent='🎙️';document.getElementById('rl').textContent='Appuyer';
+  document.getElementById('rbtn').classList.remove('rec');
+  const a=document.getElementById('ap-m');a.pause();a.src='';resetPB('m');
+  const cb=document.getElementById('cb-m');cb.disabled=false;cb.style.opacity='1';cb.style.cursor='pointer';
+  stopViz('viz');document.getElementById('viz').classList.remove('on');
+}
 
-// [LE RESTE DE VOTRE CODE JS EXISTANT EST INCHANGÉ]
-// ... (toutes vos autres fonctions restent identiques)
+// ===== MODE FICHIER =====
+function dov(e){e.preventDefault();document.getElementById('uz').classList.add('dov');}
+function dlv(){document.getElementById('uz').classList.remove('dov');}
+function drp(e){e.preventDefault();dlv();const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('audio/'))setF(f);}
+function selF(e){const f=e.target.files[0];if(f)setF(f);}
+function setF(f){upBlob=f;document.getElementById('fn').textContent=f.name;document.getElementById('fs').textContent=(f.size/1024/1024).toFixed(2)+' Mo';document.getElementById('finfo').classList.add('on');document.getElementById('abtn-u').classList.add('on');}
+async function analyzeU(){
+  if(!upBlob)return;
+  document.getElementById('abtn-u').classList.remove('on');
+  document.getElementById('eb-u').classList.remove('on');document.getElementById('res-u').classList.remove('on');
+  document.getElementById('ld-u').classList.add('on');
+  try{
+    const{surah,verses,trans,match}=await identify(upBlob,t=>document.getElementById('ls-u').textContent=t);
+    document.getElementById('ld-u').classList.remove('on');
+    await buildRes(surah,verses,trans,match,'u');pushNotif(surah,match);
+  }catch(err){
+    document.getElementById('ld-u').classList.remove('on');
+    document.getElementById('eb-u').textContent=err.message;document.getElementById('eb-u').classList.add('on');
+    document.getElementById('abtn-u').classList.add('on');
+  }
+}
+function resetU(){
+  upBlob=null;['res-u','eb-u','ld-u'].forEach(id=>document.getElementById(id).classList.remove('on'));
+  document.getElementById('abtn-u').classList.remove('on');document.getElementById('finfo').classList.remove('on');
+  document.getElementById('fi').value='';
+  const a=document.getElementById('ap-u');a.pause();a.src='';resetPB('u');
+  const cb=document.getElementById('cb-u');cb.disabled=false;cb.style.opacity='1';cb.style.cursor='pointer';
+}
+
+// ===== AUDIO =====
+function togglePlay(x){
+  const a=document.getElementById('ap-'+x),btn=document.getElementById('pb-'+x);
+  if(a.paused){a.play().then(()=>{btn.innerHTML='⏸ Pause';}).catch(()=>{});}
+  else{a.pause();btn.innerHTML='▶ Écouter avec Mohamed Al-Luhaidan';}
+}
+function resetPB(x){document.getElementById('pb-'+x).innerHTML='▶ Écouter avec Mohamed Al-Luhaidan';}
 </script>
 </body>
 </html>
