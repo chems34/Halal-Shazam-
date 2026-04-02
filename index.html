@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="fr" dir="ltr">
 <head>
@@ -272,7 +274,8 @@ footer{text-align:center;padding:22px 0 10px;font-size:0.68rem;color:var(--text2
         </div>
         <div class="tb"><div class="tl">🔤 Texte transcrit Whisper AI</div><div class="tt" id="tt-a"></div></div>
         <div class="vb">
-          <div class="vt">📜 Versets — arabe · français · arabe · tafsir en français</div>
+          <div class="vt">📜 Versets complets — arabe · français · tafsir Ibn Kathir</div>
+          <div id="vlist-a"></div>
           <div class="continue-loading" id="cl-a">Chargement des versets suivants…</div>
           <button class="continue-btn" id="cb-a" onclick="loadMore('a')">📖 Voir les versets suivants</button>
         </div>
@@ -308,7 +311,7 @@ footer{text-align:center;padding:22px 0 10px;font-size:0.68rem;color:var(--text2
         </div>
         <div class="tb"><div class="tl">🔤 Texte transcrit</div><div class="tt" id="tt-m"></div></div>
         <div class="vb">
-          <div class="vt">📜 Versets — arabe · français · arabe · tafsir en français</div>
+          <div class="vt">📜 Versets complets — arabe · français · tafsir Ibn Kathir</div>
           <div id="vlist-m"></div>
           <div class="continue-loading" id="cl-m">Chargement…</div>
           <button class="continue-btn" id="cb-m" onclick="loadMore('m')">📖 Voir les versets suivants</button>
@@ -342,7 +345,7 @@ footer{text-align:center;padding:22px 0 10px;font-size:0.68rem;color:var(--text2
         </div>
         <div class="tb"><div class="tl">🔤 Texte transcrit</div><div class="tt" id="tt-u"></div></div>
         <div class="vb">
-          <div class="vt">📜 Versets — arabe · français · arabe · tafsir en français</div>
+          <div class="vt">📜 Versets complets — arabe · français · tafsir Ibn Kathir</div>
           <div id="vlist-u"></div>
           <div class="continue-loading" id="cl-u">Chargement…</div>
           <button class="continue-btn" id="cb-u" onclick="loadMore('u')">📖 Voir les versets suivants</button>
@@ -437,37 +440,19 @@ async function toWav(inputBlob){
   return new Blob([buf],{type:'audio/wav'});
 }
 
-// ===== TAFSIR EN FRANÇAIS — Ibn Kathir (anglais via API) traduit par Groq =====
+// ===== TAFSIR — Ibn Kathir arabe (API Quran.com tafsir id=169) =====
+// Cache pour éviter les requêtes dupliquées
 const tafsirCache={};
-
-async function fetchTafsirFr(surahNum,verseNum){
+async function fetchTafsir(surahNum,verseNum){
   const key=surahNum+':'+verseNum;
   if(tafsirCache[key])return tafsirCache[key];
   try{
-    // 1. Récupère Ibn Kathir abrégé en anglais (id=169) via Quran.com
+    // Tafsir Ibn Kathir arabe via API Quran Foundation
     const r=await fetch(`https://api.qurancdn.com/api/qdc/tafsirs/169/by_ayah/${surahNum}:${verseNum}`);
     if(!r.ok)throw new Error();
     const d=await r.json();
-    const enText=(d.tafsir?.text||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
-    if(!enText||enText.length<10){tafsirCache[key]='Tafsir non disponible pour ce verset.';return tafsirCache[key];}
-
-    // 2. Traduit en français via Groq
-    const tr=await fetch('https://api.groq.com/openai/v1/chat/completions',{
-      method:'POST',
-      headers:{Authorization:'Bearer '+GROQ,'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'llama-3.3-70b-versatile',
-        messages:[
-          {role:'system',content:'Tu es un traducteur expert en arabe, islam et tafsir. Traduis fidèlement ce tafsir du Coran de l\'anglais vers le français. Garde le sens islamique précis. Réponds uniquement avec la traduction, sans rien d\'autre.'},
-          {role:'user',content:enText.slice(0,1200)}
-        ],
-        temperature:0.1,
-        max_tokens:800
-      })
-    });
-    const td=await tr.json();
-    const frText=(td.choices?.[0]?.message?.content||'').trim();
-    tafsirCache[key]=frText||'Tafsir non disponible.';
+    const text=(d.tafsir?.text||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
+    tafsirCache[key]=text||'Tafsir non disponible pour ce verset.';
     return tafsirCache[key];
   }catch(e){
     tafsirCache[key]='Tafsir non disponible pour ce verset.';
@@ -489,11 +474,10 @@ function makeVerseEl(v,surahNum,suffix){
     </div>
     ${ar?`<div class="va">${ar}</div>`:''}
     <div class="vf">${tr}</div>
-    ${ar?`<div class="va" style="font-size:1.1rem;opacity:0.7;margin-top:6px;">${ar}</div>`:''}
     <div class="tafsir-panel" id="${vid}">
-      <div class="tafsir-name">📚 Tafsir Ibn Kathir — en français</div>
-      <div class="tafsir-loading">Traduction du tafsir en cours…</div>
-      <div class="tafsir-fr" style="display:none;font-size:0.88rem;color:var(--text);line-height:1.8;"></div>
+      <div class="tafsir-name">Tafsir Ibn Kathir — تفسير ابن كثير</div>
+      <div class="tafsir-loading">Chargement du tafsir…</div>
+      <div class="tafsir-ar" style="display:none"></div>
     </div>
   `;
   return d;
@@ -508,10 +492,10 @@ async function toggleTafsir(vid,surahNum,verseNum){
   }
   panel.classList.add('open');btn.classList.add('open');btn.textContent='✖ Fermer';
   const loadEl=panel.querySelector('.tafsir-loading');
-  const textEl=panel.querySelector('.tafsir-fr');
+  const textEl=panel.querySelector('.tafsir-ar');
   if(textEl.style.display==='none'){
     loadEl.style.display='block';
-    const tafsirText=await fetchTafsirFr(surahNum,verseNum);
+    const tafsirText=await fetchTafsir(surahNum,verseNum);
     loadEl.style.display='none';
     textEl.style.display='block';
     textEl.textContent=tafsirText;
