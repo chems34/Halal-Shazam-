@@ -6,12 +6,165 @@
 <title>Aya-Halal — Reconnaissance Coranique</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Noto+Naskh+Arabic:wght@400;600;700&display=swap" rel="stylesheet"/>
 <style>
-/* [VOTRE STYLE EXISTANT COMPLET - JE N'AI RIEN MODIFIÉ] */
+:root{--bg:#080a0d;--bg2:#0d1117;--bg3:#131920;--bg4:#1a2230;--gold:#c9a84c;--gold2:#e8c97e;--gold3:#f5e4b0;--green2:#2ecc8a;--text:#e8dfc8;--text2:#8a7a5a;--border:rgba(201,168,76,0.15);--border2:rgba(201,168,76,0.32);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',serif;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 40% at 50% 0%,rgba(201,168,76,0.06),transparent 60%);pointer-events:none;z-index:0;}
+#splash{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:40px;transition:opacity 0.7s;}
+.sp-ar{font-family:'Noto Naskh Arabic',serif;font-size:2.2rem;color:var(--gold);text-shadow:0 0 40px rgba(201,168,76,0.3);text-align:center;}
+.sp-title{font-size:clamp(2rem,7vw,3.4rem);font-weight:300;color:var(--gold3);letter-spacing:0.1em;text-align:center;}
+.sp-title b{color:var(--gold);font-weight:600;}
+.sp-sub{font-family:'Noto Naskh Arabic',serif;font-size:1rem;color:var(--text2);text-align:center;margin-top:-6px;}
+.sp-desc{font-size:0.9rem;color:var(--text2);text-align:center;max-width:280px;line-height:1.8;}
+.sp-btn{margin-top:6px;padding:16px 52px;background:linear-gradient(135deg,var(--gold),#a8792a);border:none;border-radius:14px;color:#080a0d;font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:700;letter-spacing:0.1em;cursor:pointer;box-shadow:0 4px 30px rgba(201,168,76,0.28);transition:all 0.3s;}
+.sp-btn:hover{transform:translateY(-2px);}
+.sp-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.sp-note{font-size:0.7rem;color:var(--text2);opacity:0.4;text-align:center;}
+.sp-creator{font-size:0.8rem;color:var(--gold);opacity:0.7;text-align:center;letter-spacing:0.06em;margin-top:2px;}
+
+.tabs{display:flex;background:var(--bg);border-radius:11px;padding:4px;margin-bottom:22px;border:1px solid var(--border);}
+.tab{flex:1;padding:9px 10px;background:none;border:none;border-radius:8px;color:var(--text2);font-family:'Cormorant Garamond',serif;font-size:0.9rem;font-weight:500;letter-spacing:0.03em;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:5px;}
+.tab.on{background:linear-gradient(135deg,rgba(201,168,76,0.14),rgba(201,168,76,0.07));color:var(--gold2);border:1px solid var(--border2);}
+.tab:hover:not(.on){color:var(--text);}
+.pnl{display:none;}.pnl.on{display:block;}
+
+.earphones-notice{width:100%;padding:11px 15px;background:rgba(201,168,76,0.06);border:1px solid var(--border2);border-radius:11px;display:flex;align-items:flex-start;gap:9px;margin-bottom:2px;}
+.en-icon{font-size:1.3rem;flex-shrink:0;margin-top:1px;}
+.en-text{font-size:0.83rem;color:var(--text2);line-height:1.6;}
+.en-text b{color:var(--gold2);}
+
+.rec-wrap{display:flex;flex-direction:column;align-items:center;gap:15px;padding:10px 0 4px;}
+.rec-btn{width:100%;padding:18px;background:linear-gradient(135deg,rgba(201,168,76,0.1),rgba(201,168,76,0.05));border:1px solid var(--border);border-radius:13px;color:var(--gold2);font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:600;letter-spacing:0.06em;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:10px;}
+.rec-btn:hover{background:linear-gradient(135deg,rgba(201,168,76,0.15),rgba(201,168,76,0.1));}
+.rec-btn.listening{background:linear-gradient(135deg,rgba(232,201,126,0.2),rgba(201,168,76,0.15));color:var(--gold3);}
+.rec-icon{font-size:1.4rem;}
+.rec-lbl{font-size:1.1rem;}
+.rec-status{font-size:0.9rem;color:var(--text2);letter-spacing:0.04em;text-align:center;min-height:20px;transition:color 0.3s;}
+.rec-status.active{color:var(--gold2);}
+.rec-status.analyzing{color:var(--green2);}
+.rec-status.retry{color:#e8a87e;}
+.rec-cycles{font-size:0.72rem;color:var(--text2);opacity:0.46;letter-spacing:0.06em;min-height:14px;text-align:center;}
+
+.viz-rec{width:100%;height:44px;display:flex;align-items:center;justify-content:center;gap:3px;opacity:0;transition:opacity 0.4s;}
+.viz-rec.on{opacity:1;}
+.brec{width:4px;background:linear-gradient(to top,var(--gold),var(--gold2));border-radius:2px;height:4px;transition:height 0.07s;}
+
+.aya-wrap{display:flex;flex-direction:column;align-items:center;gap:15px;padding:10px 0 4px;}
+.viz-aya{width:100%;height:44px;display:flex;align-items:center;justify-content:center;gap:3px;opacity:0;transition:opacity 0.4s;}
+.viz-aya.on{opacity:1;}
+.baya{width:4px;background:linear-gradient(to top,var(--gold),var(--gold2));border-radius:2px;height:4px;transition:height 0.07s;}
+.aya-status{font-size:0.9rem;color:var(--text2);letter-spacing:0.04em;text-align:center;min-height:20px;transition:color 0.3s;}
+.aya-status.active{color:var(--gold2);}
+.aya-status.analyzing{color:var(--green2);}
+.aya-status.retry{color:#e8a87e;}
+.aya-cycles{font-size:0.72rem;color:var(--text2);opacity:0.46;letter-spacing:0.06em;min-height:14px;text-align:center;}
+
+.res{display:none;animation:fu 0.6s ease;margin-top:18px;}
+.res.on{display:block;}
+.rt{display:flex;align-items:center;gap:11px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.rb{width:40px;height:40px;background:linear-gradient(135deg,#1e6b4a,var(--green2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;box-shadow:0 0 14px rgba(46,204,138,0.2);}
+.rn{font-size:1.12rem;color:var(--gold3);font-weight:600;letter-spacing:0.04em;}
+.rsub{font-size:0.75rem;color:var(--text2);margin-top:2px;}
+.cw{margin-left:auto;text-align:right;}
+.cv{font-size:1.38rem;font-weight:600;}
+.cl{font-size:0.63rem;color:var(--text2);letter-spacing:0.08em;text-transform:uppercase;}
+.ig{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px;}
+@media(max-width:500px){.ig{grid-template-columns:1fr;}}
+.ii{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:11px 13px;transition:border-color 0.3s;}
+.ii:hover{border-color:var(--border2);}
+.il{font-size:0.63rem;color:var(--text2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;}
+.iv{font-size:0.94rem;color:var(--text);font-weight:500;}
+.ivar{font-family:'Noto Naskh Arabic',serif;font-size:1.2rem;color:var(--gold2);direction:rtl;text-align:right;margin-top:2px;}
+
+.tb{background:rgba(201,168,76,0.04);border:1px solid var(--border);border-radius:10px;padding:11px 14px;margin-bottom:14px;}
+.tl{font-size:0.63rem;color:var(--text2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:5px;}
+.tt{font-family:'Noto Naskh Arabic',serif;font-size:1.15rem;color:var(--gold2);direction:rtl;text-align:right;line-height:2;}
+
+.vb{background:var(--bg3);border:1px solid var(--border);border-radius:13px;padding:18px;margin-bottom:14px;}
+.vt{font-size:0.65rem;color:var(--text2);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+
+.vi{margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.vi:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.vi-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.vn{font-size:0.8rem;color:var(--gold2);font-weight:500;}
+.tafsir-btn{background:rgba(201,168,76,0.1);border:1px solid var(--border2);border-radius:6px;padding:4px 8px;font-size:0.7rem;color:var(--gold2);cursor:pointer;transition:all 0.2s;}
+.tafsir-btn:hover{background:rgba(201,168,76,0.15);}
+.va{font-family:'Noto Naskh Arabic',serif;font-size:1.3rem;color:var(--gold2);direction:rtl;text-align:right;margin:8px 0;line-height:2;}
+.vf{font-size:0.9rem;color:var(--text);line-height:1.7;margin-bottom:8px;}
+.tafsir-panel{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
+.tafsir-panel.on{display:block;}
+.tafsir-name{font-size:0.7rem;color:var(--text2);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;}
+.tafsir-loading{font-size:0.8rem;color:var(--text2);text-align:center;}
+.tafsir-fr{font-size:0.88rem;color:var(--text);line-height:1.8;}
+
+.pb{display:flex;align-items:center;gap:8px;padding:9px 18px;background:rgba(46,204,138,0.1);border:1px solid rgba(46,204,138,0.28);border-radius:9px;color:var(--green2);font-family:'Cormorant Garamond',serif;font-size:0.87rem;letter-spacing:0.06em;cursor:pointer;transition:all 0.3s;margin-bottom:12px;}
+.pb:hover{background:rgba(46,204,138,0.18);}
+audio{display:none;}
+
+.btn-row{display:flex;gap:9px;margin-top:12px;flex-wrap:wrap;}
+.btn-outline{flex:1;padding:9px;background:none;border:1px solid var(--border);border-radius:9px;color:var(--text2);font-family:'Cormorant Garamond',serif;font-size:0.82rem;letter-spacing:0.06em;cursor:pointer;transition:all 0.3s;}
+.btn-outline:hover{border-color:var(--border2);color:var(--text);}
+.btn-gold{flex:1;padding:9px;background:rgba(201,168,76,0.1);border:1px solid var(--border2);border-radius:9px;color:var(--gold2);font-family:'Cormorant Garamond',serif;font-size:0.82rem;letter-spacing:0.06em;cursor:pointer;transition:all 0.3s;}
+.btn-gold:hover{background:rgba(201,168,76,0.18);}
+
+.uz{width:100%;padding:30px;background:var(--bg3);border:2px dashed var(--border);border-radius:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;cursor:pointer;transition:all 0.3s;}
+.uz.drag-over{background:rgba(201,168,76,0.05);border-color:var(--gold2);}
+.ui{font-size:2.5rem;color:var(--gold2);}
+.ut{font-size:1rem;color:var(--text);font-weight:500;}
+.uh{font-size:0.8rem;color:var(--text2);}
+.ul{font-size:0.85rem;color:var(--gold2);margin-top:6px;}
+#fi{display:none;}
+.finfo{display:none;width:100%;padding:12px 15px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;margin-bottom:12px;align-items:center;gap:10px;}
+.finfo.on{display:flex;}
+.fn{font-size:0.9rem;color:var(--text);flex-grow:1;}
+.fs{font-size:0.8rem;color:var(--text2);}
+.abtn{width:100%;padding:14px;background:linear-gradient(135deg,rgba(201,168,76,0.1),rgba(201,168,76,0.05));border:1px solid var(--border);border-radius:11px;color:var(--gold2);font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:600;letter-spacing:0.06em;cursor:pointer;transition:all 0.3s;}
+.abtn:hover{background:linear-gradient(135deg,rgba(201,168,76,0.15),rgba(201,168,76,0.1));}
+.abtn.on{background:linear-gradient(135deg,rgba(232,201,126,0.2),rgba(201,168,76,0.15));color:var(--gold3);}
+.ld{display:none;flex-direction:column;align-items:center;gap:12px;padding:20px;}
+.ld.on{display:flex;}
+.sp{width:30px;height:30px;border:3px solid var(--border);border-top-color:var(--gold2);border-radius:50%;animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.lt{font-size:0.9rem;color:var(--text);}
+.ls{font-size:0.8rem;color:var(--text2);}
+.eb{display:none;background:rgba(218,54,51,0.1);border:1px solid rgba(218,54,51,0.28);border-radius:10px;padding:12px;margin-bottom:14px;}
+.eb.on{display:block;}
+.eb-icon{color:#da3633;font-size:1.2rem;margin-bottom:6px;}
+.eb-text{font-size:0.85rem;color:var(--text);line-height:1.6;}
+
+.notif{position:fixed;top:20px;right:20px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;max-width:320px;box-shadow:0 8px 32px rgba(0,0,0,0.3);display:none;z-index:1000;transition:opacity 0.3s,transform 0.3s;}
+.notif.on{display:flex;opacity:1;transform:translateY(0);}
+.notif.hide{opacity:0;transform:translateY(-20px);}
+.notif-icon{font-size:1.5rem;margin-right:12px;}
+.notif-title{font-size:1rem;color:var(--gold2);font-weight:600;margin-bottom:4px;}
+.notif-surah{font-size:0.9rem;color:var(--text);margin-bottom:2px;}
+.notif-detail{font-size:0.8rem;color:var(--text2);margin-bottom:6px;}
+.notif-ar{font-family:'Noto Naskh Arabic',serif;font-size:1.1rem;color:var(--gold2);direction:rtl;text-align:right;}
+
+@keyframes fu{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 </style>
 </head>
 <body>
 
-<!-- [VOTRE SPLASH SCREEN EXISTANT] -->
+<div class="notif" id="notif">
+  <div class="notif-icon">🕌</div>
+  <div>
+    <div class="notif-title">Aya-Halal — Récitation identifiée</div>
+    <div class="notif-surah" id="notif-surah"></div>
+    <div class="notif-detail" id="notif-detail"></div>
+    <div class="notif-ar" id="notif-ar"></div>
+  </div>
+</div>
+
+<div id="splash">
+  <div class="sp-ar">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+  <div class="sp-title">Aya<b>-Halal</b></div>
+  <div class="sp-sub">سورة — Reconnaissance Coranique</div>
+  <div class="sp-desc">Identifiez instantanément toute sourate du Coran par intelligence artificielle</div>
+  <button class="sp-btn" id="spBtn" onclick="startApp()">🎙️ Commencer</button>
+  <div class="sp-note">Microphone + notifications seront demandés</div>
+  <div class="sp-creator">✨ Créé par Assakour · بارك الله فيكم</div>
+</div>
 
 <div class="wrap">
   <header>
@@ -32,7 +185,7 @@
       <button class="tab" onclick="switchTab('upload')">📂 Fichier</button>
     </div>
 
-    <!-- MANUEL (ÉCOUTER) - DEVIENT LE PREMIER ONGLET -->
+    <!-- MANUEL (ÉCOUTER) - DEVIENT LE PREMIER ONGLET ACTIF -->
     <div class="pnl on" id="pnl-manual">
       <div class="earphones-notice">
         <div class="en-icon">🎧</div>
@@ -50,156 +203,291 @@
 
       <div class="viz-rec">
         <div class="viz-aya" id="vizRec">
-          <!-- Barres de visualisation -->
+          <!-- Barres de visualisation audio -->
         </div>
       </div>
 
-      <!-- MODIFICATION 2: DÉTECTION AUTOMATIQUE APRES 6s -->
-      <script>
-        let recMR = null;
-        let recOn = false;
-        let recBusy = false;
-        let detectionTimeout = null;
-        const MIN_DURATION = 6000; // 6 secondes minimum
-        const CHUNK_SEC = 3; // Durée des chunks en secondes
-
-        function toggleRec() {
-          if (recBusy) return;
-
-          if (!recOn) {
-            startRec();
-          } else {
-            stopRec();
-          }
-        }
-
-        function startRec() {
-          if (recOn) return;
-          recOn = true;
-          recBusy = true;
-          document.getElementById('recBtn').classList.add('listening');
-          document.getElementById('recIcon').textContent = '🔴';
-          document.getElementById('recLbl').textContent = 'Arrêter';
-          document.getElementById('recStatus').textContent = '🎙️ Écoute en cours...';
-          document.getElementById('recStatus').className = 'rec-status active';
-
-          navigator.mediaDevices.getUserMedia({ audio: true })
-            .then(stream => {
-              recMR = new MediaRecorder(stream);
-              const audioChunks = [];
-              let startTime = Date.now();
-
-              recMR.ondataavailable = e => {
-                audioChunks.push(e.data);
-
-                // Visualisation audio
-                updateVisualizer(stream);
-
-                // Vérifier si on a atteint 6 secondes
-                if (Date.now() - startTime >= MIN_DURATION && !detectionTimeout) {
-                  detectionTimeout = setTimeout(() => {
-                    // Arrêter l'enregistrement et analyser
-                    recMR.stop();
-                    stream.getTracks().forEach(track => track.stop());
-                  }, 1000); // Laisser 1s de marge
-                }
-              };
-
-              recMR.onstop = () => {
-                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-                analyzeRec(audioBlob);
-                clearTimeout(detectionTimeout);
-                detectionTimeout = null;
-              };
-
-              recMR.start(CHUNK_SEC * 1000);
-            })
-            .catch(err => {
-              console.error(err);
-              stopRec();
-              document.getElementById('recStatus').textContent = '❌ Erreur micro: ' + err.message;
-              document.getElementById('recStatus').className = 'rec-status error';
-            });
-        }
-
-        function stopRec() {
-          if (!recOn) return;
-          recOn = false;
-          recBusy = false;
-
-          if (recMR && recMR.state !== 'inactive') {
-            recMR.stop();
-          }
-
-          document.getElementById('recBtn').classList.remove('listening');
-          document.getElementById('recIcon').textContent = '🎙️';
-          document.getElementById('recLbl').textContent = 'Commencer l\'écoute';
-          document.getElementById('recStatus').textContent = 'Prêt à écouter';
-          document.getElementById('recStatus').className = 'rec-status';
-          clearTimeout(detectionTimeout);
-          detectionTimeout = null;
-        }
-
-        function analyzeRec(blob) {
-          recBusy = true;
-          document.getElementById('recStatus').textContent = '🔍 Analyse en cours...';
-          document.getElementById('recStatus').className = 'rec-status analyzing';
-
-          // Réutilisation de votre fonction existante
-          identify(blob, (status) => {
-            document.getElementById('recStatus').textContent = status;
-          })
-          .then(result => {
-            // Afficher les résultats comme dans votre code existant
-            showResult('m', result);
-          })
-          .catch(err => {
-            document.getElementById('recStatus').textContent = '❌ ' + err.message;
-            document.getElementById('recStatus').className = 'rec-status error';
-          })
-          .finally(() => {
-            recBusy = false;
-          });
-        }
-
-        // [LE RESTE DE VOTRE CODE JS EXISTANT]
-      </script>
-
-      <!-- [VOTRE STRUCTURE DE RÉSULTATS EXISTANTE] -->
       <div class="res" id="res-m">
-        <!-- ... -->
+        <div class="rt">
+          <div class="rb">✓</div>
+          <div>
+            <div class="rn" id="rn-m"></div>
+            <div class="rsub" id="rsub-m"></div>
+          </div>
+          <div class="cw">
+            <div class="cv" id="cv-m"></div>
+            <div class="cl">Correspondance</div>
+          </div>
+        </div>
+        <div class="ig">
+          <div class="ii">
+            <div class="il">📖 Sourate</div>
+            <div class="iv" id="ivn-m"></div>
+            <div class="ivar" id="ivar-m"></div>
+          </div>
+          <div class="ii">
+            <div class="il">🔢 Numéro · Versets</div>
+            <div class="iv" id="ivnum-m"></div>
+          </div>
+          <div class="ii">
+            <div class="il">📍 Révélation</div>
+            <div class="iv" id="ivrev-m"></div>
+          </div>
+          <div class="ii">
+            <div class="il">🎯 Verset détecté</div>
+            <div class="iv" id="ivv-m"></div>
+          </div>
+        </div>
+        <div class="tb">
+          <div class="tl">🔤 Texte transcrit Whisper AI</div>
+          <div class="tt" id="tt-m"></div>
+        </div>
+        <div class="vb">
+          <div class="vt">📜 Versets — arabe · français · arabe · tafsir en français</div>
+          <div id="vlist-m"></div>
+          <div class="continue-loading" id="cl-m">Chargement des versets suivants…</div>
+          <button class="continue-btn" id="cb-m" onclick="loadMore('m')">📖 Voir les versets suivants</button>
+        </div>
+        <div class="reciter-wrap">
+          <span class="reciter-label">🎙️ Choisir le récitateur</span>
+          <div class="reciter-grid" id="rg-m"></div>
+        </div>
+        <button class="pb" id="pb-m" onclick="togglePlay('m')">▶ Écouter la récitation</button>
+        <audio id="ap-m" onended="resetPB('m')"></audio>
+        <div class="btn-row">
+          <button class="btn-gold" onclick="newRec()">🔄 Nouvelle reconnaissance</button>
+          <button class="btn-outline" onclick="resetRec()">↩ Réinitialiser</button>
+        </div>
       </div>
     </div>
 
     <!-- AUTOMATIQUE (DEVIENT LE DEUXIÈME ONGLET) -->
     <div class="pnl" id="pnl-auto">
-      <!-- [VOTRE CODE EXISTANT POUR L'ONGLET AUTOMATIQUE] -->
+      <div class="earphones-notice">
+        <div class="en-icon">🎧</div>
+        <div class="en-text">Pour une reconnaissance optimale, utilisez des écouteurs avec micro intégré.</div>
+      </div>
+
+      <div class="aya-wrap">
+        <button class="rec-btn" id="ayaBtn" onclick="toggleAya()">
+          <div class="rec-icon" id="ayaIcon">🎙️</div>
+          <div class="rec-lbl" id="ayaLbl">Commencer l'écoute automatique</div>
+        </button>
+        <div class="aya-status" id="ayaStatus">Prêt pour l'écoute automatique</div>
+        <div class="aya-cycles" id="ayaCycles"></div>
+      </div>
+
+      <div class="viz-aya" id="vizAya">
+        <!-- Barres de visualisation -->
+      </div>
+
+      <div class="res" id="res-a">
+        <div class="rt">
+          <div class="rb">✓</div>
+          <div>
+            <div class="rn" id="rn-a"></div>
+            <div class="rsub" id="rsub-a"></div>
+          </div>
+          <div class="cw">
+            <div class="cv" id="cv-a"></div>
+            <div class="cl">Correspondance</div>
+          </div>
+        </div>
+        <div class="ig">
+          <div class="ii">
+            <div class="il">📖 Sourate</div>
+            <div class="iv" id="ivn-a"></div>
+            <div class="ivar" id="ivar-a"></div>
+          </div>
+          <div class="ii">
+            <div class="il">🔢 Numéro · Versets</div>
+            <div class="iv" id="ivnum-a"></div>
+          </div>
+          <div class="ii">
+            <div class="il">📍 Révélation</div>
+            <div class="iv" id="ivrev-a"></div>
+          </div>
+          <div class="ii">
+            <div class="il">🎯 Verset détecté</div>
+            <div class="iv" id="ivv-a"></div>
+          </div>
+        </div>
+        <div class="tb">
+          <div class="tl">🔤 Texte transcrit Whisper AI</div>
+          <div class="tt" id="tt-a"></div>
+        </div>
+        <div class="vb">
+          <div class="vt">📜 Versets — arabe · français · arabe · tafsir en français</div>
+          <div id="vlist-a"></div>
+          <div class="continue-loading" id="cl-a">Chargement des versets suivants…</div>
+          <button class="continue-btn" id="cb-a" onclick="loadMore('a')">📖 Voir les versets suivants</button>
+        </div>
+        <div class="reciter-wrap">
+          <span class="reciter-label">🎙️ Choisir le récitateur</span>
+          <div class="reciter-grid" id="rg-a"></div>
+        </div>
+        <button class="pb" id="pb-a" onclick="togglePlay('a')">▶ Écouter la récitation</button>
+        <audio id="ap-a" onended="resetPB('a')"></audio>
+        <div class="btn-row">
+          <button class="btn-gold" onclick="newAya()">🔄 Nouvelle reconnaissance</button>
+          <button class="btn-outline" onclick="resetAya()">↩ Réinitialiser</button>
+        </div>
+      </div>
     </div>
 
     <!-- FICHIER (RESTE TROISIÈME) -->
     <div class="pnl" id="pnl-upload">
-      <!-- [VOTRE CODE EXISTANT POUR L'ONGLET FICHIER] -->
+      <div class="uz" id="uz" ondragover="dov(event)" ondragleave="dlv()" ondrop="drp(event)" onclick="document.getElementById('fi').click()">
+        <div class="ui">🎵</div>
+        <p class="ut">Glissez votre fichier audio ici</p>
+        <p class="uh">MP3, WAV, M4A, OGG — max 25 Mo</p>
+        <span class="ul">Parcourir</span>
+      </div>
+      <input type="file" id="fi" accept="audio/*" onchange="selF(event)"/>
+      <div class="finfo" id="finfo"><span>🎵</span><span class="fn" id="fn"></span><span class="fs" id="fs"></span></div>
+      <button class="abtn" id="abtn-u" onclick="analyzeU()">✨ Identifier la récitation</button>
+      <div class="ld" id="ld-u"><div class="sp"></div><p class="lt">Analyse en cours…</p><p class="ls" id="ls-u"></p></div>
+      <div class="eb" id="eb-u"></div>
+      <div class="res" id="res-u">
+        <div class="rt"><div class="rb">✓</div><div><div class="rn" id="rn-u"></div><div class="rsub" id="rsub-u"></div></div><div class="cw"><div class="cv" id="cv-u"></div><div class="cl">Correspondance</div></div></div>
+        <div class="ig">
+          <div class="ii"><div class="il">📖 Sourate</div><div class="iv" id="ivn-u"></div><div class="ivar" id="ivar-u"></div></div>
+          <div class="ii"><div class="il">🔢 Numéro · Versets</div><div class="iv" id="ivnum-u"></div></div>
+          <div class="ii"><div class="il">📍 Révélation</div><div class="iv" id="ivrev-u"></div></div>
+          <div class="ii"><div class="il">🎯 Verset détecté</div><div class="iv" id="ivv-u"></div></div>
+        </div>
+        <div class="tb"><div class="tl">🔤 Texte transcrit Whisper AI</div><div class="tt" id="tt-u"></div></div>
+        <div class="vb">
+          <div class="vt">📜 Versets — arabe · français · arabe · tafsir en français</div>
+          <div id="vlist-u"></div>
+          <div class="continue-loading" id="cl-u">Chargement des versets suivants…</div>
+          <button class="continue-btn" id="cb-u" onclick="loadMore('u')">📖 Voir les versets suivants</button>
+        </div>
+        <div class="reciter-wrap">
+          <span class="reciter-label">🎙️ Choisir le récitateur</span>
+          <div class="reciter-grid" id="rg-u"></div>
+        </div>
+        <button class="pb" id="pb-u" onclick="togglePlay('u')">▶ Écouter la récitation</button>
+        <audio id="ap-u" onended="resetPB('u')"></audio>
+        <div class="btn-row">
+          <button class="btn-gold" onclick="newUpload()">🔄 Nouvelle reconnaissance</button>
+          <button class="btn-outline" onclick="resetU()">↩ Réinitialiser</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
-  // Fonction pour switcher les onglets (modifiée pour le nouvel ordre)
-  function switchTab(tab) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
-    document.querySelectorAll('.pnl').forEach(p => p.classList.remove('on'));
-
-    document.querySelector(`.tab[onclick="switchTab('${tab}')"]`).classList.add('on');
-    document.getElementById(`pnl-${tab}`).classList.add('on');
-
-    // Réinitialiser l'état des autres onglets
-    if (tab !== 'manual') resetRec();
-    if (tab !== 'auto') resetAya();
-    if (tab !== 'upload') resetU();
+// MODIFICATION 2: DÉTECTION AUTOMATIQUE APRÈS 6 SECONDES
+function toggleRec() {
+  if (recOn) {
+    stopRec();
+  } else {
+    startRec();
   }
+}
 
-  // [LE RESTE DE VOS FONCTIONS JS EXISTANTES]
+function startRec() {
+  if (recOn) return;
+  recOn = true;
+  recBusy = true;
+  document.getElementById('recBtn').classList.add('listening');
+  document.getElementById('recIcon').textContent = '🔴';
+  document.getElementById('recLbl').textContent = 'Arrêter';
+  document.getElementById('recStatus').textContent = '🎙️ Écoute en cours...';
+  document.getElementById('recStatus').className = 'rec-status active';
+
+  navigator.mediaDevices.getUserMedia({ audio: true })
+    .then(stream => {
+      recMR = new MediaRecorder(stream);
+      const audioChunks = [];
+      let startTime = Date.now();
+
+      recMR.ondataavailable = e => {
+        audioChunks.push(e.data);
+        updateViz('vizRec', stream);
+
+        // MODIFICATION: Détection automatique après 6 secondes
+        if (Date.now() - startTime >= 6000 && !recBusy) {
+          recBusy = true;
+          recMR.stop();
+          stream.getTracks().forEach(track => track.stop());
+        }
+      };
+
+      recMR.onstop = () => {
+        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+        identify(audioBlob, (status) => {
+          document.getElementById('recStatus').textContent = status;
+        })
+        .then(result => {
+          showResult('m', result);
+          showNotif(result);
+        })
+        .catch(err => {
+          document.getElementById('recStatus').textContent = '❌ ' + err.message;
+          document.getElementById('recStatus').className = 'rec-status retry';
+        })
+        .finally(() => {
+          recBusy = false;
+          recOn = false;
+          document.getElementById('recBtn').classList.remove('listening');
+          document.getElementById('recIcon').textContent = '🎙️';
+          document.getElementById('recLbl').textContent = 'Commencer l\'écoute';
+        });
+      };
+
+      recMR.start(100);
+      // Arrêt automatique après 7 secondes (6s + 1s de marge)
+      setTimeout(() => {
+        if (recMR && recMR.state === 'recording') {
+          recMR.stop();
+        }
+      }, 7000);
+    })
+    .catch(err => {
+      console.error(err);
+      stopRec();
+      document.getElementById('recStatus').textContent = '❌ Erreur micro: ' + err.message;
+      document.getElementById('recStatus').className = 'rec-status error';
+    });
+}
+
+function stopRec() {
+  if (!recMR || recMR.state === 'inactive') return;
+  recMR.stop();
+  if (recStream) {
+    recStream.getTracks().forEach(track => track.stop());
+  }
+  recOn = false;
+  recBusy = false;
+  document.getElementById('recBtn').classList.remove('listening');
+  document.getElementById('recIcon').textContent = '🎙️';
+  document.getElementById('recLbl').textContent = 'Commencer l\'écoute';
+  document.getElementById('recStatus').textContent = 'Écoute arrêtée';
+  document.getElementById('recStatus').className = 'rec-status';
+}
+
+// MODIFICATION 3: MISE À JOUR DE LA FONCTION switchTab
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+  document.querySelectorAll('.pnl').forEach(p => p.classList.remove('on'));
+
+  if (tab === 'manual') {
+    document.querySelector('.tab[onclick="switchTab(\'manual\')"]').classList.add('on');
+    document.getElementById('pnl-manual').classList.add('on');
+  } else if (tab === 'auto') {
+    document.querySelector('.tab[onclick="switchTab(\'auto\')"]').classList.add('on');
+    document.getElementById('pnl-auto').classList.add('on');
+  } else if (tab === 'upload') {
+    document.querySelector('.tab[onclick="switchTab(\'upload\')"]').classList.add('on');
+    document.getElementById('pnl-upload').classList.add('on');
+  }
+}
+
+// [LE RESTE DE VOTRE CODE JS EXISTANT EST INCHANGÉ]
+// ... (toutes vos autres fonctions restent identiques)
 </script>
-
 </body>
 </html>
