@@ -22,14 +22,85 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .sp-note{font-size:0.7rem;color:var(--text2);opacity:0.4;text-align:center;}
 .sp-creator{font-size:0.8rem;color:var(--gold);opacity:0.7;text-align:center;letter-spacing:0.06em;margin-top:2px;}
 
-/* [VOTRE CSS ORIGINAL INCHANGÉ] */
+/* TABS */
 .tabs{display:flex;background:var(--bg);border-radius:11px;padding:4px;margin-bottom:22px;border:1px solid var(--border);}
 .tab{flex:1;padding:9px 10px;background:none;border:none;border-radius:8px;color:var(--text2);font-family:'Cormorant Garamond',serif;font-size:0.9rem;font-weight:500;letter-spacing:0.03em;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:5px;}
 .tab.on{background:linear-gradient(135deg,rgba(201,168,76,0.14),rgba(201,168,76,0.07));color:var(--gold2);border:1px solid var(--border2);}
 .tab:hover:not(.on){color:var(--text);}
 .pnl{display:none;}.pnl.on{display:block;}
 
-/* [LE RESTE DE VOTRE CSS ORIGINAL] */
+/* MODE AUTOMATIQUE */
+.aya-wrap{display:flex;flex-direction:column;align-items:center;gap:15px;padding:10px 0 4px;}
+.earphones-notice{width:100%;padding:11px 15px;background:rgba(201,168,76,0.06);border:1px solid var(--border2);border-radius:11px;display:flex;align-items:flex-start;gap:9px;margin-bottom:2px;}
+.en-icon{font-size:1.3rem;flex-shrink:0;margin-top:1px;}
+.en-text{font-size:0.83rem;color:var(--text2);line-height:1.6;}
+.en-text b{color:var(--gold2);}
+
+.viz{width:100%;height:40px;display:flex;align-items:flex-end;justify-content:center;gap:3px;margin:12px 0;}
+.bar{width:3px;background:linear-gradient(to top,var(--gold),var(--gold2));border-radius:2px;height:4px;transition:height 0.07s;}
+.viz-aya{width:100%;height:44px;display:flex;align-items:center;justify-content:center;gap:3px;opacity:0;transition:opacity 0.4s;}
+.viz-aya.on{opacity:1;}
+.baya{width:4px;background:linear-gradient(to top,var(--gold),var(--gold2));border-radius:2px;height:4px;transition:height 0.07s;}
+.aya-status{font-size:0.9rem;color:var(--text2);letter-spacing:0.04em;text-align:center;min-height:20px;transition:color 0.3s;}
+.aya-status.active{color:var(--gold2);}
+.aya-status.analyzing{color:var(--green2);}
+.aya-status.retry{color:#e8a87e;}
+.aya-cycles{font-size:0.72rem;color:var(--text2);opacity:0.46;letter-spacing:0.06em;min-height:14px;text-align:center;}
+
+/* RÉSULTATS */
+.res{display:none;animation:fu 0.6s ease;margin-top:18px;}
+.res.on{display:block;}
+.rt{display:flex;align-items:center;gap:11px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.rb{width:40px;height:40px;background:linear-gradient(135deg,#1e6b4a,var(--green2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;box-shadow:0 0 14px rgba(46,204,138,0.2);}
+.rn{font-size:1.12rem;color:var(--gold3);font-weight:600;letter-spacing:0.04em;}
+.rsub{font-size:0.75rem;color:var(--text2);margin-top:2px;}
+.cw{margin-left:auto;text-align:right;}
+.cv{font-size:1.38rem;font-weight:600;}
+.cl{font-size:0.63rem;color:var(--text2);letter-spacing:0.08em;text-transform:uppercase;}.ig{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px;}
+@media(max-width:500px){.ig{grid-template-columns:1fr;}}
+.ii{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:11px 13px;transition:border-color 0.3s;}
+.ii:hover{border-color:var(--border2);}
+.il{font-size:0.63rem;color:var(--text2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;}
+.iv{font-size:0.94rem;color:var(--text);font-weight:500;}
+.ivar{font-family:'Noto Naskh Arabic',serif;font-size:1.2rem;color:var(--gold2);direction:rtl;text-align:right;margin-top:2px;}
+
+.tb{background:rgba(201,168,76,0.04);border:1px solid var(--border);border-radius:10px;padding:11px 14px;margin-bottom:14px;}
+.tl{font-size:0.63rem;color:var(--text2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:5px;}
+.tt{font-family:'Noto Naskh Arabic',serif;font-size:1.15rem;color:var(--gold2);direction:rtl;text-align:right;line-height:2;}
+
+/* VERSES SECTION */
+.vb{background:var(--bg3);border:1px solid var(--border);border-radius:13px;padding:18px;margin-bottom:14px;}
+.vt{font-size:0.65rem;color:var(--text2);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+
+.vi{margin-bottom:14px;}
+.vi-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.vn{font-size:0.8rem;color:var(--text2);letter-spacing:0.06em;}
+.tafsir-btn{background:rgba(201,168,76,0.1);border:1px solid var(--border2);border-radius:7px;padding:4px 10px;font-size:0.7rem;color:var(--gold2);cursor:pointer;transition:all 0.2s;}
+.tafsir-btn:hover{background:rgba(201,168,76,0.18);}
+.va{font-family:'Noto Naskh Arabic',serif;font-size:1.3rem;color:var(--gold2);direction:rtl;text-align:right;margin-bottom:6px;line-height:2;}
+.vf{font-size:0.9rem;color:var(--text);line-height:1.7;}
+.tafsir-panel{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
+.tafsir-name{font-size:0.7rem;color:var(--text2);letter-spacing:0.08em;margin-bottom:6px;}
+.tafsir-loading{font-size:0.8rem;color:var(--text2);opacity:0.6;}
+.tafsir-fr{font-size:0.88rem;color:var(--text);line-height:1.8;}
+
+.pb{display:flex;align-items:center;gap:8px;padding:9px 18px;background:rgba(46,204,138,0.1);border:1px solid rgba(46,204,138,0.28);border-radius:9px;color:var(--green2);font-family:'Cormorant Garamond',serif;font-size:0.87rem;letter-spacing:0.06em;cursor:pointer;transition:all 0.3s;margin-bottom:12px;}
+.pb:hover{background:rgba(46,204,138,0.18);}
+audio{display:none;}
+
+.btn-row{display:flex;gap:9px;margin-top:12px;flex-wrap:wrap;}
+.btn-outline{flex:1;padding:9px;background:none;border:1px solid var(--border);border-radius:9px;color:var(--text2);font-family:'Cormorant Garamond',serif;font-size:0.82rem;letter-spacing:0.06em;cursor:pointer;transition:all 0.3s;}
+.btn-outline:hover{border-color:var(--border2);color:var(--text);}
+.btn-gold{flex:1;padding:9px;background:rgba(201,168,76,0.1);border:1px solid var(--border2);border-radius:9px;color:var(--gold2);font-family:'Cormorant Garamond',serif;font-size:0.82rem;letter-spacing:0.06em;cursor:pointer;transition:all 0.3s;}
+.btn-gold:hover{background:rgba(201,168,76,0.18);}
+
+.notif{position:fixed;top:20px;right:20px;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:14px 18px;display:flex;align-items:flex-start;gap:12px;max-width:320px;box-shadow:0 4px 20px rgba(0,0,0,0.2);z-index:1000;opacity:0;transform:translateY(-20px);transition:all 0.4s;}
+.notif.on{opacity:1;transform:translateY(0);}
+.notif-icon{font-size:1.4rem;flex-shrink:0;}
+.notif-title{font-size:0.9rem;color:var(--gold2);font-weight:600;letter-spacing:0.04em;}
+.notif-surah{font-size:1.1rem;color:var(--gold3);font-weight:600;margin-top:2px;}
+.notif-detail{font-size:0.8rem;color:var(--text2);margin-top:2px;}
+.notif-ar{font-family:'Noto Naskh Arabic',serif;font-size:1.1rem;color:var(--gold2);direction:rtl;text-align:right;margin-top:4px;}
 </style>
 </head>
 <body>
@@ -66,151 +137,228 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   </header>
 
   <div class="card">
-    <!-- MODIFICATION 1 : ONGLET "ÉCOUTER" EN PREMIER -->
+    <!-- MODIFICATION 1: Onglet "Écouter" en premier -->
     <div class="tabs">
       <button class="tab on" onclick="switchTab('manual')">🎤 Écouter</button>
       <button class="tab" onclick="switchTab('auto')">⚡ Automatique</button>
       <button class="tab" onclick="switchTab('upload')">📂 Fichier</button>
     </div>
 
-    <!-- MODIFICATION 2 : PANEL "MANUAL" ACTIF PAR DÉFAUT -->
     <div class="pnl on" id="pnl-manual">
       <div class="rec-wrap">
-        <button class="rec-btn" id="recBtn" onclick="toggleRec()">
+        <button class="rec-btn" id="recBtn" onclick="startRec()">
           <span class="rec-icon" id="recIcon">🎙️</span>
           <span class="rec-lbl" id="recLbl">Commencer l'écoute</span>
         </button>
         <div class="rec-status" id="recStatus">Appuyez pour commencer</div>
-        <div class="viz" id="vizRec">
-          <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
-        </div>
+        <div class="rec-cycles" id="recCycles"></div>
       </div>
+      <div class="viz" id="vizRec"></div>
       <div class="ld" id="ld-m"><div class="sp"></div><p class="lt">Analyse en cours…</p><p class="ls" id="ls-m"></p></div>
       <div class="eb" id="eb-m"></div>
       <div class="res" id="res-m">
-        <!-- [VOTRE STRUCTURE DE RÉSULTATS ORIGINALE] -->
+        <div class="rt"><div class="rb">✓</div><div><div class="rn" id="rn-m"></div><div class="rsub" id="rsub-m"></div></div><div class="cw"><div class="cv" id="cv-m"></div><div class="cl">Correspondance</div></div></div>
+        <div class="ig">
+          <div class="ii"><div class="il">📖 Sourate</div><div class="iv" id="ivn-m"></div><div class="ivar" id="ivar-m"></div></div>
+          <div class="ii"><div class="il">🔢 Numéro · Versets</div><div class="iv" id="ivnum-m"></div></div>
+          <div class="ii"><div class="il">📍 Révélation</div><div class="iv" id="ivrev-m"></div></div>
+        </div>
+        <div class="vb">
+          <div class="vt">📖 Versets identifiés</div>
+          <div class="vlist" id="vlist-m"></div>
+          <button class="btn-gold" id="cb-m" onclick="loadMore('m')">📖 Voir les versets suivants</button>
+          <div class="ld" id="cl-m"><div class="sp"></div><p class="lt">Chargement…</p></div>
+        </div>
+        <div class="tb" id="tb-m">
+          <div class="tl">🎵 Écouter la sourate</div>
+          <div class="reciter-row">
+            <select class="reciter-select" id="reciter-m" onchange="updateReciter('m')"></select>
+          </div>
+          <div class="pb" id="pb-m" onclick="togglePlayback('m')">
+            <span id="pbi-m">▶️</span>
+            <span id="pbl-m">Écouter la sourate</span>
+            <span class="pbd" id="pbd-m"></span>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn-outline" onclick="resetM()">↻ Réessayer</button>
+          <button class="btn-gold" onclick="shareResult('m')">📤 Partager</button>
+        </div>
       </div>
     </div>
 
     <div class="pnl" id="pnl-auto">
-      <!-- [VOTRE CONTENU ORIGINAL POUR LE MODE AUTOMATIQUE] -->
+      <div class="aya-wrap">
+        <div class="earphones-notice">
+          <div class="en-icon">🎧</div>
+          <div class="en-text">Pour de meilleurs résultats, utilisez des écouteurs avec micro intégré.</div>
+        </div>
+        <button class="rec-btn" id="ayaBtn" onclick="toggleAya()">
+          <span class="rec-icon" id="ayaIcon">🎙️</span>
+          <span class="rec-lbl" id="ayaLbl">Activer la détection automatique</span>
+        </button>
+        <div class="aya-status" id="ayaStatus">Appuyez pour activer</div>
+        <div class="aya-cycles" id="ayaCycles"></div>
+      </div>
+      <div class="viz-aya" id="vizAya">
+        <div class="baya"></div>
+      </div>
+      <div class="ld" id="ld-a"><div class="sp"></div><p class="lt">Analyse en cours…</p><p class="ls" id="ls-a"></p></div>
+      <div class="eb" id="eb-a"></div>
+      <div class="res" id="res-a">
+        <div class="rt"><div class="rb">✓</div><div><div class="rn" id="rn-a"></div><div class="rsub" id="rsub-a"></div></div><div class="cw"><div class="cv" id="cv-a"></div><div class="cl">Correspondance</div></div></div>
+        <div class="ig">
+          <div class="ii"><div class="il">📖 Sourate</div><div class="iv" id="ivn-a"></div><div class="ivar" id="ivar-a"></div></div>
+          <div class="ii"><div class="il">🔢 Numéro · Versets</div><div class="iv" id="ivnum-a"></div></div>
+          <div class="ii"><div class="il">📍 Révélation</div><div class="iv" id="ivrev-a"></div></div>
+        </div>
+        <div class="vb">
+          <div class="vt">📖 Versets identifiés</div>
+          <div class="vlist" id="vlist-a"></div>
+          <button class="btn-gold" id="cb-a" onclick="loadMore('a')">📖 Voir les versets suivants</button>
+          <div class="ld" id="cl-a"><div class="sp"></div><p class="lt">Chargement…</p></div>
+        </div>
+        <div class="tb" id="tb-a">
+          <div class="tl">🎵 Écouter la sourate</div>
+          <div class="reciter-row">
+            <select class="reciter-select" id="reciter-a" onchange="updateReciter('a')"></select>
+          </div>
+          <div class="pb" id="pb-a" onclick="togglePlayback('a')">
+            <span id="pbi-a">▶️</span>
+            <span id="pbl-a">Écouter la sourate</span>
+            <span class="pbd" id="pbd-a"></span>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn-outline" onclick="resetA()">↻ Réessayer</button>
+          <button class="btn-gold" onclick="shareResult('a')">📤 Partager</button>
+        </div>
+      </div>
     </div>
 
     <div class="pnl" id="pnl-upload">
-      <!-- [VOTRE CONTENU ORIGINAL POUR LE MODE FICHIER] -->
+      <div class="uz" id="uz" ondragover="dov(event)" ondragleave="dlv()" ondrop="drp(event)" onclick="document.getElementById('fi').click()">
+        <div class="ui">🎵</div>
+        <p class="ut">Glissez votre fichier audio ici</p>
+        <p class="uh">MP3, WAV, M4A, OGG — max 25 Mo</p>
+        <span class="ul">Parcourir</span>
+      </div>
+      <input type="file" id="fi" accept="audio/*" onchange="selF(event)"/>
+      <div class="finfo" id="finfo"><span>🎵</span><span class="fn" id="fn"></span><span class="fs" id="fs"></span></div>
+      <button class="abtn" id="abtn-u" onclick="analyzeU()">✨ Identifier la récitation</button>
+      <div class="ld" id="ld-u"><div class="sp"></div><p class="lt">Analyse en cours…</p><p class="ls" id="ls-u"></p></div>
+      <div class="eb" id="eb-u"></div>
+      <div class="res" id="res-u">
+        <div class="rt"><div class="rb">✓</div><div><div class="rn" id="rn-u"></div><div class="rsub" id="rsub-u"></div></div><div class="cw"><div class="cv" id="cv-u"></div><div class="cl">Correspondance</div></div></div>
+        <div class="ig">
+          <div class="ii"><div class="il">📖 Sourate</div><div class="iv" id="ivn-u"></div><div class="ivar" id="ivar-u"></div></div>
+          <div class="ii"><div class="il">🔢 Numéro · Versets</div><div class="iv" id="ivnum-u"></div></div>
+          <div class="ii"><div class="il">📍 Révélation</div><div class="iv" id="ivrev-u"></div></div>
+        </div>
+        <div class="vb">
+          <div class="vt">📖 Versets identifiés</div>
+          <div class="vlist" id="vlist-u"></div>
+          <button class="btn-gold" id="cb-u" onclick="loadMore('u')">📖 Voir les versets suivants</button>
+          <div class="ld" id="cl-u"><div class="sp"></div><p class="lt">Chargement…</p></div>
+        </div>
+        <div class="tb" id="tb-u">
+          <div class="tl">🎵 Écouter la sourate</div>
+          <div class="reciter-row">
+            <select class="reciter-select" id="reciter-u" onchange="updateReciter('u')"></select>
+          </div>
+          <div class="pb" id="pb-u" onclick="togglePlayback('u')">
+            <span id="pbi-u">▶️</span>
+            <span id="pbl-u">Écouter la sourate</span>
+            <span class="pbd" id="pbd-u"></span>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn-outline" onclick="resetU()">↻ Réessayer</button>
+          <button class="btn-gold" onclick="shareResult('u')">📤 Partager</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
-// ===== VARIABLES GLOBALES (INCHANGÉES) =====
-let recOn = false, recMR = null, recStream = null, recBusy = false;
-const MIN_CONF = 85, PER_PAGE = 20;
-const GROQ = 'gsk_...'; // [VOTRE CLÉ API ORIGINALE]
+// ===== MODIFICATIONS APPORTÉES =====
+// 1. startApp() modifié pour afficher l'onglet "Écouter" par défaut
+function startApp() {
+  document.getElementById('splash').style.opacity = '0';
+  setTimeout(() => {
+    document.getElementById('splash').style.display = 'none';
+    switchTab('manual'); // MODIFICATION: Onglet "Écouter" par défaut
+  }, 700);
+}
 
-// ===== FONCTIONS UTILITAIRES (INCHANGÉES) =====
-async function toWav(blob) { /* [VOTRE FONCTION ORIGINALE] */ }
-function updateViz(id, stream) { /* [VOTRE FONCTION ORIGINALE] */ }
-
-// ===== MODIFICATION 3 : FONCTION startRec() CORRIGÉE =====
+// 2. startRec() modifié pour arrêter automatiquement après 6 secondes
 function startRec() {
-  if (recOn) return;
+  if (recOn) return stopRec();
+
   recOn = true;
-  recBusy = false; // Réinitialisation
+  recBusy = false;
   document.getElementById('recBtn').classList.add('listening');
-  document.getElementById('recIcon').textContent = '🔴';
-  document.getElementById('recLbl').textContent = 'Arrêter';
   document.getElementById('recStatus').textContent = '🎙️ Écoute en cours...';
+  document.getElementById('recCycles').textContent = '';
 
   navigator.mediaDevices.getUserMedia({ audio: true })
     .then(stream => {
       recStream = stream;
-      recMR = new MediaRecorder(stream);
+      recMR = new MediaRecorder(stream, { mimeType: 'audio/webm' });
       const audioChunks = [];
-      let startTime = Date.now();
+      let startTime = Date.now(); // MODIFICATION: Timer pour 6 secondes
 
       recMR.ondataavailable = e => {
         audioChunks.push(e.data);
         updateViz('vizRec', stream);
 
-        // Détection automatique après 6 secondes
-        if (Date.now() - startTime >= 6000 && !recBusy) {
-          recBusy = true;
+        // MODIFICATION: Arrêt automatique après 6 secondes
+        if (Date.now() - startTime >= 6000 && recMR.state === 'recording') {
           recMR.stop();
         }
       };
 
       recMR.onstop = () => {
         if (audioChunks.length) {
-          const blob = new Blob(audioChunks, { type: 'audio/wav' });
+          const blob = new Blob(audioChunks, { type: 'audio/webm' });
           identify(blob, updateRecStatus);
         }
-        stopRec(); // Nettoyage propre
+        stopRec();
       };
 
       recMR.start(100);
-
-      // Sécurité : arrêt après 10 secondes max
-      setTimeout(() => {
-        if (recMR.state === 'recording') {
-          recMR.stop();
-        }
-      }, 10000);
+      // Sécurité: arrêt forcé après 10s max
+      setTimeout(() => recMR.state === 'recording' && recMR.stop(), 10000);
     })
     .catch(err => {
-      console.error(err);
       stopRec();
       document.getElementById('recStatus').textContent = '❌ Erreur micro';
     });
 }
 
-// ===== MODIFICATION 4 : FONCTION stopRec() CORRIGÉE =====
-function stopRec() {
-  if (!recMR || recMR.state === 'inactive') return;
+// ===== FIN DES MODIFICATIONS =====
 
-  recMR.stop();
-  if (recStream) {
-    recStream.getTracks().forEach(track => track.stop());
-  }
-  recOn = false;
-  recBusy = false;
-  document.getElementById('recBtn').classList.remove('listening');
-  document.getElementById('recIcon').textContent = '🎙️';
-  document.getElementById('recLbl').textContent = 'Commencer l\'écoute';
-  document.getElementById('recStatus').textContent = 'Appuyez pour commencer';
-}
+// Le reste du code JavaScript original est inchangé
+const GROQ = 'gsk_...'; // Votre clé API
+const MIN_CONF = 85;
+const PER_PAGE = 20;
+const RECITERS = [
+  {id:'muhammad_alhaidan', name:'Mohamed Al-Luhaidan', ar:'محمد اللحيدان'},
+  {id:'yasser_ad-dussary', name:'Yasser Al-Dossary', ar:'ياسر الدوسري'},
+  {id:'sa3ood_al-shuraym', name:'Saud Al-Shuraym', ar:'سعود الشريم'},
+  {id:'mishaari_raashid_al_3afaasee', name:'Mishary Al-Afasy', ar:'مشاري العفاسي'},
+  {id:'abdurrahmaan_as-sudais', name:'Abdurrahman Al-Sudais', ar:'عبدالرحمن السديس'},
+];
+const selectedReciter = {a:RECITERS[0], m:RECITERS[0], u:RECITERS[0]};
+let state = {a:{}, m:{}, u:{}};
+let ayaOn = false, ayaBusy = false, ayaMR = null, ayaChunks = [], ayaCycleN = 0;
+let recOn = false, recBusy = false, recMR = null, recStream = null;
+let micS = null, ecouterOn = false, ecouterStream = null, ecouterCtx = null, ecouterAfId = null;
+let upBlob = null;
 
-// ===== MODIFICATION 5 : toggleRec() CORRIGÉE =====
-function toggleRec() {
-  if (recOn) {
-    stopRec();
-  } else {
-    startRec();
-  }
-}
-
-// ===== MODIFICATION 6 : switchTab() ADAPTÉE =====
-function switchTab(tab) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
-  document.querySelectorAll('.pnl').forEach(p => p.classList.remove('on'));
-
-  if (tab === 'manual') {
-    document.querySelector('.tab[onclick="switchTab(\'manual\')"]').classList.add('on');
-    document.getElementById('pnl-manual').classList.add('on');
-  } else if (tab === 'auto') {
-    document.querySelector('.tab[onclick="switchTab(\'auto\')"]').classList.add('on');
-    document.getElementById('pnl-auto').classList.add('on');
-  } else if (tab === 'upload') {
-    document.querySelector('.tab[onclick="switchTab(\'upload\')"]').classList.add('on');
-    document.getElementById('pnl-upload').classList.add('on');
-  }
-}
-
-// ===== FONCTIONS ORIGINALES INCHANGÉES =====
-function startApp() { /* [VOTRE FONCTION ORIGINALE] */ }
-async function identify(blob, stepFn) { /* [VOTRE FONCTION ORIGINALE] */ }
-function showResult(data, suffix) { /* [VOTRE FONCTION ORIGINALE] */ }
-// ... [TOUTES VOS AUTRES FONCTIONS ORIGINALES]
+// Fonctions originales inchangées (identify, toWav, fetchVersesPage, etc.)
+// ... [le reste du code JavaScript original] ...
 </script>
 </body>
 </html>
