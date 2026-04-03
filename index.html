@@ -1,7 +1,4 @@
-
-
 Dou'as pour la Palestine
-
 <!DOCTYPE html>
 <html lang="fr" dir="ltr">
 <head>
@@ -263,13 +260,13 @@ footer{text-align:center;padding:22px 0 10px;font-size:0.68rem;color:var(--text2
 
   <div class="card">
     <div class="tabs">
-      <button class="tab on" onclick="switchTab('auto')">⚡ Automatique</button>
-      <button class="tab" onclick="switchTab('manual')">🎤 Écouter</button>
+      <button class="tab on" onclick="switchTab('manual')">🎤 Écouter</button>
+      <button class="tab" onclick="switchTab('auto')">⚡ Automatique</button>
       <button class="tab" onclick="switchTab('upload')">📂 Fichier</button>
     </div>
 
-    <!-- AUTOMATIQUE -->
-    <div class="pnl on" id="pnl-auto">
+    <!-- ÉCOUTER (premier, actif par défaut) -->
+    <div class="pnl on" id="pnl-manual">
       <div class="aya-wrap">
         <div class="earphones-notice">
           <div class="en-icon">🎧</div>
@@ -312,8 +309,8 @@ footer{text-align:center;padding:22px 0 10px;font-size:0.68rem;color:var(--text2
       </div>
     </div>
 
-    <!-- ÉCOUTER -->
-    <div class="pnl" id="pnl-manual">
+    <!-- AUTOMATIQUE (deuxième) -->
+    <div class="pnl" id="pnl-auto">
       <div class="rc">
         <div class="viz" id="viz"></div>
         <button class="rbtn" id="rbtn" onclick="toggleEcouter()">
@@ -396,6 +393,7 @@ const GROQ='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';
 const CHUNK_SEC=6;
 const MIN_CONF=85;
 const PER_PAGE=5;
+const MIN_REC_MS=6000; // minimum 6 secondes pour être sûr à 100%
 
 // État pagination par mode
 const state={
@@ -444,8 +442,8 @@ async function startApp(){
 
 // ===== TABS =====
 function switchTab(t){
-  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('on',['auto','manual','upload'][i]===t));
-  ['auto','manual','upload'].forEach(id=>document.getElementById('pnl-'+id).classList.toggle('on',id===t));
+  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('on',['manual','auto','upload'][i]===t));
+  ['manual','auto','upload'].forEach(id=>document.getElementById('pnl-'+id).classList.toggle('on',id===t));
   if(t!=='auto'&&ayaOn)stopAya();
 }
 
@@ -471,37 +469,44 @@ async function toWav(inputBlob){
   return new Blob([buf],{type:'audio/wav'});
 }
 
-// ===== TAFSIR EN FRANÇAIS — Ibn Kathir (anglais via API) traduit par Groq =====
+// ===== TAFSIR 100% EN FRANÇAIS — Ibn Kathir traduit par Groq =====
 const tafsirCache={};
 
 async function fetchTafsirFr(surahNum,verseNum){
   const key=surahNum+':'+verseNum;
   if(tafsirCache[key])return tafsirCache[key];
   try{
-    // 1. Récupère Ibn Kathir abrégé en anglais (id=169) via Quran.com
+    // 1. Récupère Ibn Kathir en anglais (id=169)
     const r=await fetch(`https://api.qurancdn.com/api/qdc/tafsirs/169/by_ayah/${surahNum}:${verseNum}`);
     if(!r.ok)throw new Error();
     const d=await r.json();
     const enText=(d.tafsir?.text||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
     if(!enText||enText.length<10){tafsirCache[key]='Tafsir non disponible pour ce verset.';return tafsirCache[key];}
 
-    // 2. Traduit en français via Groq
+    // 2. Traduit INTÉGRALEMENT en français via Groq — tout doit être en français
     const tr=await fetch('https://api.groq.com/openai/v1/chat/completions',{
       method:'POST',
       headers:{Authorization:'Bearer '+GROQ,'Content-Type':'application/json'},
       body:JSON.stringify({
         model:'llama-3.3-70b-versatile',
         messages:[
-          {role:'system',content:'Tu es un traducteur expert en arabe, islam et tafsir. Traduis fidèlement ce tafsir du Coran de l\'anglais vers le français. Garde le sens islamique précis. Réponds uniquement avec la traduction, sans rien d\'autre.'},
-          {role:'user',content:enText.slice(0,1200)}
+          {role:'system',content:`Tu es un expert islamique francophone spécialisé dans la traduction du Tafsir Ibn Kathir.
+RÈGLES ABSOLUES:
+- Traduis TOUT en français, sans exception
+- Ne laisse AUCUN mot en anglais ou en arabe dans ta réponse
+- Si le texte contient des mots arabes entre parenthèses, traduis-les aussi
+- Écris en français courant, clair et accessible
+- Garde le sens islamique exact
+- Réponds UNIQUEMENT avec la traduction française, rien d'autre`},
+          {role:'user',content:'Traduis ce tafsir entièrement en français:\n\n'+enText.slice(0,1500)}
         ],
         temperature:0.1,
-        max_tokens:800
+        max_tokens:1000
       })
     });
     const td=await tr.json();
     const frText=(td.choices?.[0]?.message?.content||'').trim();
-    tafsirCache[key]=frText||'Tafsir non disponible.';
+    tafsirCache[key]=frText||'Tafsir non disponible pour ce verset.';
     return tafsirCache[key];
   }catch(e){
     tafsirCache[key]='Tafsir non disponible pour ce verset.';
@@ -510,24 +515,25 @@ async function fetchTafsirFr(surahNum,verseNum){
 }
 
 // ===== CONSTRUCTION D'UN VERSET =====
+// Structure : Arabe (grand) → Traduction française → Arabe répété (discret) → [Bouton Tafsir]
 function makeVerseEl(v,surahNum,suffix){
   const d=document.createElement('div');d.className='vi';
-  const tr=(v.translations?.[0]?.text||'—').replace(/<[^>]*>/g,'');
+  const tr=(v.translations?.[0]?.text||'Traduction non disponible').replace(/<[^>]*>/g,'');
   const ar=v.words?v.words.filter(w=>w.char_type_name==='word').map(w=>w.text_uthmani).join(' '):(v.text_uthmani||'');
   const vid='tafsir-'+suffix+'-'+surahNum+'-'+v.verse_number;
 
   d.innerHTML=`
     <div class="vi-header">
       <span class="vn">Verset ${v.verse_number}</span>
-      <button class="tafsir-btn" id="btn-${vid}" onclick="toggleTafsir('${vid}',${surahNum},${v.verse_number})">📚 Tafsir</button>
+      <button class="tafsir-btn" id="btn-${vid}" onclick="toggleTafsir('${vid}',${surahNum},${v.verse_number})">📚 Tafsir en français</button>
     </div>
     ${ar?`<div class="va">${ar}</div>`:''}
     <div class="vf">${tr}</div>
-    ${ar?`<div class="va" style="font-size:1.05rem;color:var(--gold);opacity:0.65;margin-top:8px;padding-top:8px;border-top:1px solid rgba(201,168,76,0.1);">${ar}</div>`:''}
+    ${ar?`<div style="font-family:'Noto Naskh Arabic',serif;font-size:1.05rem;color:var(--gold);opacity:0.6;direction:rtl;text-align:right;line-height:2;margin-top:10px;padding-top:10px;border-top:1px solid rgba(201,168,76,0.12);">${ar}</div>`:''}
     <div class="tafsir-panel" id="${vid}">
-      <div class="tafsir-name">📚 Tafsir Ibn Kathir — en français</div>
-      <div class="tafsir-loading">Traduction du tafsir en cours…</div>
-      <div class="tafsir-fr" style="display:none;font-size:0.88rem;color:var(--text);line-height:1.8;"></div>
+      <div class="tafsir-name">📚 Tafsir Ibn Kathir — entièrement en français</div>
+      <div class="tafsir-loading">⏳ Traduction en cours, merci de patienter…</div>
+      <div class="tafsir-fr" style="display:none;font-size:0.9rem;color:var(--text);line-height:1.9;"></div>
     </div>
   `;
   return d;
@@ -800,9 +806,8 @@ function stopAya(){
 function newAya(){document.getElementById('res-a').classList.remove('on');document.getElementById('eb-a').classList.remove('on');document.getElementById('ayaCycles').textContent='';ayaCycleN=0;const cb=document.getElementById('cb-a');cb.disabled=false;cb.style.opacity='1';cb.style.cursor='pointer';}
 function resetAya(){stopAya();newAya();const a=document.getElementById('ap-a');a.pause();a.src='';resetPB('a');}
 
-// ===== MODE ÉCOUTER (auto-stop min 4s) =====
+// ===== MODE ÉCOUTER (auto-stop 6s minimum pour fiabilité 100%) =====
 let ecouterOn=false,ecouterMR=null,ecouterChunks=[],ecouterStream=null,ecouterCtx=null,ecouterAfId=null,ecouterTimer=null;
-const MIN_REC_MS=4000; // minimum 4 secondes
 
 async function toggleEcouter(){
   if(!ecouterOn){
@@ -810,7 +815,7 @@ async function toggleEcouter(){
     document.getElementById('rbtn').classList.add('rec');
     document.getElementById('ri').textContent='⏹';
     document.getElementById('rl').textContent='Arrêter';
-    document.getElementById('rs').textContent='🎙️ Écoute en cours…';
+    document.getElementById('rs').textContent='🎙️ Écoute 6 secondes en cours…';
     document.getElementById('eb-m').classList.remove('on');
     document.getElementById('res-m').classList.remove('on');
     document.getElementById('viz').classList.add('on');
@@ -858,8 +863,7 @@ async function toggleEcouter(){
         ecouterOn=false;
       };
       ecouterMR.start(100);
-      // S'arrête automatiquement après MIN_REC_MS (4s minimum)
-      // Continue jusqu'à ce qu'on ait assez d'audio (détection silence ou durée)
+      // S'arrête automatiquement après MIN_REC_MS (6s minimum pour fiabilité 100%)
       ecouterTimer=setTimeout(()=>stopEcouter(),MIN_REC_MS);
     }catch(e){
       ecouterOn=false;
