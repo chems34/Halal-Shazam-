@@ -394,7 +394,7 @@ footer{text-align:center;padding:22px 0 10px;font-size:0.68rem;color:var(--text2
 
 <script>
 const GROQ='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';
-const CHUNK_SEC=6;
+const CHUNK_SEC=10;
 const PER_PAGE=5;
 
 const state={
@@ -453,7 +453,7 @@ async function toWav(inputBlob){
   let decoded;try{decoded=await ctx.decodeAudioData(ab);}catch(e){ctx.close();throw new Error('Format audio non supporté.');}
   ctx.close();
   const SR=16000,CH=1,samples=Math.floor(decoded.duration*SR);
-  if(samples<SR*1.5)throw new Error('Audio trop court — minimum 5 secondes requis.');
+  if(samples<SR*0.5)throw new Error('Audio trop court.');
   const off=new OfflineAudioContext(CH,samples,SR);
   const src=off.createBufferSource();src.buffer=decoded;src.connect(off.destination);src.start();
   const rendered=await off.startRendering();
@@ -605,11 +605,11 @@ async function transcribeAudio(blob, isFile=false){
   const fd=new FormData();
   fd.append('file',wav,'audio.wav');
   // Pour les fichiers, on force le mode le plus précis
-  fd.append('model', isFile ? 'whisper-large-v3' : 'whisper-large-v3');
+  fd.append('model','whisper-large-v3');
   fd.append('language','ar');
-  fd.append('response_format','verbose_json'); // plus de détails
+  fd.append('response_format','json');
   fd.append('temperature','0');
-  if(isFile) fd.append('prompt','بسم الله الرحمن الرحيم، هذا تلاوة قرآنية كريمة'); // hint pour fichier
+  fd.append('prompt','بسم الله الرحمن الرحيم');
 
   const wr=await fetch('https://api.groq.com/openai/v1/audio/transcriptions',{
     method:'POST',headers:{Authorization:'Bearer '+GROQ},body:fd
