@@ -395,7 +395,6 @@ footer{text-align:center;padding:22px 0 10px;font-size:0.68rem;color:var(--text2
 <script>
 const GROQ='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';
 const CHUNK_SEC=6;
-const MIN_CONF=75; // Seuil abaissé car on retente plusieurs fois pour fichier
 const PER_PAGE=5;
 
 const state={
@@ -676,7 +675,7 @@ async function identify(blob,stepFn){
   const trans=await transcribeAudio(blob,false);
   stepFn('🧠 Identification sourate et verset…');
   const match=await identifyWithLLM(trans,false);
-  if((match.confidence||0)<MIN_CONF)throw new Error(`Confiance insuffisante (${match.confidence}%). Continuez à réciter…`);
+
   stepFn('📡 Récupération versets Quran.com…');
   const sn=Math.max(1,Math.min(114,Math.round(match.surah_number)));
   const vs=Math.max(1,Math.round(match.verse_start||1));
@@ -727,7 +726,7 @@ Réponds en JSON: {"surah_number":X,"verse_start":X,"verse_end":X,"confidence":X
   }
 
   progressFn(85);
-  if((match.confidence||0)<55)throw new Error(`Récitation non identifiée (${match.confidence||0}% de correspondance). Essayez un fichier plus long ou avec moins de bruit.`);
+  if(!match.surah_number)throw new Error('Sourate non identifiée. Vérifiez que le fichier contient bien une récitation coranique en arabe.');
 
   stepFn('📡 Récupération des données Quran.com…');
   const sn=Math.max(1,Math.min(114,Math.round(match.surah_number)));
