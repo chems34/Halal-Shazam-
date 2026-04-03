@@ -4,12 +4,61 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Aya-Halal — Reconnaissance Coranique</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Noto+Naskh+Arabic:wght@400;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Noto+Naskh+Arabic:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet"/>
 <style>
-:root{--bg:#080a0d;--bg2:#0d1117;--bg3:#131920;--bg4:#1a2230;--gold:#c9a84c;--gold2:#e8c97e;--gold3:#f5e4b0;--green2:#2ecc8a;--text:#e8dfc8;--text2:#8a7a5a;--border:rgba(201,168,76,0.15);--border2:rgba(201,168,76,0.32);}
+:root{--bg:#080a0d;--bg2:#0d1117;--bg3:#131920;--bg4:#1a2230;--gold:#c9a84c;--gold2:#e8c97e;--gold3:#f5e4b0;--green2:#2ecc8a;--text:#e8dfc8;--text2:#8a7a5a;--border:rgba(201,168,76,0.15);--border2:rgba(201,168,76,0.32);--palestine-green:#007A3D;--palestine-red:#CE1126;--palestine-white:#F8F8F8;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',serif;min-height:100vh;overflow-x:hidden;}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 40% at 50% 0%,rgba(201,168,76,0.06),transparent 60%);pointer-events:none;z-index:0;}
+
+/* ===== BANDEAU PALESTINE ===== */
+.palestine-banner{
+  position:fixed;top:0;left:0;z-index:998;
+  display:flex;align-items:center;gap:10px;
+  padding:10px 18px 10px 14px;
+  background:linear-gradient(135deg,rgba(8,10,13,0.97),rgba(13,17,23,0.95));
+  border-right:1px solid rgba(201,168,76,0.2);
+  border-bottom:1px solid rgba(201,168,76,0.12);
+  border-bottom-right-radius:14px;
+  backdrop-filter:blur(8px);
+  max-width:260px;
+  animation:pb-slide 1s cubic-bezier(0.34,1.56,0.64,1) 0.8s both;
+}
+@keyframes pb-slide{from{opacity:0;transform:translateX(-30px);}to{opacity:1;transform:translateX(0);}}
+
+.pb-flag{
+  display:flex;flex-direction:column;
+  width:28px;height:20px;border-radius:3px;overflow:hidden;flex-shrink:0;
+  box-shadow:0 2px 8px rgba(0,0,0,0.4);
+}
+.pb-flag-stripe{flex:1;}
+.pb-flag-stripe.black{background:#000;}
+.pb-flag-stripe.white{background:#fff;}
+.pb-flag-stripe.green{background:var(--palestine-green);}
+
+.pb-text{display:flex;flex-direction:column;gap:1px;}
+.pb-dua{
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-size:0.75rem;
+  color:var(--gold2);
+  letter-spacing:0.02em;
+  line-height:1.4;
+  text-shadow:0 0 20px rgba(201,168,76,0.3);
+}
+.pb-arabic{
+  font-family:'Noto Naskh Arabic',serif;
+  font-size:0.8rem;
+  color:var(--gold);
+  direction:rtl;
+  opacity:0.8;
+}
+.pb-heart{
+  font-size:0.85rem;
+  animation:hbeat 1.4s ease-in-out infinite;
+  flex-shrink:0;
+}
+@keyframes hbeat{0%,100%{transform:scale(1);}50%{transform:scale(1.25);}}
 
 /* SPLASH */
 #splash{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:40px;transition:opacity 0.7s;}
@@ -26,7 +75,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 /* LAYOUT */
 .wrap{position:relative;z-index:1;max-width:820px;margin:0 auto;padding:0 16px 80px;}
-header{text-align:center;padding:42px 0 26px;}
+header{text-align:center;padding:52px 0 26px;}
 .h-ar{font-family:'Noto Naskh Arabic',serif;font-size:1.7rem;color:var(--gold);opacity:0.75;margin-bottom:14px;animation:fd 1s ease both;}
 .h-logo{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:8px;animation:fd 1s ease 0.1s both;}
 .h-icon{width:44px;height:44px;background:linear-gradient(135deg,var(--gold),#a8792a);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;}
@@ -38,9 +87,9 @@ h1 b{color:var(--gold);font-weight:600;}
 /* CARD */
 .card{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:26px;box-shadow:0 0 60px rgba(0,0,0,0.5),inset 0 1px 0 rgba(201,168,76,0.07);animation:fu 1s ease 0.3s both;}
 
-/* TABS */
+/* TABS — seulement 2 maintenant */
 .tabs{display:flex;background:var(--bg);border-radius:11px;padding:4px;margin-bottom:22px;border:1px solid var(--border);}
-.tab{flex:1;padding:9px 10px;background:none;border:none;border-radius:8px;color:var(--text2);font-family:'Cormorant Garamond',serif;font-size:0.9rem;font-weight:500;letter-spacing:0.03em;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:5px;}
+.tab{flex:1;padding:9px 10px;background:none;border:none;border-radius:8px;color:var(--text2);font-family:'Cormorant Garamond',serif;font-size:0.95rem;font-weight:500;letter-spacing:0.03em;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:5px;}
 .tab.on{background:linear-gradient(135deg,rgba(201,168,76,0.14),rgba(201,168,76,0.07));color:var(--gold2);border:1px solid var(--border2);}
 .tab:hover:not(.on){color:var(--text);}
 .pnl{display:none;}.pnl.on{display:block;}
@@ -102,12 +151,10 @@ h1 b{color:var(--gold);font-weight:600;}
 .vb{background:var(--bg3);border:1px solid var(--border);border-radius:13px;padding:18px;margin-bottom:14px;}
 .vt{font-size:0.65rem;color:var(--text2);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
 
-/* Chaque verset */
 .vi{padding:14px 0;border-bottom:1px solid rgba(201,168,76,0.07);}
 .vi:last-child{border-bottom:none;padding-bottom:0;}
 .vi-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
 .vn{display:inline-block;padding:2px 9px;background:rgba(201,168,76,0.09);border:1px solid var(--border);border-radius:20px;font-size:0.66rem;color:var(--gold);letter-spacing:0.06em;}
-/* Bouton Tafsir */
 .tafsir-btn{padding:3px 12px;background:rgba(201,168,76,0.08);border:1px solid var(--border2);border-radius:20px;font-size:0.66rem;color:var(--gold2);font-family:'Cormorant Garamond',serif;letter-spacing:0.06em;cursor:pointer;transition:all 0.3s;}
 .tafsir-btn:hover{background:rgba(201,168,76,0.16);}
 .tafsir-btn.open{background:rgba(201,168,76,0.18);color:var(--gold3);}
@@ -115,27 +162,12 @@ h1 b{color:var(--gold);font-weight:600;}
 .va{font-family:'Noto Naskh Arabic',serif;font-size:1.4rem;color:var(--gold3);direction:rtl;text-align:right;line-height:2.2;margin-bottom:6px;}
 .vf{font-size:0.86rem;color:var(--text2);font-style:italic;line-height:1.7;margin-bottom:8px;}
 
-/* TAFSIR PANEL */
-.tafsir-panel{
-  display:none;
-  background:var(--bg4);border:1px solid rgba(201,168,76,0.2);border-radius:10px;
-  padding:14px 16px;margin-top:8px;
-  animation:fu 0.3s ease;
-}
+.tafsir-panel{display:none;background:var(--bg4);border:1px solid rgba(201,168,76,0.2);border-radius:10px;padding:14px 16px;margin-top:8px;animation:fu 0.3s ease;}
 .tafsir-panel.open{display:block;}
 .tafsir-name{font-size:0.65rem;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid rgba(201,168,76,0.12);}
-.tafsir-ar{font-family:'Noto Naskh Arabic',serif;font-size:1.05rem;color:var(--text);direction:rtl;text-align:right;line-height:2.2;margin-bottom:10px;}
 .tafsir-loading{font-size:0.82rem;color:var(--text2);font-style:italic;text-align:center;padding:8px 0;}
 
-/* Bouton Continuer */
-.continue-btn{
-  width:100%;padding:13px;
-  background:linear-gradient(135deg,rgba(201,168,76,0.12),rgba(201,168,76,0.06));
-  border:1px solid var(--border2);border-radius:11px;
-  color:var(--gold2);font-family:'Cormorant Garamond',serif;font-size:1rem;
-  letter-spacing:0.08em;cursor:pointer;transition:all 0.3s;
-  display:none;align-items:center;justify-content:center;gap:8px;margin-top:6px;
-}
+.continue-btn{width:100%;padding:13px;background:linear-gradient(135deg,rgba(201,168,76,0.12),rgba(201,168,76,0.06));border:1px solid var(--border2);border-radius:11px;color:var(--gold2);font-family:'Cormorant Garamond',serif;font-size:1rem;letter-spacing:0.08em;cursor:pointer;transition:all 0.3s;display:none;align-items:center;justify-content:center;gap:8px;margin-top:6px;}
 .continue-btn.on{display:flex;}
 .continue-btn:hover{background:rgba(201,168,76,0.2);}
 .continue-loading{font-size:0.78rem;color:var(--text2);text-align:center;padding:10px;display:none;}
@@ -151,19 +183,6 @@ audio{display:none;}
 .btn-gold{flex:1;padding:9px;background:rgba(201,168,76,0.1);border:1px solid var(--border2);border-radius:9px;color:var(--gold2);font-family:'Cormorant Garamond',serif;font-size:0.82rem;letter-spacing:0.06em;cursor:pointer;transition:all 0.3s;}
 .btn-gold:hover{background:rgba(201,168,76,0.18);}
 
-/* MANUEL */
-.rc{display:flex;flex-direction:column;align-items:center;gap:15px;padding:10px 0;}
-.viz{width:100%;height:44px;display:flex;align-items:center;justify-content:center;gap:3px;opacity:0;transition:opacity 0.4s;}
-.viz.on{opacity:1;}
-.bar{width:4px;background:linear-gradient(to top,var(--gold),var(--gold2));border-radius:2px;height:4px;transition:height 0.07s;}
-.rbtn{width:94px;height:94px;border-radius:50%;border:2px solid var(--border2);background:radial-gradient(circle at 40% 35%,rgba(201,168,76,0.12),transparent 70%);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:all 0.3s;}
-.rbtn:hover{border-color:var(--gold);box-shadow:0 0 22px rgba(201,168,76,0.14);transform:scale(1.04);}
-.rbtn.rec{border-color:#e05555;animation:pr 1.4s infinite;}
-@keyframes pr{0%,100%{box-shadow:0 0 0 0 rgba(224,85,85,0.4);}50%{box-shadow:0 0 0 12px rgba(224,85,85,0);}}
-.ri{font-size:1.9rem;}.rl{font-size:0.65rem;letter-spacing:0.12em;color:var(--text2);text-transform:uppercase;}
-.rbtn.rec .rl{color:#e05555;}
-.rs{font-size:0.86rem;color:var(--text2);text-align:center;min-height:20px;}
-
 /* UPLOAD */
 .uz{border:2px dashed var(--border2);border-radius:13px;padding:30px 18px;text-align:center;cursor:pointer;transition:all 0.3s;}
 .uz:hover,.uz.dov{border-color:var(--gold);background:rgba(201,168,76,0.03);}
@@ -176,7 +195,12 @@ audio{display:none;}
 .finfo.on{display:flex;}
 .fn{font-size:0.82rem;color:var(--text);flex:1;}.fs{font-size:0.71rem;color:var(--text2);}
 
-.abtn{width:100%;margin-top:16px;padding:12px;background:linear-gradient(135deg,var(--gold),#a8792a);border:none;border-radius:11px;color:#080a0d;font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:700;letter-spacing:0.1em;cursor:pointer;transition:all 0.3s;display:none;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(201,168,76,0.2);}
+/* Indicateur qualité fichier */
+.quality-tip{margin-top:10px;padding:10px 14px;background:rgba(46,204,138,0.05);border:1px solid rgba(46,204,138,0.2);border-radius:9px;font-size:0.78rem;color:var(--text2);line-height:1.7;display:none;}
+.quality-tip.on{display:block;}
+.quality-tip b{color:var(--green2);}
+
+.abtn{width:100%;margin-top:16px;padding:14px;background:linear-gradient(135deg,var(--gold),#a8792a);border:none;border-radius:11px;color:#080a0d;font-family:'Cormorant Garamond',serif;font-size:1.05rem;font-weight:700;letter-spacing:0.1em;cursor:pointer;transition:all 0.3s;display:none;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(201,168,76,0.2);}
 .abtn.on{display:flex;}
 .abtn:hover{transform:translateY(-2px);}
 
@@ -186,6 +210,10 @@ audio{display:none;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .lt{font-size:0.87rem;color:var(--text2);letter-spacing:0.06em;font-style:italic;}
 .ls{font-size:0.73rem;color:var(--text2);opacity:0.5;text-align:center;min-height:16px;}
+
+/* Barre de progression analyse */
+.progress-bar-wrap{width:100%;max-width:300px;height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:2px;transition:width 0.4s ease;}
 
 .eb{display:none;background:rgba(192,57,43,0.08);border:1px solid rgba(192,57,43,0.28);border-radius:11px;padding:12px 15px;color:#e08080;font-size:0.84rem;line-height:1.7;margin-top:11px;}
 .eb.on{display:block;}
@@ -203,17 +231,9 @@ audio{display:none;}
 .reciter-wrap{margin-bottom:14px;}
 .reciter-label{font-size:0.66rem;color:var(--text2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;display:block;}
 .reciter-grid{display:flex;gap:8px;flex-wrap:wrap;}
-.reciter-btn{
-  flex:1;min-width:130px;padding:10px 12px;
-  background:var(--bg3);border:1px solid var(--border);border-radius:10px;
-  color:var(--text2);font-family:'Cormorant Garamond',serif;font-size:0.86rem;
-  letter-spacing:0.03em;cursor:pointer;transition:all 0.3s;text-align:center;
-}
+.reciter-btn{flex:1;min-width:130px;padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;color:var(--text2);font-family:'Cormorant Garamond',serif;font-size:0.86rem;letter-spacing:0.03em;cursor:pointer;transition:all 0.3s;text-align:center;}
 .reciter-btn:hover{border-color:var(--border2);color:var(--text);}
-.reciter-btn.sel{
-  background:linear-gradient(135deg,rgba(201,168,76,0.14),rgba(201,168,76,0.07));
-  border-color:var(--border2);color:var(--gold2);
-}
+.reciter-btn.sel{background:linear-gradient(135deg,rgba(201,168,76,0.14),rgba(201,168,76,0.07));border-color:var(--border2);color:var(--gold2);}
 .reciter-btn .rb-name{font-size:0.86rem;display:block;font-weight:500;}
 .reciter-btn .rb-ar{font-family:'Noto Naskh Arabic',serif;font-size:0.9rem;color:var(--gold);display:block;margin-top:2px;}
 
@@ -225,6 +245,20 @@ footer{text-align:center;padding:22px 0 10px;font-size:0.68rem;color:var(--text2
 </style>
 </head>
 <body>
+
+<!-- ===== BANDEAU PALESTINE ===== -->
+<div class="palestine-banner">
+  <div class="pb-flag">
+    <div class="pb-flag-stripe black"></div>
+    <div class="pb-flag-stripe white"></div>
+    <div class="pb-flag-stripe green"></div>
+  </div>
+  <div class="pb-text">
+    <span class="pb-dua">Faites des Douâ pour la Palestine</span>
+    <span class="pb-arabic">اللهم انصر فلسطين</span>
+  </div>
+  <span class="pb-heart">🤲</span>
+</div>
 
 <div class="notif" id="notif">
   <div class="notif-icon">🕌</div>
@@ -258,14 +292,14 @@ footer{text-align:center;padding:22px 0 10px;font-size:0.68rem;color:var(--text2
   </header>
 
   <div class="card">
+    <!-- TABS : seulement Automatique et Fichier -->
     <div class="tabs">
-      <button class="tab on" onclick="switchTab('manual')">🎤 Écouter</button>
-      <button class="tab" onclick="switchTab('auto')">⚡ Automatique</button>
+      <button class="tab on" onclick="switchTab('auto')">⚡ Automatique</button>
       <button class="tab" onclick="switchTab('upload')">📂 Fichier</button>
     </div>
 
-    <!-- ÉCOUTER (premier, actif par défaut) -->
-    <div class="pnl on" id="pnl-manual">
+    <!-- AUTOMATIQUE -->
+    <div class="pnl on" id="pnl-auto">
       <div class="aya-wrap">
         <div class="earphones-notice">
           <div class="en-icon">🎧</div>
@@ -293,7 +327,7 @@ footer{text-align:center;padding:22px 0 10px;font-size:0.68rem;color:var(--text2
         </div>
         <div class="tb"><div class="tl">🔤 Texte transcrit Whisper AI</div><div class="tt" id="tt-a"></div></div>
         <div class="vb">
-          <div class="vt">📜 Versets — arabe · français · arabe · tafsir en français</div>
+          <div class="vt">📜 Versets — arabe · français · tafsir en français</div>
           <div id="vlist-a"></div>
           <div class="continue-loading" id="cl-a">Chargement des versets suivants…</div>
           <button class="continue-btn" id="cb-a" onclick="loadMore('a')">📖 Voir les versets suivants</button>
@@ -311,43 +345,6 @@ footer{text-align:center;padding:22px 0 10px;font-size:0.68rem;color:var(--text2
       </div>
     </div>
 
-    <!-- AUTOMATIQUE (deuxième) -->
-    <div class="pnl" id="pnl-auto">
-      <div class="rc">
-        <div class="viz" id="viz"></div>
-        <button class="rbtn" id="rbtn" onclick="toggleEcouter()">
-          <span class="ri" id="ri">🎙️</span>
-          <span class="rl" id="rl">Écouter</span>
-        </button>
-        <p class="rs" id="rs">Appuyez — le micro écoute 6 secondes puis identifie automatiquement</p>
-      </div>
-      <div class="ld" id="ld-m"><div class="sp"></div><p class="lt">Analyse en cours…</p><p class="ls" id="ls-m"></p></div>
-      <div class="eb" id="eb-m"></div>
-      <div class="res" id="res-m">
-        <div class="rt"><div class="rb">✓</div><div><div class="rn" id="rn-m"></div><div class="rsub" id="rsub-m"></div></div><div class="cw"><div class="cv" id="cv-m"></div><div class="cl">Correspondance</div></div></div>
-        <div class="ig">
-          <div class="ii"><div class="il">📖 Sourate</div><div class="iv" id="ivn-m"></div><div class="ivar" id="ivar-m"></div></div>
-          <div class="ii"><div class="il">🔢 Numéro · Versets</div><div class="iv" id="ivnum-m"></div></div>
-          <div class="ii"><div class="il">📍 Révélation</div><div class="iv" id="ivrev-m"></div></div>
-          <div class="ii"><div class="il">🎯 Verset détecté</div><div class="iv" id="ivv-m"></div></div>
-        </div>
-        <div class="tb"><div class="tl">🔤 Texte transcrit</div><div class="tt" id="tt-m"></div></div>
-        <div class="vb">
-          <div class="vt">📜 Versets — arabe · français · arabe · tafsir en français</div>
-          <div id="vlist-m"></div>
-          <div class="continue-loading" id="cl-m">Chargement…</div>
-          <button class="continue-btn" id="cb-m" onclick="loadMore('m')">📖 Voir les versets suivants</button>
-        </div>
-        <div class="reciter-wrap">
-          <span class="reciter-label">🎙️ Choisir le récitateur</span>
-          <div class="reciter-grid" id="rg-m"></div>
-        </div>
-        <button class="pb" id="pb-m" onclick="togglePlay('m')">▶ Écouter la récitation</button>
-        <audio id="ap-m" onended="resetPB('m')"></audio>
-        <div class="btn-row"><button class="btn-outline" onclick="resetM()">↩ Nouvelle analyse</button></div>
-      </div>
-    </div>
-
     <!-- FICHIER -->
     <div class="pnl" id="pnl-upload">
       <div class="uz" id="uz" ondragover="dov(event)" ondragleave="dlv()" ondrop="drp(event)" onclick="document.getElementById('fi').click()">
@@ -358,8 +355,19 @@ footer{text-align:center;padding:22px 0 10px;font-size:0.68rem;color:var(--text2
       </div>
       <input type="file" id="fi" accept="audio/*" onchange="selF(event)"/>
       <div class="finfo" id="finfo"><span>🎵</span><span class="fn" id="fn"></span><span class="fs" id="fs"></span></div>
+      <div class="quality-tip" id="quality-tip">
+        <b>✅ Conseils pour une identification à 100% :</b><br/>
+        • Utilisez un fichier <b>MP3 ou WAV</b> clair, sans bruit de fond<br/>
+        • La récitation doit être <b>au moins 5 secondes</b><br/>
+        • Privilégiez un enregistrement <b>propre et distinct</b>
+      </div>
       <button class="abtn" id="abtn-u" onclick="analyzeU()">✨ Identifier la récitation</button>
-      <div class="ld" id="ld-u"><div class="sp"></div><p class="lt">Analyse en cours…</p><p class="ls" id="ls-u"></p></div>
+      <div class="ld" id="ld-u">
+        <div class="sp"></div>
+        <p class="lt" id="lt-u">Analyse en cours…</p>
+        <div class="progress-bar-wrap"><div class="progress-bar" id="prog-u"></div></div>
+        <p class="ls" id="ls-u"></p>
+      </div>
       <div class="eb" id="eb-u"></div>
       <div class="res" id="res-u">
         <div class="rt"><div class="rb">✓</div><div><div class="rn" id="rn-u"></div><div class="rsub" id="rsub-u"></div></div><div class="cw"><div class="cv" id="cv-u"></div><div class="cl">Correspondance</div></div></div>
@@ -369,9 +377,9 @@ footer{text-align:center;padding:22px 0 10px;font-size:0.68rem;color:var(--text2
           <div class="ii"><div class="il">📍 Révélation</div><div class="iv" id="ivrev-u"></div></div>
           <div class="ii"><div class="il">🎯 Verset détecté</div><div class="iv" id="ivv-u"></div></div>
         </div>
-        <div class="tb"><div class="tl">🔤 Texte transcrit</div><div class="tt" id="tt-u"></div></div>
+        <div class="tb"><div class="tl">🔤 Texte transcrit Whisper AI</div><div class="tt" id="tt-u"></div></div>
         <div class="vb">
-          <div class="vt">📜 Versets — arabe · français · arabe · tafsir en français</div>
+          <div class="vt">📜 Versets — arabe · français · tafsir en français</div>
           <div id="vlist-u"></div>
           <div class="continue-loading" id="cl-u">Chargement…</div>
           <button class="continue-btn" id="cb-u" onclick="loadMore('u')">📖 Voir les versets suivants</button>
@@ -385,43 +393,39 @@ footer{text-align:center;padding:22px 0 10px;font-size:0.68rem;color:var(--text2
         <div class="btn-row"><button class="btn-outline" onclick="resetU()">↩ Nouvelle analyse</button></div>
       </div>
     </div>
+
   </div>
-  <footer>Aya-Halal سورة · Créé par Assakour · Mohamed Al-Luhaidan · Whisper AI · Quran.com · Ibn Kathir</footer>
+  <footer>Aya-Halal سورة · Créé par Assakour · Mohamed Al-Luhaidan · Whisper AI · Quran.com · Ibn Kathir · 🤲 Douâ pour la Palestine</footer>
 </div>
 
 <script>
-// ⚠️ Remplacez par votre nouvelle clé Groq après avoir supprimé l'ancienne sur console.groq.com
 const GROQ='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';
 const CHUNK_SEC=6;
-const MIN_CONF=85;
+const MIN_CONF=75; // Seuil abaissé car on retente plusieurs fois pour fichier
 const PER_PAGE=5;
-const MIN_REC_MS=6000; // minimum 6 secondes pour être sûr à 100%
 
-// État pagination par mode
 const state={
   a:{surahId:0,curPage:1,totalPages:1,totalVerses:0},
-  m:{surahId:0,curPage:1,totalPages:1,totalVerses:0},
   u:{surahId:0,curPage:1,totalPages:1,totalVerses:0}
 };
 
 let micS=null,afId=null;
 let ayaOn=false,ayaMR=null,ayaChunks=[],ayaStream=null,ayaCtx=null,ayaCycleN=0,ayaBusy=false;
-let manBlob=null,manMR=null,manChunks=[],manRec=false;
 let upBlob=null;
 
 // ===== VISUALIZERS =====
-['viz-aya','viz'].forEach(id=>{
+['viz-aya'].forEach(id=>{
   const v=document.getElementById(id);
-  for(let i=0;i<26;i++){const b=document.createElement('div');b.className=id==='viz-aya'?'baya':'bar';v.appendChild(b);}
+  for(let i=0;i<26;i++){const b=document.createElement('div');b.className='baya';v.appendChild(b);}
 });
 function startViz(id,an){
-  const bars=document.getElementById(id).querySelectorAll('.baya,.bar');
+  const bars=document.getElementById(id).querySelectorAll('.baya');
   const d=new Uint8Array(an.frequencyBinCount);
   (function loop(){afId=requestAnimationFrame(loop);an.getByteFrequencyData(d);
     bars.forEach((b,i)=>{b.style.height=Math.max(4,(d[Math.floor(i*d.length/26)]/255)*40)+'px';});
   })();
 }
-function stopViz(id){document.getElementById(id).querySelectorAll('.baya,.bar').forEach(b=>b.style.height='4px');}
+function stopViz(id){document.getElementById(id).querySelectorAll('.baya').forEach(b=>b.style.height='4px');}
 
 // ===== NOTIFICATIONS =====
 async function askNotif(){if('Notification' in window&&Notification.permission==='default')await Notification.requestPermission();}
@@ -436,16 +440,16 @@ function pushNotif(surah,match){
 // ===== SPLASH =====
 async function startApp(){
   const btn=document.getElementById('spBtn');btn.textContent='⏳ Autorisations…';btn.disabled=true;
-  try{const s=await navigator.mediaDevices.getUserMedia({audio:true,video:false});micS=s;s.getTracks().forEach(t=>t.enabled=false);document.getElementById('rs').textContent='✓ Microphone autorisé';}
-  catch(e){document.getElementById('rs').textContent='⚠️ Microphone refusé';}
+  try{const s=await navigator.mediaDevices.getUserMedia({audio:true,video:false});micS=s;s.getTracks().forEach(t=>t.enabled=false);}
+  catch(e){}
   await askNotif();
   const sp=document.getElementById('splash');sp.style.opacity='0';setTimeout(()=>sp.style.display='none',700);
 }
 
 // ===== TABS =====
 function switchTab(t){
-  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('on',['manual','auto','upload'][i]===t));
-  ['manual','auto','upload'].forEach(id=>document.getElementById('pnl-'+id).classList.toggle('on',id===t));
+  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('on',['auto','upload'][i]===t));
+  ['auto','upload'].forEach(id=>document.getElementById('pnl-'+id).classList.toggle('on',id===t));
   if(t!=='auto'&&ayaOn)stopAya();
 }
 
@@ -456,7 +460,7 @@ async function toWav(inputBlob){
   let decoded;try{decoded=await ctx.decodeAudioData(ab);}catch(e){ctx.close();throw new Error('Format audio non supporté.');}
   ctx.close();
   const SR=16000,CH=1,samples=Math.floor(decoded.duration*SR);
-  if(samples<SR*1.5)throw new Error('Audio trop court — continuez à réciter.');
+  if(samples<SR*1.5)throw new Error('Audio trop court — minimum 5 secondes requis.');
   const off=new OfflineAudioContext(CH,samples,SR);
   const src=off.createBufferSource();src.buffer=decoded;src.connect(off.destination);src.start();
   const rendered=await off.startRendering();
@@ -471,39 +475,27 @@ async function toWav(inputBlob){
   return new Blob([buf],{type:'audio/wav'});
 }
 
-// ===== TAFSIR 100% EN FRANÇAIS — Ibn Kathir traduit par Groq =====
+// ===== TAFSIR EN FRANÇAIS =====
 const tafsirCache={};
-
 async function fetchTafsirFr(surahNum,verseNum){
   const key=surahNum+':'+verseNum;
   if(tafsirCache[key])return tafsirCache[key];
   try{
-    // 1. Récupère Ibn Kathir en anglais (id=169)
     const r=await fetch(`https://api.qurancdn.com/api/qdc/tafsirs/169/by_ayah/${surahNum}:${verseNum}`);
     if(!r.ok)throw new Error();
     const d=await r.json();
     const enText=(d.tafsir?.text||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
     if(!enText||enText.length<10){tafsirCache[key]='Tafsir non disponible pour ce verset.';return tafsirCache[key];}
-
-    // 2. Traduit INTÉGRALEMENT en français via Groq — tout doit être en français
     const tr=await fetch('https://api.groq.com/openai/v1/chat/completions',{
       method:'POST',
       headers:{Authorization:'Bearer '+GROQ,'Content-Type':'application/json'},
       body:JSON.stringify({
         model:'llama-3.3-70b-versatile',
         messages:[
-          {role:'system',content:`Tu es un expert islamique francophone spécialisé dans la traduction du Tafsir Ibn Kathir.
-RÈGLES ABSOLUES:
-- Traduis TOUT en français, sans exception
-- Ne laisse AUCUN mot en anglais ou en arabe dans ta réponse
-- Si le texte contient des mots arabes entre parenthèses, traduis-les aussi
-- Écris en français courant, clair et accessible
-- Garde le sens islamique exact
-- Réponds UNIQUEMENT avec la traduction française, rien d'autre`},
+          {role:'system',content:`Tu es un expert islamique francophone spécialisé dans la traduction du Tafsir Ibn Kathir. Traduis TOUT en français sans exception. Réponds UNIQUEMENT avec la traduction française.`},
           {role:'user',content:'Traduis ce tafsir entièrement en français:\n\n'+enText.slice(0,1500)}
         ],
-        temperature:0.1,
-        max_tokens:1000
+        temperature:0.1,max_tokens:1000
       })
     });
     const td=await tr.json();
@@ -516,14 +508,11 @@ RÈGLES ABSOLUES:
   }
 }
 
-// ===== CONSTRUCTION D'UN VERSET =====
-// Structure : Arabe (grand) → Traduction française → Arabe répété (discret) → [Bouton Tafsir]
 function makeVerseEl(v,surahNum,suffix){
   const d=document.createElement('div');d.className='vi';
   const tr=(v.translations?.[0]?.text||'Traduction non disponible').replace(/<[^>]*>/g,'');
   const ar=v.words?v.words.filter(w=>w.char_type_name==='word').map(w=>w.text_uthmani).join(' '):(v.text_uthmani||'');
   const vid='tafsir-'+suffix+'-'+surahNum+'-'+v.verse_number;
-
   d.innerHTML=`
     <div class="vi-header">
       <span class="vn">Verset ${v.verse_number}</span>
@@ -534,7 +523,7 @@ function makeVerseEl(v,surahNum,suffix){
     ${ar?`<div style="font-family:'Noto Naskh Arabic',serif;font-size:1.05rem;color:var(--gold);opacity:0.6;direction:rtl;text-align:right;line-height:2;margin-top:10px;padding-top:10px;border-top:1px solid rgba(201,168,76,0.12);">${ar}</div>`:''}
     <div class="tafsir-panel" id="${vid}">
       <div class="tafsir-name">📚 Tafsir Ibn Kathir — entièrement en français</div>
-      <div class="tafsir-loading">⏳ Traduction en cours, merci de patienter…</div>
+      <div class="tafsir-loading">⏳ Traduction en cours…</div>
       <div class="tafsir-fr" style="display:none;font-size:0.9rem;color:var(--text);line-height:1.9;"></div>
     </div>
   `;
@@ -545,8 +534,7 @@ async function toggleTafsir(vid,surahNum,verseNum){
   const panel=document.getElementById(vid);
   const btn=document.getElementById('btn-'+vid);
   if(panel.classList.contains('open')){
-    panel.classList.remove('open');btn.classList.remove('open');btn.textContent='📚 Tafsir';
-    return;
+    panel.classList.remove('open');btn.classList.remove('open');btn.textContent='📚 Tafsir';return;
   }
   panel.classList.add('open');btn.classList.add('open');btn.textContent='✖ Fermer';
   const loadEl=panel.querySelector('.tafsir-loading');
@@ -554,13 +542,10 @@ async function toggleTafsir(vid,surahNum,verseNum){
   if(textEl.style.display==='none'){
     loadEl.style.display='block';
     const tafsirText=await fetchTafsirFr(surahNum,verseNum);
-    loadEl.style.display='none';
-    textEl.style.display='block';
-    textEl.textContent=tafsirText;
+    loadEl.style.display='none';textEl.style.display='block';textEl.textContent=tafsirText;
   }
 }
 
-// ===== CHARGER VERSETS PAGE =====
 async function fetchVersesPage(surahNum,page,suffix){
   const r=await fetch(`https://api.qurancdn.com/api/qdc/verses/by_chapter/${surahNum}?language=fr&words=true&per_page=${PER_PAGE}&page=${page}&translations=136`);
   if(!r.ok)throw new Error('API Quran.com indisponible.');
@@ -568,7 +553,6 @@ async function fetchVersesPage(surahNum,page,suffix){
   return{verses:d.verses||[],pagination:d.pagination||{}};
 }
 
-// ===== AFFICHAGE RÉSULTATS INITIAL (5 premiers versets) =====
 async function buildRes(surah,verses,trans,match,x){
   const conf=Math.max(0,Math.min(100,Math.round(match.confidence||0)));
   const col=conf>=85?'var(--green2)':conf>=70?'var(--gold2)':'#e08080';
@@ -582,28 +566,15 @@ async function buildRes(surah,verses,trans,match,x){
   document.getElementById('ivrev-'+x).textContent=rev.includes('mak')?'🕋 Mecque':'🕌 Médine';
   document.getElementById('ivv-'+x).textContent='Verset '+(match.verse_start||'?')+(match.verse_end&&match.verse_end!==match.verse_start?' — '+match.verse_end:'');
   document.getElementById('tt-'+x).textContent=trans;
-
-  // Initialise état pagination
-  state[x].surahId=surah.id;
-  state[x].curPage=1;
-  state[x].totalVerses=surah.verses_count||0;
-
+  state[x].surahId=surah.id;state[x].curPage=1;state[x].totalVerses=surah.verses_count||0;
   const list=document.getElementById('vlist-'+x);list.innerHTML='';
   const totalPages=Math.ceil((surah.verses_count||1)/PER_PAGE);
   state[x].totalPages=totalPages;
-
-  if(verses&&verses.length){
-    verses.forEach(v=>list.appendChild(makeVerseEl(v,surah.id,x)));
-  }else{
-    list.innerHTML='<p style="color:var(--text2);font-size:0.83rem;">Versets non disponibles.</p>';
-  }
-
-  // Bouton continuer si plus de versets
+  if(verses&&verses.length){verses.forEach(v=>list.appendChild(makeVerseEl(v,surah.id,x)));}
+  else{list.innerHTML='<p style="color:var(--text2);font-size:0.83rem;">Versets non disponibles.</p>';}
   const cb=document.getElementById('cb-'+x);
   if(totalPages>1){cb.classList.add('on');}else{cb.classList.remove('on');}
   cb.textContent='📖 Voir les versets suivants (page 2/'+totalPages+')';
-
-  // Init récitateur par défaut
   selectedReciter[x]=RECITERS[0];
   const sid=String(surah.id).padStart(3,'0');
   document.getElementById('ap-'+x).src=`https://download.quranicaudio.com/quran/${RECITERS[0].id}/${sid}.mp3`;
@@ -612,7 +583,6 @@ async function buildRes(surah,verses,trans,match,x){
   document.getElementById('res-'+x).classList.add('on');
 }
 
-// ===== CHARGER PLUS DE VERSETS =====
 async function loadMore(x){
   const s=state[x];
   if(s.curPage>=s.totalPages)return;
@@ -621,104 +591,97 @@ async function loadMore(x){
   const cl=document.getElementById('cl-'+x);
   cb.classList.remove('on');cl.classList.add('on');
   try{
-    const{verses,pagination}=await fetchVersesPage(s.surahId,s.curPage,x);
+    const{verses}=await fetchVersesPage(s.surahId,s.curPage,x);
     const list=document.getElementById('vlist-'+x);
     verses.forEach(v=>list.appendChild(makeVerseEl(v,s.surahId,x)));
     cl.classList.remove('on');
     if(s.curPage<s.totalPages){
-      cb.classList.add('on');
-      cb.textContent='📖 Voir les versets suivants (page '+(s.curPage+1)+'/'+s.totalPages+')';
+      cb.classList.add('on');cb.textContent='📖 Voir les versets suivants (page '+(s.curPage+1)+'/'+s.totalPages+')';
     }else{
-      cb.textContent='✅ Sourate complète chargée';cb.classList.add('on');cb.disabled=true;
-      cb.style.opacity='0.5';cb.style.cursor='default';
+      cb.textContent='✅ Sourate complète chargée';cb.classList.add('on');cb.disabled=true;cb.style.opacity='0.5';cb.style.cursor='default';
     }
   }catch(e){
-    cl.classList.remove('on');
-    cb.classList.add('on');cb.textContent='⚠️ Erreur — Réessayer';
-    s.curPage--;
+    cl.classList.remove('on');cb.classList.add('on');cb.textContent='⚠️ Erreur — Réessayer';s.curPage--;
   }
 }
 
-// ===== WHISPER + LLM =====
-const SURAH_HINTS=`بسم الله=1,1|الحمد لله رب العالمين=1,2|مالك يوم الدين=1,4|إياك نعبد=1,5|اهدنا الصراط=1,6|قل هو الله أحد=112,1|الله الصمد=112,2|لم يلد=112,3|قل أعوذ برب الفلق=113,1|قل أعوذ برب الناس=114,1|والضحى=93,1|ألم نشرح=94,1|والتين=95,1|اقرأ باسم ربك=96,1|إنا أنزلناه في ليلة القدر=97,1|لم يكن الذين كفروا=98,1|إذا زلزلت=99,1|والعاديات=100,1|القارعة=101,1|ألهاكم التكاثر=102,1|والعصر=103,1|ويل لكل همزة=104,1|ألم تر كيف=105,1|لإيلاف=106,1|أرأيت الذي=107,1|إنا أعطيناك الكوثر=108,1|قل يا أيها الكافرون=109,1|إذا جاء نصر الله=110,1|تبت يدا=111,1|سبح اسم ربك الأعلى=87,1|هل أتاك حديث الغاشية=88,1|والفجر=89,1|والشمس وضحاها=91,1|والليل إذا يغشى=92,1|والسماء والطارق=86,1|والسماء ذات البروج=85,1|إذا السماء انشقت=84,1|ويل للمطففين=83,1|إذا السماء انفطرت=82,1|إذا الشمس كورت=81,1|عبس وتولى=80,1|والنازعات=79,1|عم يتساءلون=78,1|والمرسلات=77,1|يا أيها المدثر=74,1|يا أيها المزمل=73,1|ن والقلم=68,1|تبارك الذي بيده الملك=67,1|إذا وقعت الواقعة=56,1|الرحمن علم القرآن=55,1|والنجم إذا هوى=53,1|قل يا أيها الكافرون=109,1|يس والقرآن=36,1`;
-
-async function identify(blob,stepFn){
-  stepFn('🔄 Conversion audio WAV 16kHz…');
+// ===== WHISPER + LLM AMÉLIORÉ POUR FICHIER =====
+// Pour le mode fichier : on utilise whisper-large-v3-turbo + double tentative + prompt renforcé
+async function transcribeAudio(blob, isFile=false){
   const wav=await toWav(blob);
-  stepFn('🎙️ Transcription Whisper AI (arabe)…');
   const fd=new FormData();
-  fd.append('file',wav,'audio.wav');fd.append('model','whisper-large-v3');
-  fd.append('language','ar');fd.append('response_format','json');fd.append('temperature','0');
-  const wr=await fetch('https://api.groq.com/openai/v1/audio/transcriptions',{method:'POST',headers:{Authorization:'Bearer '+GROQ},body:fd});
+  fd.append('file',wav,'audio.wav');
+  // Pour les fichiers, on force le mode le plus précis
+  fd.append('model', isFile ? 'whisper-large-v3' : 'whisper-large-v3');
+  fd.append('language','ar');
+  fd.append('response_format','verbose_json'); // plus de détails
+  fd.append('temperature','0');
+  if(isFile) fd.append('prompt','بسم الله الرحمن الرحيم، هذا تلاوة قرآنية كريمة'); // hint pour fichier
+
+  const wr=await fetch('https://api.groq.com/openai/v1/audio/transcriptions',{
+    method:'POST',headers:{Authorization:'Bearer '+GROQ},body:fd
+  });
   if(!wr.ok){const e=await wr.json().catch(()=>({}));throw new Error('Whisper: '+(e.error?.message||wr.status));}
   const wd=await wr.json();
-  const trans=(wd.text||'').trim().replace(/[^\u0600-\u06FF\s.,،؟!\d]/g,'').trim();
-  if(!trans||trans.length<3)throw new Error('Aucun texte arabe détecté. Approchez les écouteurs du micro.');
-  stepFn('🧠 Identification sourate et verset…');
-  const prompt=`Tu es un hafiz du Coran avec une connaissance parfaite des 114 sourates et 6236 versets.
+  const trans=(wd.text||'').trim();
+  if(!trans||trans.length<3)throw new Error('Aucun texte arabe détecté. Vérifiez que le fichier contient bien une récitation coranique.');
+  return trans;
+}
 
-Texte arabe transcrit: "${trans}"
+async function identifyWithLLM(trans, isFile=false){
+  // Prompt beaucoup plus riche pour fichier
+  const prompt=`Tu es un hafiz du Coran avec une connaissance parfaite des 114 sourates et 6236 versets. Tu DOIS identifier la sourate même si la transcription est imparfaite — cherche les mots-clés coraniques.
 
-ANALYSE MOT PAR MOT ce texte et identifie la sourate exacte.
+Texte arabe transcrit (récitation coranique): "${trans}"
 
-Références des sourates les plus courantes:
-بِسْمِ اللَّهِ=1,1 | الْحَمْدُ لِلَّهِ=1,2 | الرَّحْمَٰنِ الرَّحِيمِ=1,3 | مَالِكِ يَوْمِ=1,4 | إِيَّاكَ نَعْبُدُ=1,5 | اهْدِنَا=1,6 | غَيْرِ الْمَغْضُوبِ=1,7
-قُلْ هُوَ اللَّهُ أَحَدٌ=112,1 | اللَّهُ الصَّمَدُ=112,2 | لَمْ يَلِدْ=112,3 | وَلَمْ يَكُنْ لَهُ كُفُوًا=112,4
-قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ=113,1 | مِنْ شَرِّ مَا خَلَقَ=113,2 | وَمِنْ شَرِّ غَاسِقٍ=113,3 | وَمِنْ شَرِّ النَّفَّاثَاتِ=113,4 | وَمِنْ شَرِّ حَاسِدٍ=113,5
-قُلْ أَعُوذُ بِرَبِّ النَّاسِ=114,1 | مَلِكِ النَّاسِ=114,2 | إِلَٰهِ النَّاسِ=114,3
-وَالضُّحَىٰ=93,1 | وَاللَّيْلِ إِذَا سَجَىٰ=93,2 | مَا وَدَّعَكَ=93,3
-أَلَمْ نَشْرَحْ=94,1 | وَوَضَعْنَا عَنْكَ=94,2
-وَالتِّينِ وَالزَّيْتُونِ=95,1 | وَطُورِ سِينِينَ=95,2
-اقْرَأْ بِاسْمِ رَبِّكَ=96,1 | خَلَقَ الْإِنْسَانَ=96,2
-إِنَّا أَنْزَلْنَاهُ فِي لَيْلَةِ الْقَدْرِ=97,1 | وَمَا أَدْرَاكَ مَا لَيْلَةُ الْقَدْرِ=97,2
-لَمْ يَكُنِ الَّذِينَ كَفَرُوا=98,1
-إِذَا زُلْزِلَتِ الْأَرْضُ=99,1 | وَأَخْرَجَتِ الْأَرْضُ=99,2
-وَالْعَادِيَاتِ ضَبْحًا=100,1
-الْقَارِعَةُ=101,1 | مَا الْقَارِعَةُ=101,2
-أَلْهَاكُمُ التَّكَاثُرُ=102,1 | حَتَّىٰ زُرْتُمُ الْمَقَابِرَ=102,2
-وَالْعَصْرِ=103,1 | إِنَّ الْإِنْسَانَ لَفِي خُسْرٍ=103,2
-وَيْلٌ لِكُلِّ هُمَزَةٍ=104,1
-أَلَمْ تَرَ كَيْفَ فَعَلَ رَبُّكَ=105,1
-لِإِيلَافِ قُرَيْشٍ=106,1
-أَرَأَيْتَ الَّذِي يُكَذِّبُ=107,1
-إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ=108,1
-قُلْ يَا أَيُّهَا الْكَافِرُونَ=109,1
-إِذَا جَاءَ نَصْرُ اللَّهِ=110,1
-تَبَّتْ يَدَا أَبِي لَهَبٍ=111,1
-سَبِّحِ اسْمَ رَبِّكَ الْأَعْلَى=87,1 | الَّذِي خَلَقَ فَسَوَّىٰ=87,2
-هَلْ أَتَاكَ حَدِيثُ الْغَاشِيَةِ=88,1
-وَالْفَجْرِ=89,1 | وَلَيَالٍ عَشْرٍ=89,2
-وَالشَّمْسِ وَضُحَاهَا=91,1 | وَالْقَمَرِ إِذَا تَلَاهَا=91,2
-وَاللَّيْلِ إِذَا يَغْشَىٰ=92,1 | وَالنَّهَارِ إِذَا تَجَلَّىٰ=92,2
-وَالسَّمَاءِ وَالطَّارِقِ=86,1 | وَمَا أَدْرَاكَ مَا الطَّارِقُ=86,2
-وَالسَّمَاءِ ذَاتِ الْبُرُوجِ=85,1
-إِذَا السَّمَاءُ انْشَقَّتْ=84,1
-وَيْلٌ لِلْمُطَفِّفِينَ=83,1
-إِذَا السَّمَاءُ انْفَطَرَتْ=82,1
-إِذَا الشَّمْسُ كُوِّرَتْ=81,1
-عَبَسَ وَتَوَلَّىٰ=80,1
-وَالنَّازِعَاتِ غَرْقًا=79,1
-عَمَّ يَتَسَاءَلُونَ=78,1
-وَالْمُرْسَلَاتِ عُرْفًا=77,1
-يَا أَيُّهَا الْمُدَّثِّرُ=74,1
-يَا أَيُّهَا الْمُزَّمِّلُ=73,1
-ن وَالْقَلَمِ=68,1
-تَبَارَكَ الَّذِي بِيَدِهِ الْمُلْكُ=67,1
-إِذَا وَقَعَتِ الْوَاقِعَةُ=56,1
-الرَّحْمَٰنُ عَلَّمَ الْقُرْآنَ=55,1
-وَالنَّجْمِ إِذَا هَوَىٰ=53,1
-يس وَالْقُرْآنِ الْحَكِيمِ=36,1
+INSTRUCTIONS:
+1. Analyse chaque mot du texte et cherche des correspondances dans le Coran
+2. Même si la transcription est partielle ou imparfaite, essaie d'identifier la sourate
+3. Prends en compte les variations dialectales de la transcription automatique
+4. Si plusieurs sourates sont possibles, choisis celle avec le plus de correspondances
 
-RÈGLE ABSOLUE: Si confiance < 85 → NE PAS donner de résultat (confidence=0).
-JSON uniquement sans texte: {"surah_number":X,"verse_start":X,"verse_end":X,"confidence":X,"explanation":"..."}`;
+Références essentielles:
+بِسْمِ اللَّهِ=1,1 | الْحَمْدُ لِلَّهِ=1,2 | مَالِكِ يَوْمِ=1,4 | إِيَّاكَ نَعْبُدُ=1,5 | اهْدِنَا=1,6
+قُلْ هُوَ اللَّهُ أَحَدٌ=112,1 | اللَّهُ الصَّمَدُ=112,2 | لَمْ يَلِدْ=112,3
+قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ=113,1 | قُلْ أَعُوذُ بِرَبِّ النَّاسِ=114,1
+وَالضُّحَىٰ=93,1 | أَلَمْ نَشْرَحْ=94,1 | وَالتِّينِ=95,1 | اقْرَأْ بِاسْمِ=96,1
+إِنَّا أَنْزَلْنَاهُ=97,1 | إِذَا زُلْزِلَتِ=99,1 | الْقَارِعَةُ=101,1 | أَلْهَاكُمُ=102,1
+وَالْعَصْرِ=103,1 | وَيْلٌ لِكُلِّ هُمَزَةٍ=104,1 | لِإِيلَافِ=106,1 | أَرَأَيْتَ=107,1
+إِنَّا أَعْطَيْنَاكَ=108,1 | قُلْ يَا أَيُّهَا الْكَافِرُونَ=109,1 | إِذَا جَاءَ نَصْرُ=110,1
+تَبَّتْ يَدَا=111,1 | سَبِّحِ اسْمَ=87,1 | هَلْ أَتَاكَ حَدِيثُ الْغَاشِيَةِ=88,1
+وَالْفَجْرِ=89,1 | وَالشَّمْسِ=91,1 | وَاللَّيْلِ=92,1 | يس=36,1
+تَبَارَكَ الَّذِي بِيَدِهِ الْمُلْكُ=67,1 | إِذَا وَقَعَتِ الْوَاقِعَةُ=56,1
+الرَّحْمَٰنُ عَلَّمَ الْقُرْآنَ=55,1 | وَالنَّجْمِ=53,1 | ن وَالْقَلَمِ=68,1
+
+${isFile ? 'IMPORTANT: Pour un fichier audio de qualité, sois CONFIANT dans ton identification. La confiance doit refléter la qualité réelle de la correspondance.' : ''}
+
+Réponds UNIQUEMENT en JSON sans aucun texte supplémentaire:
+{"surah_number":X,"verse_start":X,"verse_end":X,"confidence":X,"explanation":"explication courte en français"}`;
+
   const mr=await fetch('https://api.groq.com/openai/v1/chat/completions',{
     method:'POST',headers:{Authorization:'Bearer '+GROQ,'Content-Type':'application/json'},
-    body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'user',content:prompt}],temperature:0.0,max_tokens:200,response_format:{type:'json_object'}})
+    body:JSON.stringify({
+      model:'llama-3.3-70b-versatile',
+      messages:[{role:'user',content:prompt}],
+      temperature:0.0,max_tokens:250,
+      response_format:{type:'json_object'}
+    })
   });
   const md=await mr.json();
   let match;
-  try{match=JSON.parse((md.choices?.[0]?.message?.content||'{}').replace(/```json|```/g,'').trim());if(!match.surah_number)throw 0;}
-  catch(e){throw new Error('Identification impossible. Réessai…');}
+  try{
+    match=JSON.parse((md.choices?.[0]?.message?.content||'{}').replace(/```json|```/g,'').trim());
+    if(!match.surah_number)throw 0;
+  }catch(e){throw new Error('Identification impossible. Vérifiez que le fichier contient une récitation coranique en arabe.');}
+  return match;
+}
+
+// Identification standard (mode automatique)
+async function identify(blob,stepFn){
+  stepFn('🔄 Conversion audio WAV 16kHz…');
+  const trans=await transcribeAudio(blob,false);
+  stepFn('🧠 Identification sourate et verset…');
+  const match=await identifyWithLLM(trans,false);
   if((match.confidence||0)<MIN_CONF)throw new Error(`Confiance insuffisante (${match.confidence}%). Continuez à réciter…`);
   stepFn('📡 Récupération versets Quran.com…');
   const sn=Math.max(1,Math.min(114,Math.round(match.surah_number)));
@@ -729,6 +692,59 @@ JSON uniquement sans texte: {"surah_number":X,"verse_start":X,"verse_end":X,"con
   ]);
   const sd=await sR.json(),vd=await vR.json();
   const surah=sd.chapters?.find(s=>s.id===sn)||{id:sn,name_simple:'Sourate '+sn,name_arabic:'',verses_count:0,revelation_place:'makkah'};
+  return{surah,verses:vd.verses,trans,match};
+}
+
+// ===== IDENTIFICATION FICHIER — MULTI-TENTATIVES POUR 100% =====
+async function identifyFile(blob, progressFn, stepFn){
+  // Étape 1 : Transcription
+  stepFn('🔄 Conversion audio haute qualité…');progressFn(10);
+  const trans=await transcribeAudio(blob,true);
+  stepFn('🎙️ Transcription Whisper AI terminée…');progressFn(35);
+
+  // Étape 2 : Première identification
+  stepFn('🧠 Analyse IA — Tentative 1/2…');progressFn(55);
+  let match=await identifyWithLLM(trans,true);
+
+  // Étape 3 : Si confiance < 80, on retente avec un prompt différent
+  if((match.confidence||0)<80){
+    stepFn('🔍 Affinement de l\'identification — Tentative 2/2…');progressFn(72);
+    // Deuxième tentative avec prompt alternatif
+    const prompt2=`Tu es un spécialiste du Coran. Analyse ce texte arabe tiré d'une récitation coranique et identifie la sourate.
+    
+Transcription: "${trans}"
+
+Cherche ABSOLUMENT une correspondance même partielle. Analyse mot par mot.
+Réponds en JSON: {"surah_number":X,"verse_start":X,"verse_end":X,"confidence":X,"explanation":"..."}`;
+    const mr2=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+      method:'POST',headers:{Authorization:'Bearer '+GROQ,'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'llama-3.3-70b-versatile',
+        messages:[{role:'user',content:prompt2}],
+        temperature:0.2,max_tokens:200,
+        response_format:{type:'json_object'}
+      })
+    });
+    const md2=await mr2.json();
+    try{
+      const m2=JSON.parse((md2.choices?.[0]?.message?.content||'{}').replace(/```json|```/g,'').trim());
+      if(m2.surah_number&&(m2.confidence||0)>(match.confidence||0))match=m2;
+    }catch(e){}
+  }
+
+  progressFn(85);
+  if((match.confidence||0)<55)throw new Error(`Récitation non identifiée (${match.confidence||0}% de correspondance). Essayez un fichier plus long ou avec moins de bruit.`);
+
+  stepFn('📡 Récupération des données Quran.com…');
+  const sn=Math.max(1,Math.min(114,Math.round(match.surah_number)));
+  const vs=Math.max(1,Math.round(match.verse_start||1));
+  const[sR,vR]=await Promise.all([
+    fetch('https://api.qurancdn.com/api/qdc/chapters?language=fr'),
+    fetch(`https://api.qurancdn.com/api/qdc/verses/by_chapter/${sn}?language=fr&words=true&per_page=${PER_PAGE}&page=1&translations=136&verse_number=${vs}`)
+  ]);
+  const sd=await sR.json(),vd=await vR.json();
+  const surah=sd.chapters?.find(s=>s.id===sn)||{id:sn,name_simple:'Sourate '+sn,name_arabic:'',verses_count:0,revelation_place:'makkah'};
+  progressFn(100);
   return{surah,verses:vd.verses,trans,match};
 }
 
@@ -808,149 +824,55 @@ function stopAya(){
 function newAya(){document.getElementById('res-a').classList.remove('on');document.getElementById('eb-a').classList.remove('on');document.getElementById('ayaCycles').textContent='';ayaCycleN=0;const cb=document.getElementById('cb-a');cb.disabled=false;cb.style.opacity='1';cb.style.cursor='pointer';}
 function resetAya(){stopAya();newAya();const a=document.getElementById('ap-a');a.pause();a.src='';resetPB('a');}
 
-// ===== MODE ÉCOUTER (auto-stop 6s minimum pour fiabilité 100%) =====
-let ecouterOn=false,ecouterMR=null,ecouterChunks=[],ecouterCtx=null,ecouterAfId=null,ecouterTimer=null;
-
-async function toggleEcouter(){
-  if(!ecouterOn){
-    ecouterOn=true;
-    document.getElementById('rbtn').classList.add('rec');
-    document.getElementById('ri').textContent='⏹';
-    document.getElementById('rl').textContent='Arrêter';
-    document.getElementById('rs').textContent='🎙️ Écoute 6 secondes en cours…';
-    document.getElementById('eb-m').classList.remove('on');
-    document.getElementById('res-m').classList.remove('on');
-    document.getElementById('viz').classList.add('on');
-    try{
-      // Toujours créer un stream FRAIS — ne jamais réutiliser un stream désactivé
-      // echoCancellation:false pour capter le son des écouteurs sans filtrage
-      const stream=await navigator.mediaDevices.getUserMedia({
-        audio:{
-          echoCancellation:false,
-          noiseSuppression:false,
-          autoGainControl:false
-        },
-        video:false
-      });
-
-      ecouterCtx=new(window.AudioContext||window.webkitAudioContext)();
-      const src=ecouterCtx.createMediaStreamSource(stream);
-      const an=ecouterCtx.createAnalyser();an.fftSize=256;src.connect(an);
-      const bars=document.getElementById('viz').querySelectorAll('.bar');
-      const dat=new Uint8Array(an.frequencyBinCount);
-      (function loop(){
-        ecouterAfId=requestAnimationFrame(loop);
-        an.getByteFrequencyData(dat);
-        bars.forEach((b,i)=>{b.style.height=Math.max(4,(dat[Math.floor(i*dat.length/26)]/255)*40)+'px';});
-      })();
-
-      ecouterChunks=[];
-      // Choisir le meilleur format audio pour Safari
-      const mime=['audio/mp4;codecs=mp4a.40.2','audio/mp4','audio/aac','audio/webm;codecs=opus','audio/webm'].find(t=>MediaRecorder.isTypeSupported(t))||'';
-      ecouterMR=new MediaRecorder(stream,mime?{mimeType:mime,audioBitsPerSecond:128000}:{audioBitsPerSecond:128000});
-      ecouterMR.ondataavailable=e=>{if(e.data&&e.data.size>0)ecouterChunks.push(e.data);};
-      ecouterMR.onstop=async()=>{
-        // Arrêt propre du stream
-        stream.getTracks().forEach(t=>t.stop());
-        if(ecouterAfId){cancelAnimationFrame(ecouterAfId);ecouterAfId=null;}
-        stopViz('viz');
-        document.getElementById('viz').classList.remove('on');
-        try{ecouterCtx.close();}catch(e){}
-        document.getElementById('rbtn').classList.remove('rec');
-        document.getElementById('ri').textContent='🎙️';
-        document.getElementById('rl').textContent='Écouter';
-
-        if(ecouterChunks.length===0){
-          document.getElementById('eb-m').textContent='Aucun audio capté. Vérifiez que le micro est bien autorisé dans les réglages Safari.';
-          document.getElementById('eb-m').classList.add('on');
-          document.getElementById('rs').textContent='Appuyez pour réessayer';
-          ecouterOn=false;
-          return;
-        }
-
-        // Lance l'analyse
-        document.getElementById('ld-m').classList.add('on');
-        document.getElementById('rs').textContent='🔍 Analyse Whisper AI en cours…';
-        const blob=new Blob(ecouterChunks,{type:ecouterMR.mimeType||'audio/mp4'});
-        try{
-          const{surah,verses,trans,match}=await identify(blob,t=>document.getElementById('ls-m').textContent=t);
-          document.getElementById('ld-m').classList.remove('on');
-          document.getElementById('rs').textContent='✅ Sourate identifiée !';
-          await buildRes(surah,verses,trans,match,'m');
-          pushNotif(surah,match);
-        }catch(err){
-          document.getElementById('ld-m').classList.remove('on');
-          document.getElementById('eb-m').textContent=err.message;
-          document.getElementById('eb-m').classList.add('on');
-          document.getElementById('rs').textContent='Appuyez pour réessayer';
-        }
-        ecouterOn=false;
-      };
-
-      ecouterMR.start(100);
-      // Arrêt automatique après 6 secondes
-      ecouterTimer=setTimeout(()=>stopEcouter(),MIN_REC_MS);
-
-    }catch(e){
-      ecouterOn=false;
-      document.getElementById('rbtn').classList.remove('rec');
-      document.getElementById('ri').textContent='🎙️';
-      document.getElementById('rl').textContent='Écouter';
-      document.getElementById('eb-m').textContent='❌ Microphone inaccessible : '+e.message+'. Allez dans Réglages → Safari → Microphone et autorisez l\'accès.';
-      document.getElementById('eb-m').classList.add('on');
-      document.getElementById('viz').classList.remove('on');
-    }
-  }else{
-    stopEcouter();
-  }
-}
-
-function stopEcouter(){
-  if(ecouterTimer){clearTimeout(ecouterTimer);ecouterTimer=null;}
-  if(ecouterMR&&ecouterMR.state==='recording'){
-    try{ecouterMR.stop();}catch(e){}
-  }
-}
-
-function resetM(){
-  ecouterOn=false;
-  if(ecouterMR&&ecouterMR.state!=='inactive'){try{ecouterMR.stop();}catch(e){}}
-  if(ecouterTimer){clearTimeout(ecouterTimer);ecouterTimer=null;}
-  if(ecouterAfId){cancelAnimationFrame(ecouterAfId);ecouterAfId=null;}
-  ['res-m','eb-m','ld-m'].forEach(id=>document.getElementById(id).classList.remove('on'));
-  document.getElementById('rs').textContent='Appuyez — s\'arrête automatiquement dès la sourate reconnue';
-  document.getElementById('ri').textContent='🎙️';document.getElementById('rl').textContent='Écouter';
-  document.getElementById('rbtn').classList.remove('rec');
-  stopViz('viz');document.getElementById('viz').classList.remove('on');
-  const a=document.getElementById('ap-m');a.pause();a.src='';resetPB('m');
-  const cb=document.getElementById('cb-m');if(cb){cb.disabled=false;cb.style.opacity='1';cb.style.cursor='pointer';}
-}
-
 // ===== MODE FICHIER =====
 function dov(e){e.preventDefault();document.getElementById('uz').classList.add('dov');}
 function dlv(){document.getElementById('uz').classList.remove('dov');}
 function drp(e){e.preventDefault();dlv();const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('audio/'))setF(f);}
 function selF(e){const f=e.target.files[0];if(f)setF(f);}
-function setF(f){upBlob=f;document.getElementById('fn').textContent=f.name;document.getElementById('fs').textContent=(f.size/1024/1024).toFixed(2)+' Mo';document.getElementById('finfo').classList.add('on');document.getElementById('abtn-u').classList.add('on');}
+function setF(f){
+  upBlob=f;
+  document.getElementById('fn').textContent=f.name;
+  document.getElementById('fs').textContent=(f.size/1024/1024).toFixed(2)+' Mo';
+  document.getElementById('finfo').classList.add('on');
+  document.getElementById('quality-tip').classList.add('on');
+  document.getElementById('abtn-u').classList.add('on');
+}
+
+function setProgress(p){document.getElementById('prog-u').style.width=p+'%';}
+
 async function analyzeU(){
   if(!upBlob)return;
   document.getElementById('abtn-u').classList.remove('on');
-  document.getElementById('eb-u').classList.remove('on');document.getElementById('res-u').classList.remove('on');
+  document.getElementById('eb-u').classList.remove('on');
+  document.getElementById('res-u').classList.remove('on');
+  document.getElementById('quality-tip').classList.remove('on');
   document.getElementById('ld-u').classList.add('on');
+  setProgress(0);
   try{
-    const{surah,verses,trans,match}=await identify(upBlob,t=>document.getElementById('ls-u').textContent=t);
+    const{surah,verses,trans,match}=await identifyFile(
+      upBlob,
+      p=>setProgress(p),
+      t=>{document.getElementById('ls-u').textContent=t;}
+    );
     document.getElementById('ld-u').classList.remove('on');
-    await buildRes(surah,verses,trans,match,'u');pushNotif(surah,match);
+    await buildRes(surah,verses,trans,match,'u');
+    pushNotif(surah,match);
   }catch(err){
     document.getElementById('ld-u').classList.remove('on');
-    document.getElementById('eb-u').textContent=err.message;document.getElementById('eb-u').classList.add('on');
+    document.getElementById('eb-u').textContent=err.message;
+    document.getElementById('eb-u').classList.add('on');
     document.getElementById('abtn-u').classList.add('on');
+    document.getElementById('quality-tip').classList.add('on');
   }
 }
+
 function resetU(){
-  upBlob=null;['res-u','eb-u','ld-u'].forEach(id=>document.getElementById(id).classList.remove('on'));
-  document.getElementById('abtn-u').classList.remove('on');document.getElementById('finfo').classList.remove('on');
+  upBlob=null;
+  ['res-u','eb-u','ld-u','quality-tip'].forEach(id=>document.getElementById(id).classList.remove('on'));
+  document.getElementById('abtn-u').classList.remove('on');
+  document.getElementById('finfo').classList.remove('on');
   document.getElementById('fi').value='';
+  setProgress(0);
   const a=document.getElementById('ap-u');a.pause();a.src='';resetPB('u');
   const cb=document.getElementById('cb-u');cb.disabled=false;cb.style.opacity='1';cb.style.cursor='pointer';
 }
@@ -963,7 +885,7 @@ const RECITERS=[
   {id:'mishaari_raashid_al_3afaasee', name:'Mishary Al-Afasy', ar:'مشاري العفاسي'},
   {id:'abdurrahmaan_as-sudais', name:'Abdurrahman Al-Sudais', ar:'عبدالرحمن السديس'},
 ];
-const selectedReciter={a:RECITERS[0],m:RECITERS[0],u:RECITERS[0]};
+const selectedReciter={a:RECITERS[0],u:RECITERS[0]};
 
 function buildReciterGrid(suffix,surahId){
   const grid=document.getElementById('rg-'+suffix);
@@ -975,10 +897,8 @@ function buildReciterGrid(suffix,surahId){
     btn.innerHTML=`<span class="rb-name">${r.name}</span><span class="rb-ar">${r.ar}</span>`;
     btn.onclick=()=>{
       selectedReciter[suffix]=r;
-      // Met à jour la sélection visuelle
       grid.querySelectorAll('.reciter-btn').forEach(b=>b.classList.remove('sel'));
       btn.classList.add('sel');
-      // Met à jour l'audio
       const sid=String(surahId).padStart(3,'0');
       const a=document.getElementById('ap-'+suffix);
       const wasPlaying=!a.paused;
