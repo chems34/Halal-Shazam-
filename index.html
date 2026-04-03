@@ -617,7 +617,7 @@ async function transcribeAudio(blob, isFile=false){
   if(!wr.ok){const e=await wr.json().catch(()=>({}));throw new Error('Whisper: '+(e.error?.message||wr.status));}
   const wd=await wr.json();
   const trans=(wd.text||'').trim();
-  if(!trans||trans.length<3)throw new Error('Aucun texte arabe détecté. Vérifiez que le fichier contient bien une récitation coranique.');
+  if(!trans||trans.length<3)throw new Error('Aucun texte arabe détecté. Approchez le téléphone du micro et réessayez.');
   return trans;
 }
 
@@ -665,7 +665,7 @@ Réponds UNIQUEMENT en JSON sans aucun texte supplémentaire:
   try{
     match=JSON.parse((md.choices?.[0]?.message?.content||'{}').replace(/```json|```/g,'').trim());
     if(!match.surah_number)throw 0;
-  }catch(e){throw new Error('Identification impossible. Vérifiez que le fichier contient une récitation coranique en arabe.');}
+  }catch(e){throw new Error('Récitation non reconnue. Réessayez en vous rapprochant du micro.');}
   return match;
 }
 
@@ -753,8 +753,13 @@ async function toggleAya(){
     document.getElementById('viz-aya').classList.add('on');
     try{
       let stream;
-      if(micS){micS.getTracks().forEach(t=>t.enabled=true);stream=micS;}
-      else{stream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});micS=stream;}
+      // Désactive echo/noise pour capter le son d'un autre téléphone
+      try{
+        stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false},video:false});
+      }catch(e){
+        stream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
+      }
+      micS=stream;
       ayaStream=stream;
       ayaCtx=new(window.AudioContext||window.webkitAudioContext)();
       const src=ayaCtx.createMediaStreamSource(stream);
@@ -803,7 +808,7 @@ function ayaCycle(stream){
 function stopAya(){
   ayaOn=false;ayaBusy=false;
   if(ayaMR&&ayaMR.state!=='inactive'){try{ayaMR.stop();}catch(e){}}
-  if(micS)micS.getTracks().forEach(t=>t.enabled=false);
+  if(micS){micS.getTracks().forEach(t=>t.stop());micS=null;}
   if(ayaCtx){try{ayaCtx.close();}catch(e){}}
   if(afId){cancelAnimationFrame(afId);afId=null;}
   stopViz('viz-aya');document.getElementById('viz-aya').classList.remove('on');
