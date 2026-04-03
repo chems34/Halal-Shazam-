@@ -1,4 +1,4 @@
-
+Cinquième test  échec 
 Dou'as pour la 🇵🇸🤲
 <!DOCTYPE html>
 <html lang="fr" dir="ltr">
@@ -201,24 +201,6 @@ audio{display:none;}
 .notif-detail{font-size:0.75rem;color:var(--text2);margin-top:1px;}
 .notif-ar{font-family:'Noto Naskh Arabic',serif;font-size:0.94rem;color:var(--gold2);direction:rtl;text-align:right;margin-top:3px;}
 
-/* SÉLECTEUR RÉCITATEUR */
-.reciter-wrap{margin-bottom:14px;}
-.reciter-label{font-size:0.66rem;color:var(--text2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;display:block;}
-.reciter-grid{display:flex;gap:8px;flex-wrap:wrap;}
-.reciter-btn{
-  flex:1;min-width:130px;padding:10px 12px;
-  background:var(--bg3);border:1px solid var(--border);border-radius:10px;
-  color:var(--text2);font-family:'Cormorant Garamond',serif;font-size:0.86rem;
-  letter-spacing:0.03em;cursor:pointer;transition:all 0.3s;text-align:center;
-}
-.reciter-btn:hover{border-color:var(--border2);color:var(--text);}
-.reciter-btn.sel{
-  background:linear-gradient(135deg,rgba(201,168,76,0.14),rgba(201,168,76,0.07));
-  border-color:var(--border2);color:var(--gold2);
-}
-.reciter-btn .rb-name{font-size:0.86rem;display:block;font-weight:500;}
-.reciter-btn .rb-ar{font-family:'Noto Naskh Arabic',serif;font-size:0.9rem;color:var(--gold);display:block;margin-top:2px;}
-
 footer{text-align:center;padding:22px 0 10px;font-size:0.68rem;color:var(--text2);opacity:0.35;letter-spacing:0.06em;}
 
 @keyframes fd{from{opacity:0;transform:translateY(-16px);}to{opacity:1;transform:translateY(0);}}
@@ -261,20 +243,17 @@ footer{text-align:center;padding:22px 0 10px;font-size:0.68rem;color:var(--text2
 
   <div class="card">
     <div class="tabs">
-      <button class="tab on" onclick="switchTab('manual')">🎤 Écouter</button>
-      <button class="tab" onclick="switchTab('auto')">⚡ Automatique</button>
+      <button class="tab on" onclick="switchTab('auto')">⚡ Automatique</button>
+      <button class="tab" onclick="switchTab('manual')">🎤 Manuel</button>
       <button class="tab" onclick="switchTab('upload')">📂 Fichier</button>
     </div>
 
-    <!-- ÉCOUTER (premier, actif par défaut) -->
-    <div class="pnl on" id="pnl-manual">
+    <!-- AUTOMATIQUE -->
+    <div class="pnl on" id="pnl-auto">
       <div class="aya-wrap">
         <div class="earphones-notice">
           <div class="en-icon">🎧</div>
-          <div class="en-text">
-            <b>Comment utiliser :</b> Branchez vos <b>écouteurs</b>, lancez la récitation sur votre téléphone ou un autre appareil, puis appuyez sur le bouton. Le micro captera le son via les écouteurs sans interférence.<br/>
-            <span style="opacity:0.7;font-size:0.8rem;">⚠️ Si Safari demande l'accès au micro, appuyez sur "Autoriser".</span>
-          </div>
+          <div class="en-text"><b>Important :</b> Branchez vos <b>écouteurs</b> avant d'activer. Le micro captera le son sans couper les autres applications.</div>
         </div>
         <div class="viz-aya" id="viz-aya"></div>
         <button class="aya-btn" id="ayaBtn" onclick="toggleAya()">
@@ -296,15 +275,10 @@ footer{text-align:center;padding:22px 0 10px;font-size:0.68rem;color:var(--text2
         <div class="tb"><div class="tl">🔤 Texte transcrit Whisper AI</div><div class="tt" id="tt-a"></div></div>
         <div class="vb">
           <div class="vt">📜 Versets — arabe · français · arabe · tafsir en français</div>
-          <div id="vlist-a"></div>
           <div class="continue-loading" id="cl-a">Chargement des versets suivants…</div>
           <button class="continue-btn" id="cb-a" onclick="loadMore('a')">📖 Voir les versets suivants</button>
         </div>
-        <div class="reciter-wrap">
-          <span class="reciter-label">🎙️ Choisir le récitateur</span>
-          <div class="reciter-grid" id="rg-a"></div>
-        </div>
-        <button class="pb" id="pb-a" onclick="togglePlay('a')">▶ Écouter la récitation</button>
+        <button class="pb" id="pb-a" onclick="togglePlay('a')">▶ Écouter avec Mohamed Al-Luhaidan</button>
         <audio id="ap-a" onended="resetPB('a')"></audio>
         <div class="btn-row">
           <button class="btn-gold" onclick="newAya()">🔄 Nouvelle reconnaissance</button>
@@ -313,16 +287,17 @@ footer{text-align:center;padding:22px 0 10px;font-size:0.68rem;color:var(--text2
       </div>
     </div>
 
-    <!-- AUTOMATIQUE (deuxième) -->
-    <div class="pnl" id="pnl-auto">
+    <!-- MANUEL -->
+    <div class="pnl" id="pnl-manual">
       <div class="rc">
         <div class="viz" id="viz"></div>
-        <button class="rbtn" id="rbtn" onclick="toggleEcouter()">
+        <button class="rbtn" id="rbtn" onclick="toggleRec()">
           <span class="ri" id="ri">🎙️</span>
-          <span class="rl" id="rl">Écouter</span>
+          <span class="rl" id="rl">Appuyer</span>
         </button>
-        <p class="rs" id="rs">Appuyez — le micro écoute 6 secondes puis identifie automatiquement</p>
+        <p class="rs" id="rs">Appuyez pour commencer l'enregistrement</p>
       </div>
+      <button class="abtn" id="abtn-m" onclick="analyzeM()">✨ Identifier la récitation</button>
       <div class="ld" id="ld-m"><div class="sp"></div><p class="lt">Analyse en cours…</p><p class="ls" id="ls-m"></p></div>
       <div class="eb" id="eb-m"></div>
       <div class="res" id="res-m">
@@ -340,11 +315,7 @@ footer{text-align:center;padding:22px 0 10px;font-size:0.68rem;color:var(--text2
           <div class="continue-loading" id="cl-m">Chargement…</div>
           <button class="continue-btn" id="cb-m" onclick="loadMore('m')">📖 Voir les versets suivants</button>
         </div>
-        <div class="reciter-wrap">
-          <span class="reciter-label">🎙️ Choisir le récitateur</span>
-          <div class="reciter-grid" id="rg-m"></div>
-        </div>
-        <button class="pb" id="pb-m" onclick="togglePlay('m')">▶ Écouter la récitation</button>
+        <button class="pb" id="pb-m" onclick="togglePlay('m')">▶ Écouter avec Mohamed Al-Luhaidan</button>
         <audio id="ap-m" onended="resetPB('m')"></audio>
         <div class="btn-row"><button class="btn-outline" onclick="resetM()">↩ Nouvelle analyse</button></div>
       </div>
@@ -378,11 +349,7 @@ footer{text-align:center;padding:22px 0 10px;font-size:0.68rem;color:var(--text2
           <div class="continue-loading" id="cl-u">Chargement…</div>
           <button class="continue-btn" id="cb-u" onclick="loadMore('u')">📖 Voir les versets suivants</button>
         </div>
-        <div class="reciter-wrap">
-          <span class="reciter-label">🎙️ Choisir le récitateur</span>
-          <div class="reciter-grid" id="rg-u"></div>
-        </div>
-        <button class="pb" id="pb-u" onclick="togglePlay('u')">▶ Écouter la récitation</button>
+        <button class="pb" id="pb-u" onclick="togglePlay('u')">▶ Écouter avec Mohamed Al-Luhaidan</button>
         <audio id="ap-u" onended="resetPB('u')"></audio>
         <div class="btn-row"><button class="btn-outline" onclick="resetU()">↩ Nouvelle analyse</button></div>
       </div>
@@ -397,7 +364,6 @@ const GROQ='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';
 const CHUNK_SEC=6;
 const MIN_CONF=85;
 const PER_PAGE=5;
-const MIN_REC_MS=6000; // minimum 6 secondes pour être sûr à 100%
 
 // État pagination par mode
 const state={
@@ -446,8 +412,8 @@ async function startApp(){
 
 // ===== TABS =====
 function switchTab(t){
-  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('on',['manual','auto','upload'][i]===t));
-  ['manual','auto','upload'].forEach(id=>document.getElementById('pnl-'+id).classList.toggle('on',id===t));
+  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('on',['auto','manual','upload'][i]===t));
+  ['auto','manual','upload'].forEach(id=>document.getElementById('pnl-'+id).classList.toggle('on',id===t));
   if(t!=='auto'&&ayaOn)stopAya();
 }
 
@@ -473,44 +439,37 @@ async function toWav(inputBlob){
   return new Blob([buf],{type:'audio/wav'});
 }
 
-// ===== TAFSIR 100% EN FRANÇAIS — Ibn Kathir traduit par Groq =====
+// ===== TAFSIR EN FRANÇAIS — Ibn Kathir (anglais via API) traduit par Groq =====
 const tafsirCache={};
 
 async function fetchTafsirFr(surahNum,verseNum){
   const key=surahNum+':'+verseNum;
   if(tafsirCache[key])return tafsirCache[key];
   try{
-    // 1. Récupère Ibn Kathir en anglais (id=169)
+    // 1. Récupère Ibn Kathir abrégé en anglais (id=169) via Quran.com
     const r=await fetch(`https://api.qurancdn.com/api/qdc/tafsirs/169/by_ayah/${surahNum}:${verseNum}`);
     if(!r.ok)throw new Error();
     const d=await r.json();
     const enText=(d.tafsir?.text||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
     if(!enText||enText.length<10){tafsirCache[key]='Tafsir non disponible pour ce verset.';return tafsirCache[key];}
 
-    // 2. Traduit INTÉGRALEMENT en français via Groq — tout doit être en français
+    // 2. Traduit en français via Groq
     const tr=await fetch('https://api.groq.com/openai/v1/chat/completions',{
       method:'POST',
       headers:{Authorization:'Bearer '+GROQ,'Content-Type':'application/json'},
       body:JSON.stringify({
         model:'llama-3.3-70b-versatile',
         messages:[
-          {role:'system',content:`Tu es un expert islamique francophone spécialisé dans la traduction du Tafsir Ibn Kathir.
-RÈGLES ABSOLUES:
-- Traduis TOUT en français, sans exception
-- Ne laisse AUCUN mot en anglais ou en arabe dans ta réponse
-- Si le texte contient des mots arabes entre parenthèses, traduis-les aussi
-- Écris en français courant, clair et accessible
-- Garde le sens islamique exact
-- Réponds UNIQUEMENT avec la traduction française, rien d'autre`},
-          {role:'user',content:'Traduis ce tafsir entièrement en français:\n\n'+enText.slice(0,1500)}
+          {role:'system',content:'Tu es un traducteur expert en arabe, islam et tafsir. Traduis fidèlement ce tafsir du Coran de l\'anglais vers le français. Garde le sens islamique précis. Réponds uniquement avec la traduction, sans rien d\'autre.'},
+          {role:'user',content:enText.slice(0,1200)}
         ],
         temperature:0.1,
-        max_tokens:1000
+        max_tokens:800
       })
     });
     const td=await tr.json();
     const frText=(td.choices?.[0]?.message?.content||'').trim();
-    tafsirCache[key]=frText||'Tafsir non disponible pour ce verset.';
+    tafsirCache[key]=frText||'Tafsir non disponible.';
     return tafsirCache[key];
   }catch(e){
     tafsirCache[key]='Tafsir non disponible pour ce verset.';
@@ -519,25 +478,24 @@ RÈGLES ABSOLUES:
 }
 
 // ===== CONSTRUCTION D'UN VERSET =====
-// Structure : Arabe (grand) → Traduction française → Arabe répété (discret) → [Bouton Tafsir]
 function makeVerseEl(v,surahNum,suffix){
   const d=document.createElement('div');d.className='vi';
-  const tr=(v.translations?.[0]?.text||'Traduction non disponible').replace(/<[^>]*>/g,'');
+  const tr=(v.translations?.[0]?.text||'—').replace(/<[^>]*>/g,'');
   const ar=v.words?v.words.filter(w=>w.char_type_name==='word').map(w=>w.text_uthmani).join(' '):(v.text_uthmani||'');
   const vid='tafsir-'+suffix+'-'+surahNum+'-'+v.verse_number;
 
   d.innerHTML=`
     <div class="vi-header">
       <span class="vn">Verset ${v.verse_number}</span>
-      <button class="tafsir-btn" id="btn-${vid}" onclick="toggleTafsir('${vid}',${surahNum},${v.verse_number})">📚 Tafsir en français</button>
+      <button class="tafsir-btn" id="btn-${vid}" onclick="toggleTafsir('${vid}',${surahNum},${v.verse_number})">📚 Tafsir</button>
     </div>
     ${ar?`<div class="va">${ar}</div>`:''}
     <div class="vf">${tr}</div>
-    ${ar?`<div style="font-family:'Noto Naskh Arabic',serif;font-size:1.05rem;color:var(--gold);opacity:0.6;direction:rtl;text-align:right;line-height:2;margin-top:10px;padding-top:10px;border-top:1px solid rgba(201,168,76,0.12);">${ar}</div>`:''}
+    ${ar?`<div class="va" style="font-size:1.1rem;opacity:0.7;margin-top:6px;">${ar}</div>`:''}
     <div class="tafsir-panel" id="${vid}">
-      <div class="tafsir-name">📚 Tafsir Ibn Kathir — entièrement en français</div>
-      <div class="tafsir-loading">⏳ Traduction en cours, merci de patienter…</div>
-      <div class="tafsir-fr" style="display:none;font-size:0.9rem;color:var(--text);line-height:1.9;"></div>
+      <div class="tafsir-name">📚 Tafsir Ibn Kathir — en français</div>
+      <div class="tafsir-loading">Traduction du tafsir en cours…</div>
+      <div class="tafsir-fr" style="display:none;font-size:0.88rem;color:var(--text);line-height:1.8;"></div>
     </div>
   `;
   return d;
@@ -605,12 +563,7 @@ async function buildRes(surah,verses,trans,match,x){
   if(totalPages>1){cb.classList.add('on');}else{cb.classList.remove('on');}
   cb.textContent='📖 Voir les versets suivants (page 2/'+totalPages+')';
 
-  // Init récitateur par défaut
-  selectedReciter[x]=RECITERS[0];
-  const sid=String(surah.id).padStart(3,'0');
-  document.getElementById('ap-'+x).src=`https://download.quranicaudio.com/quran/${RECITERS[0].id}/${sid}.mp3`;
-  document.getElementById('pb-'+x).innerHTML='▶ Écouter — '+RECITERS[0].name;
-  buildReciterGrid(x,surah.id);
+  document.getElementById('ap-'+x).src='https://download.quranicaudio.com/quran/muhammad_alhaidan/'+String(surah.id).padStart(3,'0')+'.mp3';
   document.getElementById('res-'+x).classList.add('on');
 }
 
@@ -657,62 +610,10 @@ async function identify(blob,stepFn){
   const trans=(wd.text||'').trim().replace(/[^\u0600-\u06FF\s.,،؟!\d]/g,'').trim();
   if(!trans||trans.length<3)throw new Error('Aucun texte arabe détecté. Approchez les écouteurs du micro.');
   stepFn('🧠 Identification sourate et verset…');
-  const prompt=`Tu es un hafiz du Coran avec une connaissance parfaite des 114 sourates et 6236 versets.
-
-Texte arabe transcrit: "${trans}"
-
-ANALYSE MOT PAR MOT ce texte et identifie la sourate exacte.
-
-Références des sourates les plus courantes:
-بِسْمِ اللَّهِ=1,1 | الْحَمْدُ لِلَّهِ=1,2 | الرَّحْمَٰنِ الرَّحِيمِ=1,3 | مَالِكِ يَوْمِ=1,4 | إِيَّاكَ نَعْبُدُ=1,5 | اهْدِنَا=1,6 | غَيْرِ الْمَغْضُوبِ=1,7
-قُلْ هُوَ اللَّهُ أَحَدٌ=112,1 | اللَّهُ الصَّمَدُ=112,2 | لَمْ يَلِدْ=112,3 | وَلَمْ يَكُنْ لَهُ كُفُوًا=112,4
-قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ=113,1 | مِنْ شَرِّ مَا خَلَقَ=113,2 | وَمِنْ شَرِّ غَاسِقٍ=113,3 | وَمِنْ شَرِّ النَّفَّاثَاتِ=113,4 | وَمِنْ شَرِّ حَاسِدٍ=113,5
-قُلْ أَعُوذُ بِرَبِّ النَّاسِ=114,1 | مَلِكِ النَّاسِ=114,2 | إِلَٰهِ النَّاسِ=114,3
-وَالضُّحَىٰ=93,1 | وَاللَّيْلِ إِذَا سَجَىٰ=93,2 | مَا وَدَّعَكَ=93,3
-أَلَمْ نَشْرَحْ=94,1 | وَوَضَعْنَا عَنْكَ=94,2
-وَالتِّينِ وَالزَّيْتُونِ=95,1 | وَطُورِ سِينِينَ=95,2
-اقْرَأْ بِاسْمِ رَبِّكَ=96,1 | خَلَقَ الْإِنْسَانَ=96,2
-إِنَّا أَنْزَلْنَاهُ فِي لَيْلَةِ الْقَدْرِ=97,1 | وَمَا أَدْرَاكَ مَا لَيْلَةُ الْقَدْرِ=97,2
-لَمْ يَكُنِ الَّذِينَ كَفَرُوا=98,1
-إِذَا زُلْزِلَتِ الْأَرْضُ=99,1 | وَأَخْرَجَتِ الْأَرْضُ=99,2
-وَالْعَادِيَاتِ ضَبْحًا=100,1
-الْقَارِعَةُ=101,1 | مَا الْقَارِعَةُ=101,2
-أَلْهَاكُمُ التَّكَاثُرُ=102,1 | حَتَّىٰ زُرْتُمُ الْمَقَابِرَ=102,2
-وَالْعَصْرِ=103,1 | إِنَّ الْإِنْسَانَ لَفِي خُسْرٍ=103,2
-وَيْلٌ لِكُلِّ هُمَزَةٍ=104,1
-أَلَمْ تَرَ كَيْفَ فَعَلَ رَبُّكَ=105,1
-لِإِيلَافِ قُرَيْشٍ=106,1
-أَرَأَيْتَ الَّذِي يُكَذِّبُ=107,1
-إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ=108,1
-قُلْ يَا أَيُّهَا الْكَافِرُونَ=109,1
-إِذَا جَاءَ نَصْرُ اللَّهِ=110,1
-تَبَّتْ يَدَا أَبِي لَهَبٍ=111,1
-سَبِّحِ اسْمَ رَبِّكَ الْأَعْلَى=87,1 | الَّذِي خَلَقَ فَسَوَّىٰ=87,2
-هَلْ أَتَاكَ حَدِيثُ الْغَاشِيَةِ=88,1
-وَالْفَجْرِ=89,1 | وَلَيَالٍ عَشْرٍ=89,2
-وَالشَّمْسِ وَضُحَاهَا=91,1 | وَالْقَمَرِ إِذَا تَلَاهَا=91,2
-وَاللَّيْلِ إِذَا يَغْشَىٰ=92,1 | وَالنَّهَارِ إِذَا تَجَلَّىٰ=92,2
-وَالسَّمَاءِ وَالطَّارِقِ=86,1 | وَمَا أَدْرَاكَ مَا الطَّارِقُ=86,2
-وَالسَّمَاءِ ذَاتِ الْبُرُوجِ=85,1
-إِذَا السَّمَاءُ انْشَقَّتْ=84,1
-وَيْلٌ لِلْمُطَفِّفِينَ=83,1
-إِذَا السَّمَاءُ انْفَطَرَتْ=82,1
-إِذَا الشَّمْسُ كُوِّرَتْ=81,1
-عَبَسَ وَتَوَلَّىٰ=80,1
-وَالنَّازِعَاتِ غَرْقًا=79,1
-عَمَّ يَتَسَاءَلُونَ=78,1
-وَالْمُرْسَلَاتِ عُرْفًا=77,1
-يَا أَيُّهَا الْمُدَّثِّرُ=74,1
-يَا أَيُّهَا الْمُزَّمِّلُ=73,1
-ن وَالْقَلَمِ=68,1
-تَبَارَكَ الَّذِي بِيَدِهِ الْمُلْكُ=67,1
-إِذَا وَقَعَتِ الْوَاقِعَةُ=56,1
-الرَّحْمَٰنُ عَلَّمَ الْقُرْآنَ=55,1
-وَالنَّجْمِ إِذَا هَوَىٰ=53,1
-يس وَالْقُرْآنِ الْحَكِيمِ=36,1
-
-RÈGLE ABSOLUE: Si confiance < 85 → NE PAS donner de résultat (confidence=0).
-JSON uniquement sans texte: {"surah_number":X,"verse_start":X,"verse_end":X,"confidence":X,"explanation":"..."}`;
+  const prompt=`Tu es un hafiz du Coran. Texte arabe: "${trans}"
+Références: ${SURAH_HINTS}
+RÈGLES: analyse chaque mot, confiance HONNÊTE, jamais au hasard, si ambigu → confiance<50.
+JSON uniquement: {"surah_number":X,"verse_start":X,"verse_end":X,"confidence":X,"explanation":"..."}`;
   const mr=await fetch('https://api.groq.com/openai/v1/chat/completions',{
     method:'POST',headers:{Authorization:'Bearer '+GROQ,'Content-Type':'application/json'},
     body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:[{role:'user',content:prompt}],temperature:0.0,max_tokens:200,response_format:{type:'json_object'}})
@@ -810,122 +711,62 @@ function stopAya(){
 function newAya(){document.getElementById('res-a').classList.remove('on');document.getElementById('eb-a').classList.remove('on');document.getElementById('ayaCycles').textContent='';ayaCycleN=0;const cb=document.getElementById('cb-a');cb.disabled=false;cb.style.opacity='1';cb.style.cursor='pointer';}
 function resetAya(){stopAya();newAya();const a=document.getElementById('ap-a');a.pause();a.src='';resetPB('a');}
 
-// ===== MODE ÉCOUTER (auto-stop 6s minimum pour fiabilité 100%) =====
-let ecouterOn=false,ecouterMR=null,ecouterChunks=[],ecouterCtx=null,ecouterAfId=null,ecouterTimer=null;
-
-async function toggleEcouter(){
-  if(!ecouterOn){
-    ecouterOn=true;
-    document.getElementById('rbtn').classList.add('rec');
-    document.getElementById('ri').textContent='⏹';
-    document.getElementById('rl').textContent='Arrêter';
-    document.getElementById('rs').textContent='🎙️ Écoute 6 secondes en cours…';
-    document.getElementById('eb-m').classList.remove('on');
-    document.getElementById('res-m').classList.remove('on');
-    document.getElementById('viz').classList.add('on');
+// ===== MODE MANUEL =====
+async function toggleRec(){
+  if(!manRec){
     try{
-      // Toujours créer un stream FRAIS — ne jamais réutiliser un stream désactivé
-      // echoCancellation:false pour capter le son des écouteurs sans filtrage
-      const stream=await navigator.mediaDevices.getUserMedia({
-        audio:{
-          echoCancellation:false,
-          noiseSuppression:false,
-          autoGainControl:false
-        },
-        video:false
-      });
-
-      ecouterCtx=new(window.AudioContext||window.webkitAudioContext)();
-      const src=ecouterCtx.createMediaStreamSource(stream);
-      const an=ecouterCtx.createAnalyser();an.fftSize=256;src.connect(an);
-      const bars=document.getElementById('viz').querySelectorAll('.bar');
-      const dat=new Uint8Array(an.frequencyBinCount);
-      (function loop(){
-        ecouterAfId=requestAnimationFrame(loop);
-        an.getByteFrequencyData(dat);
-        bars.forEach((b,i)=>{b.style.height=Math.max(4,(dat[Math.floor(i*dat.length/26)]/255)*40)+'px';});
-      })();
-
-      ecouterChunks=[];
-      // Choisir le meilleur format audio pour Safari
+      let stream;if(micS){micS.getTracks().forEach(t=>t.enabled=true);stream=micS;}
+      else{stream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});micS=stream;}
+      const ctx=new(window.AudioContext||window.webkitAudioContext)();
+      const src=ctx.createMediaStreamSource(stream);const an=ctx.createAnalyser();an.fftSize=256;src.connect(an);
+      document.getElementById('viz').classList.add('on');startViz('viz',an);
       const mime=['audio/mp4;codecs=mp4a.40.2','audio/mp4','audio/aac','audio/webm;codecs=opus','audio/webm'].find(t=>MediaRecorder.isTypeSupported(t))||'';
-      ecouterMR=new MediaRecorder(stream,mime?{mimeType:mime,audioBitsPerSecond:128000}:{audioBitsPerSecond:128000});
-      ecouterMR.ondataavailable=e=>{if(e.data&&e.data.size>0)ecouterChunks.push(e.data);};
-      ecouterMR.onstop=async()=>{
-        // Arrêt propre du stream
-        stream.getTracks().forEach(t=>t.stop());
-        if(ecouterAfId){cancelAnimationFrame(ecouterAfId);ecouterAfId=null;}
-        stopViz('viz');
-        document.getElementById('viz').classList.remove('on');
-        try{ecouterCtx.close();}catch(e){}
-        document.getElementById('rbtn').classList.remove('rec');
-        document.getElementById('ri').textContent='🎙️';
-        document.getElementById('rl').textContent='Écouter';
-
-        if(ecouterChunks.length===0){
-          document.getElementById('eb-m').textContent='Aucun audio capté. Vérifiez que le micro est bien autorisé dans les réglages Safari.';
-          document.getElementById('eb-m').classList.add('on');
-          document.getElementById('rs').textContent='Appuyez pour réessayer';
-          ecouterOn=false;
-          return;
-        }
-
-        // Lance l'analyse
-        document.getElementById('ld-m').classList.add('on');
-        document.getElementById('rs').textContent='🔍 Analyse Whisper AI en cours…';
-        const blob=new Blob(ecouterChunks,{type:ecouterMR.mimeType||'audio/mp4'});
-        try{
-          const{surah,verses,trans,match}=await identify(blob,t=>document.getElementById('ls-m').textContent=t);
-          document.getElementById('ld-m').classList.remove('on');
-          document.getElementById('rs').textContent='✅ Sourate identifiée !';
-          await buildRes(surah,verses,trans,match,'m');
-          pushNotif(surah,match);
-        }catch(err){
-          document.getElementById('ld-m').classList.remove('on');
-          document.getElementById('eb-m').textContent=err.message;
-          document.getElementById('eb-m').classList.add('on');
-          document.getElementById('rs').textContent='Appuyez pour réessayer';
-        }
-        ecouterOn=false;
+      manMR=new MediaRecorder(stream,mime?{mimeType:mime}:{});manChunks=[];
+      manMR.ondataavailable=e=>{if(e.data.size>0)manChunks.push(e.data);};
+      manMR.onstop=()=>{
+        manBlob=new Blob(manChunks,{type:manMR.mimeType||'audio/webm'});
+        document.getElementById('abtn-m').classList.add('on');
+        stream.getTracks().forEach(t=>t.enabled=false);try{ctx.close();}catch(e){}
+        if(afId){cancelAnimationFrame(afId);afId=null;}
+        stopViz('viz');document.getElementById('viz').classList.remove('on');
       };
-
-      ecouterMR.start(100);
-      // Arrêt automatique après 6 secondes
-      ecouterTimer=setTimeout(()=>stopEcouter(),MIN_REC_MS);
-
-    }catch(e){
-      ecouterOn=false;
-      document.getElementById('rbtn').classList.remove('rec');
-      document.getElementById('ri').textContent='🎙️';
-      document.getElementById('rl').textContent='Écouter';
-      document.getElementById('eb-m').textContent='❌ Microphone inaccessible : '+e.message+'. Allez dans Réglages → Safari → Microphone et autorisez l\'accès.';
-      document.getElementById('eb-m').classList.add('on');
-      document.getElementById('viz').classList.remove('on');
-    }
+      manMR.start(100);manRec=true;
+      document.getElementById('rbtn').classList.add('rec');
+      document.getElementById('ri').textContent='⏹';document.getElementById('rl').textContent='Arrêter';
+      document.getElementById('rs').textContent='🔴 Enregistrement en cours…';
+    }catch(e){document.getElementById('eb-m').textContent='Microphone inaccessible.';document.getElementById('eb-m').classList.add('on');}
   }else{
-    stopEcouter();
+    manMR.stop();manRec=false;
+    document.getElementById('rbtn').classList.remove('rec');
+    document.getElementById('ri').textContent='🎙️';document.getElementById('rl').textContent='Appuyer';
+    document.getElementById('rs').textContent='✓ Terminé — prêt à analyser';
   }
 }
-
-function stopEcouter(){
-  if(ecouterTimer){clearTimeout(ecouterTimer);ecouterTimer=null;}
-  if(ecouterMR&&ecouterMR.state==='recording'){
-    try{ecouterMR.stop();}catch(e){}
+async function analyzeM(){
+  if(!manBlob)return;
+  document.getElementById('abtn-m').classList.remove('on');
+  document.getElementById('eb-m').classList.remove('on');document.getElementById('res-m').classList.remove('on');
+  document.getElementById('ld-m').classList.add('on');
+  try{
+    const{surah,verses,trans,match}=await identify(manBlob,t=>document.getElementById('ls-m').textContent=t);
+    document.getElementById('ld-m').classList.remove('on');
+    await buildRes(surah,verses,trans,match,'m');pushNotif(surah,match);
+  }catch(err){
+    document.getElementById('ld-m').classList.remove('on');
+    document.getElementById('eb-m').textContent=err.message;document.getElementById('eb-m').classList.add('on');
+    document.getElementById('abtn-m').classList.add('on');
   }
 }
-
 function resetM(){
-  ecouterOn=false;
-  if(ecouterMR&&ecouterMR.state!=='inactive'){try{ecouterMR.stop();}catch(e){}}
-  if(ecouterTimer){clearTimeout(ecouterTimer);ecouterTimer=null;}
-  if(ecouterAfId){cancelAnimationFrame(ecouterAfId);ecouterAfId=null;}
+  manBlob=null;manRec=false;
   ['res-m','eb-m','ld-m'].forEach(id=>document.getElementById(id).classList.remove('on'));
-  document.getElementById('rs').textContent='Appuyez — s\'arrête automatiquement dès la sourate reconnue';
-  document.getElementById('ri').textContent='🎙️';document.getElementById('rl').textContent='Écouter';
+  document.getElementById('abtn-m').classList.remove('on');
+  document.getElementById('rs').textContent='✓ Microphone autorisé';
+  document.getElementById('ri').textContent='🎙️';document.getElementById('rl').textContent='Appuyer';
   document.getElementById('rbtn').classList.remove('rec');
-  stopViz('viz');document.getElementById('viz').classList.remove('on');
   const a=document.getElementById('ap-m');a.pause();a.src='';resetPB('m');
-  const cb=document.getElementById('cb-m');if(cb){cb.disabled=false;cb.style.opacity='1';cb.style.cursor='pointer';}
+  const cb=document.getElementById('cb-m');cb.disabled=false;cb.style.opacity='1';cb.style.cursor='pointer';
+  stopViz('viz');document.getElementById('viz').classList.remove('on');
 }
 
 // ===== MODE FICHIER =====
@@ -957,52 +798,13 @@ function resetU(){
   const cb=document.getElementById('cb-u');cb.disabled=false;cb.style.opacity='1';cb.style.cursor='pointer';
 }
 
-// ===== RÉCITATEURS =====
-const RECITERS=[
-  {id:'muhammad_alhaidan',   name:'Mohamed Al-Luhaidan', ar:'محمد اللحيدان'},
-  {id:'yasser_ad-dussary',   name:'Yasser Al-Dossary',   ar:'ياسر الدوسري'},
-  {id:'sa3ood_al-shuraym',   name:'Saud Al-Shuraym',     ar:'سعود الشريم'},
-  {id:'mishaari_raashid_al_3afaasee', name:'Mishary Al-Afasy', ar:'مشاري العفاسي'},
-  {id:'abdurrahmaan_as-sudais', name:'Abdurrahman Al-Sudais', ar:'عبدالرحمن السديس'},
-];
-const selectedReciter={a:RECITERS[0],m:RECITERS[0],u:RECITERS[0]};
-
-function buildReciterGrid(suffix,surahId){
-  const grid=document.getElementById('rg-'+suffix);
-  if(!grid)return;
-  grid.innerHTML='';
-  RECITERS.forEach(r=>{
-    const btn=document.createElement('button');
-    btn.className='reciter-btn'+(selectedReciter[suffix].id===r.id?' sel':'');
-    btn.innerHTML=`<span class="rb-name">${r.name}</span><span class="rb-ar">${r.ar}</span>`;
-    btn.onclick=()=>{
-      selectedReciter[suffix]=r;
-      // Met à jour la sélection visuelle
-      grid.querySelectorAll('.reciter-btn').forEach(b=>b.classList.remove('sel'));
-      btn.classList.add('sel');
-      // Met à jour l'audio
-      const sid=String(surahId).padStart(3,'0');
-      const a=document.getElementById('ap-'+suffix);
-      const wasPlaying=!a.paused;
-      a.src=`https://download.quranicaudio.com/quran/${r.id}/${sid}.mp3`;
-      if(wasPlaying)a.play().catch(()=>{});
-      document.getElementById('pb-'+suffix).innerHTML='▶ Écouter — '+r.name;
-    };
-    grid.appendChild(btn);
-  });
-}
-
 // ===== AUDIO =====
 function togglePlay(x){
   const a=document.getElementById('ap-'+x),btn=document.getElementById('pb-'+x);
-  const name=selectedReciter[x]?.name||'récitateur';
   if(a.paused){a.play().then(()=>{btn.innerHTML='⏸ Pause';}).catch(()=>{});}
-  else{a.pause();btn.innerHTML='▶ Écouter — '+name;}
+  else{a.pause();btn.innerHTML='▶ Écouter avec Mohamed Al-Luhaidan';}
 }
-function resetPB(x){
-  const name=selectedReciter[x]?.name||'récitateur';
-  document.getElementById('pb-'+x).innerHTML='▶ Écouter — '+name;
-}
+function resetPB(x){document.getElementById('pb-'+x).innerHTML='▶ Écouter avec Mohamed Al-Luhaidan';}
 </script>
 </body>
 </html>
