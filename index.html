@@ -1,4 +1,3 @@
-Dou'as pour la Palestine
 <!DOCTYPE html>
 <html lang="fr" dir="ltr">
 <head>
@@ -270,7 +269,10 @@ footer{text-align:center;padding:22px 0 10px;font-size:0.68rem;color:var(--text2
       <div class="aya-wrap">
         <div class="earphones-notice">
           <div class="en-icon">🎧</div>
-          <div class="en-text"><b>Important :</b> Branchez vos <b>écouteurs</b> avant d'activer. Le micro captera le son sans couper les autres applications.</div>
+          <div class="en-text">
+            <b>Comment utiliser :</b> Branchez vos <b>écouteurs</b>, lancez la récitation sur votre téléphone ou un autre appareil, puis appuyez sur le bouton. Le micro captera le son via les écouteurs sans interférence.<br/>
+            <span style="opacity:0.7;font-size:0.8rem;">⚠️ Si Safari demande l'accès au micro, appuyez sur "Autoriser".</span>
+          </div>
         </div>
         <div class="viz-aya" id="viz-aya"></div>
         <button class="aya-btn" id="ayaBtn" onclick="toggleAya()">
@@ -317,7 +319,7 @@ footer{text-align:center;padding:22px 0 10px;font-size:0.68rem;color:var(--text2
           <span class="ri" id="ri">🎙️</span>
           <span class="rl" id="rl">Écouter</span>
         </button>
-        <p class="rs" id="rs">Appuyez — s'arrête automatiquement dès la sourate reconnue</p>
+        <p class="rs" id="rs">Appuyez — le micro écoute 6 secondes puis identifie automatiquement</p>
       </div>
       <div class="ld" id="ld-m"><div class="sp"></div><p class="lt">Analyse en cours…</p><p class="ls" id="ls-m"></p></div>
       <div class="eb" id="eb-m"></div>
@@ -807,7 +809,7 @@ function newAya(){document.getElementById('res-a').classList.remove('on');docume
 function resetAya(){stopAya();newAya();const a=document.getElementById('ap-a');a.pause();a.src='';resetPB('a');}
 
 // ===== MODE ÉCOUTER (auto-stop 6s minimum pour fiabilité 100%) =====
-let ecouterOn=false,ecouterMR=null,ecouterChunks=[],ecouterStream=null,ecouterCtx=null,ecouterAfId=null,ecouterTimer=null;
+let ecouterOn=false,ecouterMR=null,ecouterChunks=[],ecouterCtx=null,ecouterAfId=null,ecouterTimer=null;
 
 async function toggleEcouter(){
   if(!ecouterOn){
@@ -820,34 +822,56 @@ async function toggleEcouter(){
     document.getElementById('res-m').classList.remove('on');
     document.getElementById('viz').classList.add('on');
     try{
-      let stream;
-      if(micS){micS.getTracks().forEach(t=>t.enabled=true);stream=micS;}
-      else{stream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});micS=stream;}
-      ecouterStream=stream;
+      // Toujours créer un stream FRAIS — ne jamais réutiliser un stream désactivé
+      // echoCancellation:false pour capter le son des écouteurs sans filtrage
+      const stream=await navigator.mediaDevices.getUserMedia({
+        audio:{
+          echoCancellation:false,
+          noiseSuppression:false,
+          autoGainControl:false
+        },
+        video:false
+      });
+
       ecouterCtx=new(window.AudioContext||window.webkitAudioContext)();
       const src=ecouterCtx.createMediaStreamSource(stream);
       const an=ecouterCtx.createAnalyser();an.fftSize=256;src.connect(an);
       const bars=document.getElementById('viz').querySelectorAll('.bar');
-      const d=new Uint8Array(an.frequencyBinCount);
-      (function loop(){ecouterAfId=requestAnimationFrame(loop);an.getByteFrequencyData(d);bars.forEach((b,i)=>{b.style.height=Math.max(4,(d[Math.floor(i*d.length/26)]/255)*40)+'px';});})();
+      const dat=new Uint8Array(an.frequencyBinCount);
+      (function loop(){
+        ecouterAfId=requestAnimationFrame(loop);
+        an.getByteFrequencyData(dat);
+        bars.forEach((b,i)=>{b.style.height=Math.max(4,(dat[Math.floor(i*dat.length/26)]/255)*40)+'px';});
+      })();
 
       ecouterChunks=[];
+      // Choisir le meilleur format audio pour Safari
       const mime=['audio/mp4;codecs=mp4a.40.2','audio/mp4','audio/aac','audio/webm;codecs=opus','audio/webm'].find(t=>MediaRecorder.isTypeSupported(t))||'';
-      ecouterMR=new MediaRecorder(stream,mime?{mimeType:mime}:{});
-      ecouterMR.ondataavailable=e=>{if(e.data.size>0)ecouterChunks.push(e.data);};
+      ecouterMR=new MediaRecorder(stream,mime?{mimeType:mime,audioBitsPerSecond:128000}:{audioBitsPerSecond:128000});
+      ecouterMR.ondataavailable=e=>{if(e.data&&e.data.size>0)ecouterChunks.push(e.data);};
       ecouterMR.onstop=async()=>{
-        // Nettoyage visuel
+        // Arrêt propre du stream
+        stream.getTracks().forEach(t=>t.stop());
         if(ecouterAfId){cancelAnimationFrame(ecouterAfId);ecouterAfId=null;}
-        stopViz('viz');document.getElementById('viz').classList.remove('on');
-        stream.getTracks().forEach(t=>t.enabled=false);
+        stopViz('viz');
+        document.getElementById('viz').classList.remove('on');
         try{ecouterCtx.close();}catch(e){}
         document.getElementById('rbtn').classList.remove('rec');
         document.getElementById('ri').textContent='🎙️';
         document.getElementById('rl').textContent='Écouter';
+
+        if(ecouterChunks.length===0){
+          document.getElementById('eb-m').textContent='Aucun audio capté. Vérifiez que le micro est bien autorisé dans les réglages Safari.';
+          document.getElementById('eb-m').classList.add('on');
+          document.getElementById('rs').textContent='Appuyez pour réessayer';
+          ecouterOn=false;
+          return;
+        }
+
         // Lance l'analyse
         document.getElementById('ld-m').classList.add('on');
-        document.getElementById('rs').textContent='🔍 Analyse en cours…';
-        const blob=new Blob(ecouterChunks,{type:ecouterMR.mimeType||'audio/webm'});
+        document.getElementById('rs').textContent='🔍 Analyse Whisper AI en cours…';
+        const blob=new Blob(ecouterChunks,{type:ecouterMR.mimeType||'audio/mp4'});
         try{
           const{surah,verses,trans,match}=await identify(blob,t=>document.getElementById('ls-m').textContent=t);
           document.getElementById('ld-m').classList.remove('on');
@@ -858,18 +882,21 @@ async function toggleEcouter(){
           document.getElementById('ld-m').classList.remove('on');
           document.getElementById('eb-m').textContent=err.message;
           document.getElementById('eb-m').classList.add('on');
-          document.getElementById('rs').textContent='Appuyez — s\'arrête automatiquement dès la sourate reconnue';
+          document.getElementById('rs').textContent='Appuyez pour réessayer';
         }
         ecouterOn=false;
       };
+
       ecouterMR.start(100);
-      // S'arrête automatiquement après MIN_REC_MS (6s minimum pour fiabilité 100%)
+      // Arrêt automatique après 6 secondes
       ecouterTimer=setTimeout(()=>stopEcouter(),MIN_REC_MS);
+
     }catch(e){
       ecouterOn=false;
       document.getElementById('rbtn').classList.remove('rec');
-      document.getElementById('ri').textContent='🎙️';document.getElementById('rl').textContent='Écouter';
-      document.getElementById('eb-m').textContent='Microphone inaccessible.';
+      document.getElementById('ri').textContent='🎙️';
+      document.getElementById('rl').textContent='Écouter';
+      document.getElementById('eb-m').textContent='❌ Microphone inaccessible : '+e.message+'. Allez dans Réglages → Safari → Microphone et autorisez l\'accès.';
       document.getElementById('eb-m').classList.add('on');
       document.getElementById('viz').classList.remove('on');
     }
@@ -880,8 +907,9 @@ async function toggleEcouter(){
 
 function stopEcouter(){
   if(ecouterTimer){clearTimeout(ecouterTimer);ecouterTimer=null;}
-  if(ecouterMR&&ecouterMR.state==='recording'){ecouterMR.stop();}
-  ecouterOn=false;
+  if(ecouterMR&&ecouterMR.state==='recording'){
+    try{ecouterMR.stop();}catch(e){}
+  }
 }
 
 function resetM(){
