@@ -207,7 +207,7 @@ footer{text-align:center;padding:22px 0 10px;font-size:0.68rem;color:var(--text2
 
   <div class="card">
     <div class="tabs">
-      <button class="tab on" onclick="switchTab('auto')">&#x26A1; Automatique</button>
+      <button class="tab on" onclick="switchTab('auto')">🎙️ Enregistrer</button>
       <button class="tab" onclick="switchTab('upload')">&#x1F4C2; Fichier</button>
     </div>
 
@@ -218,7 +218,7 @@ footer{text-align:center;padding:22px 0 10px;font-size:0.68rem;color:var(--text2
           <span class="aya-icon" id="ayaIcon">🎙️</span>
           <span class="aya-lbl" id="ayaLbl">Toucher</span>
         </button>
-        <p class="aya-status" id="ayaStatus">Appuyez pour identifier une récitation</p>
+        <p class="aya-status" id="ayaStatus">Appuyez pour démarrer — appuyez à nouveau pour identifier</p>
         <p class="aya-cycles" id="ayaCycles"></p>
       </div>
       <div class="eb" id="eb-a"></div>
@@ -599,14 +599,21 @@ async function loadMore(x){
   }
 }
 
-// Mode automatique
+// ===== MODE ENREGISTREMENT MANUEL =====
+// 1er appui = démarre le micro
+// 2ème appui = stoppe ET analyse
+var recStream = null, recMR = null, recChunks = [], recCtx = null, recOn = false, recAnalyzing = false;
+
 async function toggleAya(){
-  if(!ayaOn){
-    ayaOn = true; ayaCycleN = 0; ayaBusy = false;
+  if(recAnalyzing) return; // on bloque pendant l'analyse
+
+  if(!recOn){
+    // DÉMARRAGE enregistrement
+    recOn = true; recChunks = [];
     document.getElementById('ayaBtn').classList.add('listening');
-    document.getElementById('ayaIcon').textContent = '🎙️';
-    document.getElementById('ayaLbl').textContent = 'Écoute…';
-    document.getElementById('ayaStatus').textContent = 'Écoute en cours…';
+    document.getElementById('ayaIcon').textContent = '⏹️';
+    document.getElementById('ayaLbl').textContent = 'Arrêter';
+    document.getElementById('ayaStatus').textContent = '🎙️ Enregistrement en cours — appuyez pour identifier';
     document.getElementById('ayaStatus').className = 'aya-status active';
     document.getElementById('eb-a').classList.remove('on');
     document.getElementById('viz-aya').classList.add('on');
@@ -617,71 +624,82 @@ async function toggleAya(){
       } catch(e) {
         stream = await navigator.mediaDevices.getUserMedia({audio:true,video:false});
       }
-      micS = stream;
-      ayaCtx = new (window.AudioContext || window.webkitAudioContext)();
-      var src = ayaCtx.createMediaStreamSource(stream);
-      var an = ayaCtx.createAnalyser(); an.fftSize = 256; src.connect(an);
+      recStream = stream;
+      recCtx = new (window.AudioContext || window.webkitAudioContext)();
+      var src = recCtx.createMediaStreamSource(stream);
+      var an = recCtx.createAnalyser(); an.fftSize = 256; src.connect(an);
       startViz(an);
-      ayaCycle(stream);
+
+      var mimeTypes = ['audio/mp4;codecs=mp4a.40.2','audio/mp4','audio/aac','audio/webm;codecs=opus','audio/webm'];
+      var mime = mimeTypes.find(function(t){ return MediaRecorder.isTypeSupported(t); }) || '';
+      recMR = new MediaRecorder(stream, mime ? {mimeType:mime} : {});
+      recMR.ondataavailable = function(e){ if(e.data && e.data.size > 0) recChunks.push(e.data); };
+      recMR.onstop = async function(){
+        // Nettoyage stream
+        if(recStream){ recStream.getTracks().forEach(function(t){ t.stop(); }); recStream = null; }
+        if(recCtx){ try{ recCtx.close(); }catch(e){} recCtx = null; }
+        if(afId){ cancelAnimationFrame(afId); afId = null; }
+        stopViz();
+        document.getElementById('viz-aya').classList.remove('on');
+
+        if(!recAnalyzing) return;
+
+        // Lancement analyse
+        document.getElementById('ayaBtn').classList.remove('listening');
+        document.getElementById('ayaBtn').classList.add('analyzing');
+        document.getElementById('ayaIcon').textContent = '🔍';
+        document.getElementById('ayaLbl').textContent = 'Analyse…';
+        document.getElementById('ayaStatus').className = 'aya-status analyzing';
+
+        var blob = new Blob(recChunks, {type: recMR.mimeType || 'audio/webm'});
+        try{
+          var result = await identify(blob, function(t){
+            document.getElementById('ayaStatus').textContent = t;
+          });
+          // Succès
+          recAnalyzing = false; recOn = false;
+          document.getElementById('ayaBtn').classList.remove('analyzing');
+          document.getElementById('ayaIcon').textContent = '🎙️';
+          document.getElementById('ayaLbl').textContent = 'Toucher';
+          document.getElementById('ayaStatus').textContent = 'Appuyez pour identifier une récitation';
+          document.getElementById('ayaStatus').className = 'aya-status';
+          await buildRes(result.surah, result.verses, result.trans, result.match, 'a');
+          pushNotif(result.surah, result.match);
+        }catch(err){
+          recAnalyzing = false; recOn = false;
+          document.getElementById('ayaBtn').classList.remove('analyzing');
+          document.getElementById('ayaIcon').textContent = '🎙️';
+          document.getElementById('ayaLbl').textContent = 'Toucher';
+          document.getElementById('ayaStatus').textContent = 'Appuyez pour identifier une récitation';
+          document.getElementById('ayaStatus').className = 'aya-status';
+          document.getElementById('eb-a').textContent = '❌ ' + err.message;
+          document.getElementById('eb-a').classList.add('on');
+        }
+      };
+      recMR.start(100);
     }catch(e){
-      stopAya();
-      document.getElementById('eb-a').textContent = 'Microphone inaccessible : ' + e.message;
+      recOn = false;
+      document.getElementById('ayaBtn').classList.remove('listening');
+      document.getElementById('ayaIcon').textContent = '🎙️';
+      document.getElementById('ayaLbl').textContent = 'Toucher';
+      document.getElementById('viz-aya').classList.remove('on');
+      document.getElementById('eb-a').textContent = '❌ Microphone inaccessible : ' + e.message;
       document.getElementById('eb-a').classList.add('on');
     }
-  } else { stopAya(); }
-}
 
-function ayaCycle(stream){
-  if(!ayaOn || ayaBusy) return;
-  ayaChunks = [];
-  var mimeTypes = ['audio/mp4;codecs=mp4a.40.2','audio/mp4','audio/aac','audio/webm;codecs=opus','audio/webm'];
-  var mime = mimeTypes.find(function(t){ return MediaRecorder.isTypeSupported(t); }) || '';
-  ayaMR = new MediaRecorder(stream, mime ? {mimeType:mime} : {});
-  ayaMR.ondataavailable = function(e){ if(e.data.size > 0) ayaChunks.push(e.data); };
-  ayaMR.onstop = async function(){
-    if(!ayaOn) return;
-    ayaBusy = true; ayaCycleN++;
-    document.getElementById('ayaBtn').classList.remove('listening');
-    document.getElementById('ayaBtn').classList.add('analyzing');
-    document.getElementById('ayaIcon').textContent = '🔍';
-    document.getElementById('ayaLbl').textContent = 'Analyse…';
-    document.getElementById('ayaStatus').className = 'aya-status analyzing';
-    document.getElementById('ayaCycles').textContent = 'Tentative ' + ayaCycleN;
-    var blob = new Blob(ayaChunks, {type: ayaMR.mimeType || 'audio/webm'});
-    try{
-      var result = await identify(blob, function(t){ document.getElementById('ayaStatus').textContent = t; });
-      stopAya();
-      await buildRes(result.surah, result.verses, result.trans, result.match, 'a');
-      pushNotif(result.surah, result.match);
-      document.getElementById('ayaCycles').textContent = '';
-    }catch(err){
-      ayaBusy = false;
-      if(ayaOn){
-        document.getElementById('ayaBtn').classList.remove('analyzing');
-        document.getElementById('ayaBtn').classList.add('listening');
-        document.getElementById('ayaIcon').textContent = '🎙️';
-        document.getElementById('ayaLbl').textContent = 'Écoute…';
-        document.getElementById('ayaStatus').textContent = err.message;
-        document.getElementById('ayaStatus').className = 'aya-status retry';
-        setTimeout(function(){
-          if(ayaOn && !ayaBusy){
-            document.getElementById('ayaStatus').textContent = 'Écoute en cours…';
-            document.getElementById('ayaStatus').className = 'aya-status active';
-            ayaCycle(stream);
-          }
-        }, 2000);
-      }
-    }
-  };
-  ayaMR.start(100);
-  setTimeout(function(){ if(ayaMR && ayaMR.state === 'recording') ayaMR.stop(); }, CHUNK_SEC * 1000);
+  } else {
+    // ARRÊT + ANALYSE
+    recOn = false; recAnalyzing = true;
+    document.getElementById('ayaStatus').textContent = '⏳ Analyse en cours…';
+    if(recMR && recMR.state === 'recording'){ try{ recMR.stop(); }catch(e){} }
+  }
 }
 
 function stopAya(){
-  ayaOn = false; ayaBusy = false;
-  if(ayaMR && ayaMR.state !== 'inactive'){ try{ ayaMR.stop(); }catch(e){} }
-  if(micS){ micS.getTracks().forEach(function(t){ t.stop(); }); micS = null; }
-  if(ayaCtx){ try{ ayaCtx.close(); }catch(e){} }
+  recOn = false; recAnalyzing = false;
+  if(recMR && recMR.state !== 'inactive'){ try{ recMR.stop(); }catch(e){} }
+  if(recStream){ recStream.getTracks().forEach(function(t){ t.stop(); }); recStream = null; }
+  if(recCtx){ try{ recCtx.close(); }catch(e){} recCtx = null; }
   if(afId){ cancelAnimationFrame(afId); afId = null; }
   stopViz();
   document.getElementById('viz-aya').classList.remove('on');
@@ -690,7 +708,6 @@ function stopAya(){
   document.getElementById('ayaLbl').textContent = 'Toucher';
   document.getElementById('ayaStatus').textContent = 'Appuyez pour identifier une récitation';
   document.getElementById('ayaStatus').className = 'aya-status';
-  document.getElementById('ayaCycles').textContent = '';
 }
 
 function newAya(){
