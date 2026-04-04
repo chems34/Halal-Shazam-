@@ -415,48 +415,53 @@ async function transcribeAudio(blob){
   return trans;
 }
 
-// Identification LLM
-async function identifyWithLLM(trans){
-  var prompt = 'Tu es un hafiz du Coran expert. Voici un texte arabe transcrit depuis une récitation coranique:\n\n"' + trans + '"\n\nIdentifie précisément la sourate. Utilise ces références pour t\'aider:\nAl-Fatiha=1 | Al-Baqara=2 | Al-Imran=3 | An-Nisa=4 | Al-Maidah=5 | Al-Anam=6 | Al-Araf=7 | Al-Anfal=8 | At-Tawbah=9 | Yunus=10 | Hud=11 | Yusuf=12 | Ar-Rad=13 | Ibrahim=14 | Al-Hijr=15 | An-Nahl=16 | Al-Isra=17 | Al-Kahf=18 | Maryam=19 | Ta-Ha=20 | Al-Anbiya=21 | Al-Hajj=22 | Al-Muminun=23 | An-Nur=24 | Al-Furqan=25 | Ash-Shuara=26 | An-Naml=27 | Al-Qasas=28 | Al-Ankabut=29 | Ar-Rum=30 | Luqman=31 | As-Sajdah=32 | Al-Ahzab=33 | Saba=34 | Fatir=35 | Ya-Sin=36 | As-Saffat=37 | Sad=38 | Az-Zumar=39 | Ghafir=40 | Fussilat=41 | Ash-Shura=42 | Az-Zukhruf=43 | Ad-Dukhan=44 | Al-Jathiyah=45 | Al-Ahqaf=46 | Muhammad=47 | Al-Fath=48 | Al-Hujurat=49 | Qaf=50 | Adh-Dhariyat=51 | At-Tur=52 | An-Najm=53 | Al-Qamar=54 | Ar-Rahman=55 | Al-Waqiah=56 | Al-Hadid=57 | Al-Mujadila=58 | Al-Hashr=59 | Al-Mumtahanah=60 | As-Saf=61 | Al-Jumuah=62 | Al-Munafiqun=63 | At-Taghabun=64 | At-Talaq=65 | At-Tahrim=66 | Al-Mulk=67 | Al-Qalam=68 | Al-Haqqah=69 | Al-Maarij=70 | Nuh=71 | Al-Jinn=72 | Al-Muzzammil=73 | Al-Muddaththir=74 | Al-Qiyamah=75 | Al-Insan=76 | Al-Mursalat=77 | An-Naba=78 | An-Naziat=79 | Abasa=80 | At-Takwir=81 | Al-Infitar=82 | Al-Mutaffifin=83 | Al-Inshiqaq=84 | Al-Buruj=85 | At-Tariq=86 | Al-Ala=87 | Al-Ghashiyah=88 | Al-Fajr=89 | Al-Balad=90 | Ash-Shams=91 | Al-Layl=92 | Ad-Duha=93 | Ash-Sharh=94 | At-Tin=95 | Al-Alaq=96 | Al-Qadr=97 | Al-Bayyinah=98 | Az-Zalzalah=99 | Al-Adiyat=100 | Al-Qariah=101 | At-Takathur=102 | Al-Asr=103 | Al-Humazah=104 | Al-Fil=105 | Quraysh=106 | Al-Maun=107 | Al-Kawthar=108 | Al-Kafirun=109 | An-Nasr=110 | Al-Masad=111 | Al-Ikhlas=112 | Al-Falaq=113 | An-Nas=114\n\nRègles ABSOLUES:\n- surah_number OBLIGATOIRE entre 1 et 114\n- JAMAIS 0\n- verse_start minimum 1\n\nRéponds UNIQUEMENT avec ce JSON:\n{"surah_number":X,"verse_start":X,"verse_end":X,"confidence":X,"explanation":"nom de la sourate"}';
+// ===== IDENTIFICATION PAR RECHERCHE DIRECTE DANS LE CORAN =====
+// On cherche les mots transcrits directement dans la base Quran.com — beaucoup plus fiable qu'un LLM
+async function searchInQuran(trans){
+  // Prendre les 4 premiers mots pour la recherche (plus précis)
+  var words = trans.trim().split(/\s+/).slice(0, 6).join(' ');
 
+  // Recherche via l'API Quran.com
+  var r = await fetch('https://api.qurancdn.com/api/qdc/search?q=' + encodeURIComponent(words) + '&size=5&page=1&language=fr');
+  if(!r.ok) throw new Error('Recherche Quran.com échouée (' + r.status + ')');
+  var d = await r.json();
 
-  var mr = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-    method: 'POST',
-    headers: { Authorization: 'Bearer ' + GROQ, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model: 'llama-3.1-8b-instant',
-      messages: [{ role: 'user', content: prompt }],
-      temperature: 0.0,
-      max_tokens: 120,
-      response_format: { type: 'json_object' }
-    })
-  });
-  var md = await mr.json();
-  if(!mr.ok) throw new Error('Erreur LLM ' + mr.status + ': ' + (md.error ? md.error.message : JSON.stringify(md)));
-
-  var match;
-  try {
-    var raw = (md.choices && md.choices[0] && md.choices[0].message && md.choices[0].message.content) ? md.choices[0].message.content : '{}';
-    match = JSON.parse(raw.replace(/```json|```/g,'').trim());
-  } catch(e) {
-    throw new Error('Réponse invalide du modèle IA.');
+  var results = (d.search && d.search.results) ? d.search.results : [];
+  if(!results.length){
+    // 2ème tentative avec moins de mots
+    var words2 = trans.trim().split(/\s+/).slice(0, 3).join(' ');
+    var r2 = await fetch('https://api.qurancdn.com/api/qdc/search?q=' + encodeURIComponent(words2) + '&size=5&page=1&language=fr');
+    var d2 = await r2.json();
+    results = (d2.search && d2.search.results) ? d2.search.results : [];
   }
 
-  // Sécurisation — jamais 0 ou null
-  match.surah_number = Math.max(1, Math.min(114, Math.abs(parseInt(match.surah_number) || 1)));
-  match.verse_start  = Math.max(1, Math.abs(parseInt(match.verse_start) || 1));
-  match.verse_end    = Math.max(match.verse_start, Math.abs(parseInt(match.verse_end) || match.verse_start));
-  match.confidence   = Math.max(1, parseInt(match.confidence) || 75);
-  return match;
+  if(!results.length) throw new Error('Aucun verset trouvé pour cette transcription. Réessayez avec plus de son.');
+
+  // Prendre le premier résultat — le plus pertinent
+  var best = results[0];
+  var verseKey = best.verse_key || '1:1'; // format "2:255"
+  var parts = verseKey.split(':');
+  var surahNum = parseInt(parts[0]) || 1;
+  var verseNum = parseInt(parts[1]) || 1;
+
+  return {
+    surah_number: surahNum,
+    verse_start: verseNum,
+    verse_end: verseNum,
+    confidence: 95,
+    explanation: best.verse_key || ''
+  };
 }
 
 // Pipeline identification
 async function identify(blob, stepFn){
-  stepFn('Transcription Whisper AI...');
+  stepFn('🎙️ Transcription Whisper AI...');
   var trans = await transcribeAudio(blob);
-  stepFn('Identification de la sourate...');
-  var match = await identifyWithLLM(trans);
-  stepFn('Récupération des versets...');
+
+  stepFn('🔍 Recherche dans le Coran...');
+  var match = await searchInQuran(trans);
+
+  stepFn('📡 Récupération des versets...');
   var sn = match.surah_number;
   var vs = match.verse_start;
   var results = await Promise.all([
