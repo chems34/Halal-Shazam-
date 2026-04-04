@@ -415,42 +415,153 @@ async function transcribeAudio(blob){
   return trans;
 }
 
-// ===== IDENTIFICATION PAR RECHERCHE DIRECTE DANS LE CORAN =====
-// On cherche les mots transcrits directement dans la base Quran.com — beaucoup plus fiable qu'un LLM
-async function searchInQuran(trans){
-  // Prendre les 4 premiers mots pour la recherche (plus précis)
-  var words = trans.trim().split(/\s+/).slice(0, 6).join(' ');
+// ===== BASE DE MOTS-CLÉS CORANIQUES LOCALE =====
+// Mots-clés uniques par sourate — comparaison locale sans API ni LLM
+var QURAN_INDEX = [
+  {id:1,  name:'Al-Fatiha',     ar:'الفاتحة',   rev:'makkah', v:7,   keys:['الحمد','رب العالمين','الرحمن الرحيم','مالك يوم','إياك نعبد','اهدنا','الصراط','المغضوب']},
+  {id:2,  name:'Al-Baqara',     ar:'البقرة',     rev:'madinah',v:286, keys:['الم','ذلك الكتاب','لا ريب','هدى للمتقين','آية الكرسي','الله لا إله إلا هو الحي القيوم','لا تأخذه سنة']},
+  {id:3,  name:'Ali Imran',     ar:'آل عمران',   rev:'madinah',v:200, keys:['الله لا إله إلا هو الحي القيوم','نزل عليك الكتاب','آل عمران']},
+  {id:4,  name:'An-Nisa',       ar:'النساء',     rev:'madinah',v:176, keys:['يا أيها الناس اتقوا ربكم الذي خلقكم من نفس واحدة']},
+  {id:5,  name:'Al-Maida',      ar:'المائدة',    rev:'madinah',v:120, keys:['يا أيها الذين آمنوا أوفوا بالعقود','اليوم أكملت لكم دينكم']},
+  {id:6,  name:'Al-Anam',       ar:'الأنعام',    rev:'makkah', v:165, keys:['الحمد لله الذي خلق السماوات والأرض']},
+  {id:7,  name:'Al-Araf',       ar:'الأعراف',    rev:'makkah', v:206, keys:['المص','كتاب أنزل إليك']},
+  {id:8,  name:'Al-Anfal',      ar:'الأنفال',    rev:'madinah',v:75,  keys:['يسألونك عن الأنفال']},
+  {id:9,  name:'At-Tawbah',     ar:'التوبة',     rev:'madinah',v:129, keys:['براءة من الله ورسوله']},
+  {id:10, name:'Yunus',         ar:'يونس',       rev:'makkah', v:109, keys:['الر تلك آيات الكتاب الحكيم']},
+  {id:11, name:'Hud',           ar:'هود',        rev:'makkah', v:123, keys:['الر كتاب أحكمت آياته']},
+  {id:12, name:'Yusuf',         ar:'يوسف',       rev:'makkah', v:111, keys:['إذ قال يوسف لأبيه','نحن نقص عليك أحسن القصص']},
+  {id:13, name:'Ar-Rad',        ar:'الرعد',      rev:'madinah',v:43,  keys:['المر','الله يعلم ما تحمل كل أنثى']},
+  {id:14, name:'Ibrahim',       ar:'إبراهيم',    rev:'makkah', v:52,  keys:['الر كتاب أنزلناه إليك','رب اجعل هذا البلد آمنا']},
+  {id:15, name:'Al-Hijr',       ar:'الحجر',      rev:'makkah', v:99,  keys:['الر تلك آيات الكتاب وقرآن مبين']},
+  {id:16, name:'An-Nahl',       ar:'النحل',      rev:'makkah', v:128, keys:['أتى أمر الله فلا تستعجلوه','والنحل']},
+  {id:17, name:'Al-Isra',       ar:'الإسراء',    rev:'makkah', v:111, keys:['سبحان الذي أسرى بعبده ليلا']},
+  {id:18, name:'Al-Kahf',       ar:'الكهف',      rev:'makkah', v:110, keys:['الحمد لله الذي أنزل على عبده الكتاب','أصحاب الكهف','ذو القرنين']},
+  {id:19, name:'Maryam',        ar:'مريم',       rev:'makkah', v:98,  keys:['كهيعص','ذكر رحمت ربك عبده زكريا','يا يحيى']},
+  {id:20, name:'Ta-Ha',         ar:'طه',         rev:'makkah', v:135, keys:['طه','ما أنزلنا عليك القرآن لتشقى','إنني أنا الله لا إله إلا أنا']},
+  {id:21, name:'Al-Anbiya',     ar:'الأنبياء',   rev:'makkah', v:112, keys:['اقترب للناس حسابهم']},
+  {id:22, name:'Al-Hajj',       ar:'الحج',       rev:'madinah',v:78,  keys:['يا أيها الناس اتقوا ربكم إن زلزلة الساعة']},
+  {id:23, name:'Al-Muminun',    ar:'المؤمنون',   rev:'makkah', v:118, keys:['قد أفلح المؤمنون','الذين هم في صلاتهم خاشعون']},
+  {id:24, name:'An-Nur',        ar:'النور',      rev:'madinah',v:64,  keys:['سورة أنزلناها وفرضناها','الله نور السماوات والأرض']},
+  {id:25, name:'Al-Furqan',     ar:'الفرقان',    rev:'makkah', v:77,  keys:['تبارك الذي نزل الفرقان على عبده']},
+  {id:26, name:'Ash-Shuara',    ar:'الشعراء',    rev:'makkah', v:227, keys:['طسم','تلك آيات الكتاب المبين']},
+  {id:27, name:'An-Naml',       ar:'النمل',      rev:'makkah', v:93,  keys:['طس','تلك آيات القرآن وكتاب مبين','بسم الله الرحمن الرحيم إنه من سليمان']},
+  {id:28, name:'Al-Qasas',      ar:'القصص',      rev:'makkah', v:88,  keys:['طسم','نتلو عليك من نبإ موسى وفرعون']},
+  {id:29, name:'Al-Ankabut',    ar:'العنكبوت',   rev:'makkah', v:69,  keys:['الم','أحسب الناس أن يتركوا']},
+  {id:30, name:'Ar-Rum',        ar:'الروم',      rev:'makkah', v:60,  keys:['الم','غلبت الروم']},
+  {id:31, name:'Luqman',        ar:'لقمان',      rev:'makkah', v:34,  keys:['الم','آيات الكتاب الحكيم','يا بني لا تشرك بالله']},
+  {id:32, name:'As-Sajdah',     ar:'السجدة',     rev:'makkah', v:30,  keys:['الم','تنزيل الكتاب لا ريب فيه']},
+  {id:33, name:'Al-Ahzab',      ar:'الأحزاب',    rev:'madinah',v:73,  keys:['يا أيها النبي اتق الله','إنا عرضنا الأمانة']},
+  {id:34, name:'Saba',          ar:'سبأ',        rev:'makkah', v:54,  keys:['الحمد لله الذي له ما في السماوات','لقد كان لسبإ']},
+  {id:35, name:'Fatir',         ar:'فاطر',       rev:'makkah', v:45,  keys:['الحمد لله فاطر السماوات والأرض']},
+  {id:36, name:'Ya-Sin',        ar:'يس',         rev:'makkah', v:83,  keys:['يس','والقرآن الحكيم','إنك لمن المرسلين']},
+  {id:37, name:'As-Saffat',     ar:'الصافات',    rev:'makkah', v:182, keys:['والصافات صفا','فالزاجرات زجرا']},
+  {id:38, name:'Sad',           ar:'ص',          rev:'makkah', v:88,  keys:['ص والقرآن ذي الذكر']},
+  {id:39, name:'Az-Zumar',      ar:'الزمر',      rev:'makkah', v:75,  keys:['تنزيل الكتاب من الله العزيز الحكيم']},
+  {id:40, name:'Ghafir',        ar:'غافر',       rev:'makkah', v:85,  keys:['حم','تنزيل الكتاب من الله العزيز العليم']},
+  {id:41, name:'Fussilat',      ar:'فصلت',       rev:'makkah', v:54,  keys:['حم','تنزيل من الرحمن الرحيم','سنريهم آياتنا']},
+  {id:42, name:'Ash-Shura',     ar:'الشورى',     rev:'makkah', v:53,  keys:['حم عسق']},
+  {id:43, name:'Az-Zukhruf',    ar:'الزخرف',     rev:'makkah', v:89,  keys:['حم والكتاب المبين إنا جعلناه']},
+  {id:44, name:'Ad-Dukhan',     ar:'الدخان',     rev:'makkah', v:59,  keys:['حم والكتاب المبين إنا أنزلناه']},
+  {id:45, name:'Al-Jathiyah',   ar:'الجاثية',    rev:'makkah', v:37,  keys:['حم تنزيل الكتاب من الله العزيز الحكيم']},
+  {id:46, name:'Al-Ahqaf',      ar:'الأحقاف',    rev:'makkah', v:35,  keys:['حم تنزيل الكتاب من الله العزيز الحكيم ما خلقنا']},
+  {id:47, name:'Muhammad',      ar:'محمد',       rev:'madinah',v:38,  keys:['الذين كفروا وصدوا عن سبيل الله']},
+  {id:48, name:'Al-Fath',       ar:'الفتح',      rev:'madinah',v:29,  keys:['إنا فتحنا لك فتحا مبينا']},
+  {id:49, name:'Al-Hujurat',    ar:'الحجرات',    rev:'madinah',v:18,  keys:['يا أيها الذين آمنوا لا تقدموا']},
+  {id:50, name:'Qaf',           ar:'ق',          rev:'makkah', v:45,  keys:['ق والقرآن المجيد']},
+  {id:51, name:'Adh-Dhariyat',  ar:'الذاريات',   rev:'makkah', v:60,  keys:['والذاريات ذروا']},
+  {id:52, name:'At-Tur',        ar:'الطور',      rev:'makkah', v:49,  keys:['والطور وكتاب مسطور']},
+  {id:53, name:'An-Najm',       ar:'النجم',      rev:'makkah', v:62,  keys:['والنجم إذا هوى','ما ضل صاحبكم وما غوى']},
+  {id:54, name:'Al-Qamar',      ar:'القمر',      rev:'makkah', v:55,  keys:['اقتربت الساعة وانشق القمر']},
+  {id:55, name:'Ar-Rahman',     ar:'الرحمن',     rev:'madinah',v:78,  keys:['الرحمن علم القرآن','فبأي آلاء ربكما تكذبان']},
+  {id:56, name:'Al-Waqiah',     ar:'الواقعة',    rev:'makkah', v:96,  keys:['إذا وقعت الواقعة','ليس لوقعتها كاذبة']},
+  {id:57, name:'Al-Hadid',      ar:'الحديد',     rev:'madinah',v:29,  keys:['سبح لله ما في السماوات والأرض وهو العزيز الحكيم']},
+  {id:58, name:'Al-Mujadila',   ar:'المجادلة',   rev:'madinah',v:22,  keys:['قد سمع الله قول التي تجادلك']},
+  {id:59, name:'Al-Hashr',      ar:'الحشر',      rev:'madinah',v:24,  keys:['سبح لله ما في السماوات وما في الأرض وهو العزيز الحكيم','هو الله الذي لا إله إلا هو']},
+  {id:60, name:'Al-Mumtahanah', ar:'الممتحنة',   rev:'madinah',v:13,  keys:['يا أيها الذين آمنوا لا تتخذوا عدوي وعدوكم']},
+  {id:61, name:'As-Saf',        ar:'الصف',       rev:'madinah',v:14,  keys:['سبح لله ما في السماوات وما في الأرض','يا أيها الذين آمنوا لم تقولون']},
+  {id:62, name:'Al-Jumuah',     ar:'الجمعة',     rev:'madinah',v:11,  keys:['يسبح لله ما في السماوات وما في الأرض الملك القدوس','يا أيها الذين آمنوا إذا نودي للصلاة']},
+  {id:63, name:'Al-Munafiqun',  ar:'المنافقون',  rev:'madinah',v:11,  keys:['إذا جاءك المنافقون']},
+  {id:64, name:'At-Taghabun',   ar:'التغابن',    rev:'madinah',v:18,  keys:['يسبح لله ما في السماوات وما في الأرض له الملك']},
+  {id:65, name:'At-Talaq',      ar:'الطلاق',     rev:'madinah',v:12,  keys:['يا أيها النبي إذا طلقتم النساء']},
+  {id:66, name:'At-Tahrim',     ar:'التحريم',    rev:'madinah',v:12,  keys:['يا أيها النبي لم تحرم ما أحل الله لك']},
+  {id:67, name:'Al-Mulk',       ar:'الملك',      rev:'makkah', v:30,  keys:['تبارك الذي بيده الملك','الذي خلق الموت والحياة']},
+  {id:68, name:'Al-Qalam',      ar:'القلم',      rev:'makkah', v:52,  keys:['ن والقلم وما يسطرون','ما أنت بنعمة ربك بمجنون']},
+  {id:69, name:'Al-Haqqah',     ar:'الحاقة',     rev:'makkah', v:52,  keys:['الحاقة ما الحاقة وما أدراك ما الحاقة']},
+  {id:70, name:'Al-Maarij',     ar:'المعارج',    rev:'makkah', v:44,  keys:['سأل سائل بعذاب واقع']},
+  {id:71, name:'Nuh',           ar:'نوح',        rev:'makkah', v:28,  keys:['إنا أرسلنا نوحا إلى قومه']},
+  {id:72, name:'Al-Jinn',       ar:'الجن',       rev:'makkah', v:28,  keys:['قل أوحي إلي أنه استمع نفر من الجن']},
+  {id:73, name:'Al-Muzzammil',  ar:'المزمل',     rev:'makkah', v:20,  keys:['يا أيها المزمل','قم الليل إلا قليلا']},
+  {id:74, name:'Al-Muddaththir',ar:'المدثر',     rev:'makkah', v:56,  keys:['يا أيها المدثر','قم فأنذر']},
+  {id:75, name:'Al-Qiyamah',    ar:'القيامة',    rev:'makkah', v:40,  keys:['لا أقسم بيوم القيامة','لا أقسم بالنفس اللوامة']},
+  {id:76, name:'Al-Insan',      ar:'الإنسان',    rev:'madinah',v:31,  keys:['هل أتى على الإنسان حين من الدهر']},
+  {id:77, name:'Al-Mursalat',   ar:'المرسلات',   rev:'makkah', v:50,  keys:['والمرسلات عرفا']},
+  {id:78, name:'An-Naba',       ar:'النبأ',      rev:'makkah', v:40,  keys:['عم يتساءلون','عن النبإ العظيم']},
+  {id:79, name:'An-Naziat',     ar:'النازعات',   rev:'makkah', v:46,  keys:['والنازعات غرقا']},
+  {id:80, name:'Abasa',         ar:'عبس',        rev:'makkah', v:42,  keys:['عبس وتولى','أن جاءه الأعمى']},
+  {id:81, name:'At-Takwir',     ar:'التكوير',    rev:'makkah', v:29,  keys:['إذا الشمس كورت','إذا النجوم انكدرت']},
+  {id:82, name:'Al-Infitar',    ar:'الانفطار',   rev:'makkah', v:19,  keys:['إذا السماء انفطرت','إذا الكواكب انتثرت']},
+  {id:83, name:'Al-Mutaffifin', ar:'المطففين',   rev:'makkah', v:36,  keys:['ويل للمطففين','الذين إذا اكتالوا على الناس يستوفون']},
+  {id:84, name:'Al-Inshiqaq',   ar:'الانشقاق',   rev:'makkah', v:25,  keys:['إذا السماء انشقت','وأذنت لربها وحقت']},
+  {id:85, name:'Al-Buruj',      ar:'البروج',     rev:'makkah', v:22,  keys:['والسماء ذات البروج','واليوم الموعود']},
+  {id:86, name:'At-Tariq',      ar:'الطارق',     rev:'makkah', v:17,  keys:['والسماء والطارق','وما أدراك ما الطارق','النجم الثاقب']},
+  {id:87, name:'Al-Ala',        ar:'الأعلى',     rev:'makkah', v:19,  keys:['سبح اسم ربك الأعلى','الذي خلق فسوى']},
+  {id:88, name:'Al-Ghashiyah',  ar:'الغاشية',    rev:'makkah', v:26,  keys:['هل أتاك حديث الغاشية','وجوه يومئذ خاشعة']},
+  {id:89, name:'Al-Fajr',       ar:'الفجر',      rev:'makkah', v:30,  keys:['والفجر','وليال عشر','والشفع والوتر']},
+  {id:90, name:'Al-Balad',      ar:'البلد',      rev:'makkah', v:20,  keys:['لا أقسم بهذا البلد','وأنت حل بهذا البلد']},
+  {id:91, name:'Ash-Shams',     ar:'الشمس',      rev:'makkah', v:15,  keys:['والشمس وضحاها','والقمر إذا تلاها']},
+  {id:92, name:'Al-Layl',       ar:'الليل',      rev:'makkah', v:21,  keys:['والليل إذا يغشى','والنهار إذا تجلى']},
+  {id:93, name:'Ad-Duha',       ar:'الضحى',      rev:'makkah', v:11,  keys:['والضحى','والليل إذا سجى','ما ودعك ربك وما قلى']},
+  {id:94, name:'Ash-Sharh',     ar:'الشرح',      rev:'makkah', v:8,   keys:['ألم نشرح لك صدرك','ووضعنا عنك وزرك','فإن مع العسر يسرا']},
+  {id:95, name:'At-Tin',        ar:'التين',      rev:'makkah', v:8,   keys:['والتين والزيتون','وطور سينين','وهذا البلد الأمين']},
+  {id:96, name:'Al-Alaq',       ar:'العلق',      rev:'makkah', v:19,  keys:['اقرأ باسم ربك الذي خلق','خلق الإنسان من علق']},
+  {id:97, name:'Al-Qadr',       ar:'القدر',      rev:'makkah', v:5,   keys:['إنا أنزلناه في ليلة القدر','وما أدراك ما ليلة القدر','ليلة القدر خير من ألف شهر']},
+  {id:98, name:'Al-Bayyinah',   ar:'البينة',     rev:'madinah',v:8,   keys:['لم يكن الذين كفروا من أهل الكتاب']},
+  {id:99, name:'Az-Zalzalah',   ar:'الزلزلة',    rev:'madinah',v:8,   keys:['إذا زلزلت الأرض زلزالها','وأخرجت الأرض أثقالها']},
+  {id:100,name:'Al-Adiyat',     ar:'العاديات',   rev:'makkah', v:11,  keys:['والعاديات ضبحا','فالموريات قدحا']},
+  {id:101,name:'Al-Qariah',     ar:'القارعة',    rev:'makkah', v:11,  keys:['القارعة ما القارعة','وما أدراك ما القارعة']},
+  {id:102,name:'At-Takathur',   ar:'التكاثر',    rev:'makkah', v:8,   keys:['ألهاكم التكاثر','حتى زرتم المقابر']},
+  {id:103,name:'Al-Asr',        ar:'العصر',      rev:'makkah', v:3,   keys:['والعصر','إن الإنسان لفي خسر','إلا الذين آمنوا وعملوا الصالحات']},
+  {id:104,name:'Al-Humazah',    ar:'الهمزة',     rev:'makkah', v:9,   keys:['ويل لكل همزة لمزة','الذي جمع مالا وعدده']},
+  {id:105,name:'Al-Fil',        ar:'الفيل',      rev:'makkah', v:5,   keys:['ألم تر كيف فعل ربك بأصحاب الفيل','ألم يجعل كيدهم في تضليل']},
+  {id:106,name:'Quraysh',       ar:'قريش',       rev:'makkah', v:4,   keys:['لإيلاف قريش','إيلافهم رحلة الشتاء والصيف']},
+  {id:107,name:'Al-Maun',       ar:'الماعون',    rev:'makkah', v:7,   keys:['أرأيت الذي يكذب بالدين','فذلك الذي يدع اليتيم']},
+  {id:108,name:'Al-Kawthar',    ar:'الكوثر',     rev:'makkah', v:3,   keys:['إنا أعطيناك الكوثر','فصل لربك وانحر','إن شانئك هو الأبتر']},
+  {id:109,name:'Al-Kafirun',    ar:'الكافرون',   rev:'makkah', v:6,   keys:['قل يا أيها الكافرون','لا أعبد ما تعبدون','لكم دينكم ولي دين']},
+  {id:110,name:'An-Nasr',       ar:'النصر',      rev:'madinah',v:3,   keys:['إذا جاء نصر الله والفتح','ورأيت الناس يدخلون في دين الله أفواجا']},
+  {id:111,name:'Al-Masad',      ar:'المسد',      rev:'makkah', v:5,   keys:['تبت يدا أبي لهب وتب','ما أغنى عنه ماله وما كسب']},
+  {id:112,name:'Al-Ikhlas',     ar:'الإخلاص',   rev:'makkah', v:4,   keys:['قل هو الله أحد','الله الصمد','لم يلد ولم يولد','ولم يكن له كفوا أحد']},
+  {id:113,name:'Al-Falaq',      ar:'الفلق',      rev:'makkah', v:5,   keys:['قل أعوذ برب الفلق','من شر ما خلق','ومن شر غاسق إذا وقب']},
+  {id:114,name:'An-Nas',        ar:'الناس',      rev:'makkah', v:6,   keys:['قل أعوذ برب الناس','ملك الناس','إله الناس','من شر الوسواس الخناس']}
+];
 
-  // Recherche via l'API Quran.com
-  var r = await fetch('https://api.qurancdn.com/api/qdc/search?q=' + encodeURIComponent(words) + '&size=5&page=1&language=fr');
-  if(!r.ok) throw new Error('Recherche Quran.com échouée (' + r.status + ')');
-  var d = await r.json();
+// ===== IDENTIFICATION LOCALE PAR SCORE DE MOTS =====
+function findSurahLocally(trans){
+  // Nettoyage du texte transcrit
+  var clean = trans.replace(/[^\u0600-\u06FF\s]/g,'').trim();
+  var words = clean.split(/\s+/);
 
-  var results = (d.search && d.search.results) ? d.search.results : [];
-  if(!results.length){
-    // 2ème tentative avec moins de mots
-    var words2 = trans.trim().split(/\s+/).slice(0, 3).join(' ');
-    var r2 = await fetch('https://api.qurancdn.com/api/qdc/search?q=' + encodeURIComponent(words2) + '&size=5&page=1&language=fr');
-    var d2 = await r2.json();
-    results = (d2.search && d2.search.results) ? d2.search.results : [];
-  }
+  var bestScore = 0;
+  var bestSurah = null;
 
-  if(!results.length) throw new Error('Aucun verset trouvé pour cette transcription. Réessayez avec plus de son.');
+  QURAN_INDEX.forEach(function(surah){
+    var score = 0;
+    surah.keys.forEach(function(key){
+      // Cherche chaque mot de la clé dans la transcription
+      var keyWords = key.replace(/[^\u0600-\u06FF\s]/g,'').split(/\s+/);
+      var matched = 0;
+      keyWords.forEach(function(kw){
+        if(kw.length > 2 && clean.indexOf(kw) !== -1) matched++;
+      });
+      if(matched > 0) score += matched / keyWords.length * 10;
+      // Bonus si la clé entière est trouvée
+      var cleanKey = key.replace(/[^\u0600-\u06FF\s]/g,'');
+      if(clean.indexOf(cleanKey) !== -1) score += 15;
+    });
+    if(score > bestScore){ bestScore = score; bestSurah = surah; }
+  });
 
-  // Prendre le premier résultat — le plus pertinent
-  var best = results[0];
-  var verseKey = best.verse_key || '1:1'; // format "2:255"
-  var parts = verseKey.split(':');
-  var surahNum = parseInt(parts[0]) || 1;
-  var verseNum = parseInt(parts[1]) || 1;
-
-  return {
-    surah_number: surahNum,
-    verse_start: verseNum,
-    verse_end: verseNum,
-    confidence: 95,
-    explanation: best.verse_key || ''
-  };
+  if(!bestSurah || bestScore < 1) return null;
+  return { surah: bestSurah, score: bestScore };
 }
 
 // Pipeline identification
@@ -458,19 +569,33 @@ async function identify(blob, stepFn){
   stepFn('🎙️ Transcription Whisper AI...');
   var trans = await transcribeAudio(blob);
 
-  stepFn('🔍 Recherche dans le Coran...');
-  var match = await searchInQuran(trans);
+  stepFn('🔍 Identification dans le Coran...');
+  var found = findSurahLocally(trans);
 
+  if(!found){
+    throw new Error('Sourate non reconnue. Essayez de réciter plus longtemps ou plus fort.');
+  }
+
+  var s = found.surah;
   stepFn('📡 Récupération des versets...');
-  var sn = match.surah_number;
-  var vs = match.verse_start;
+
   var results = await Promise.all([
     fetch('https://api.qurancdn.com/api/qdc/chapters?language=fr'),
-    fetch('https://api.qurancdn.com/api/qdc/verses/by_chapter/' + sn + '?language=fr&words=true&per_page=' + PER_PAGE + '&page=1&translations=136&verse_number=' + vs)
+    fetch('https://api.qurancdn.com/api/qdc/verses/by_chapter/' + s.id + '?language=fr&words=true&per_page=' + PER_PAGE + '&page=1&translations=136')
   ]);
   var sd = await results[0].json();
   var vd = await results[1].json();
-  var surah = (sd.chapters && sd.chapters.find(function(s){ return s.id === sn; })) || {id:sn, name_simple:'Sourate '+sn, name_arabic:'', verses_count:0, revelation_place:'makkah'};
+  var surah = (sd.chapters && sd.chapters.find(function(ch){ return ch.id === s.id; })) ||
+    {id:s.id, name_simple:s.name, name_arabic:s.ar, verses_count:s.v, revelation_place:s.rev};
+
+  var match = {
+    surah_number: s.id,
+    verse_start: 1,
+    verse_end: 1,
+    confidence: Math.min(99, Math.round(found.score * 5)),
+    explanation: s.name
+  };
+
   return { surah: surah, verses: vd.verses, trans: trans, match: match };
 }
 
