@@ -215,7 +215,7 @@ footer{text-align:center;padding:22px 0 10px;font-size:0.68rem;color:var(--text2
       <div class="aya-wrap">
         <div class="viz-aya" id="viz-aya"></div>
         <button class="aya-btn" id="ayaBtn" onclick="toggleAya()">
-          <span class="aya-icon" id="ayaIcon">&#x1F3B5;</span>
+          <span class="aya-icon" id="ayaIcon">🎙️</span>
           <span class="aya-lbl" id="ayaLbl">Toucher</span>
         </button>
         <p class="aya-status" id="ayaStatus">Appuyez pour identifier une récitation</p>
@@ -258,7 +258,7 @@ footer{text-align:center;padding:22px 0 10px;font-size:0.68rem;color:var(--text2
         <span class="ul">Parcourir</span>
       </div>
       <input type="file" id="fi" accept="audio/*" onchange="selF(event)"/>
-      <div class="finfo" id="finfo"><span>&#x1F3B5;</span><span class="fn" id="fn"></span><span class="fs" id="fs"></span></div>
+      <div class="finfo" id="finfo"><span>&#x1F3B5;</span>#x1F399;&#x1F3B5;</span>#xFE0F;</span><span class="fn" id="fn"></span><span class="fs" id="fs"></span></div>
       <button class="abtn" id="abtn-u" onclick="analyzeU()">Identifier la récitation</button>
       <div class="ld" id="ld-u">
         <div class="sp"></div>
@@ -296,7 +296,7 @@ footer{text-align:center;padding:22px 0 10px;font-size:0.68rem;color:var(--text2
 </div>
 
 <script>
-var GROQ = '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';
+var GROQ = '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';
 var CHUNK_SEC = 10;
 var PER_PAGE = 5;
 
@@ -417,13 +417,14 @@ async function transcribeAudio(blob){
 
 // Identification LLM
 async function identifyWithLLM(trans){
-  var prompt = 'Tu es un spécialiste du Coran. Identifie la sourate à partir de ce texte arabe.\n\nTexte: "' + trans + '"\n\nRègles ABSOLUES:\n- Retourne TOUJOURS un surah_number entre 1 et 114\n- JAMAIS surah_number = 0\n- verse_start minimum = 1\n- Donne ta meilleure estimation même si incertain\n\nJSON uniquement (X = entier):\n{"surah_number":X,"verse_start":X,"verse_end":X,"confidence":X,"explanation":"nom sourate"}';
+  var prompt = 'Tu es un hafiz du Coran expert. Voici un texte arabe transcrit depuis une récitation coranique:\n\n"' + trans + '"\n\nIdentifie précisément la sourate. Utilise ces références pour t\'aider:\nAl-Fatiha=1 | Al-Baqara=2 | Al-Imran=3 | An-Nisa=4 | Al-Maidah=5 | Al-Anam=6 | Al-Araf=7 | Al-Anfal=8 | At-Tawbah=9 | Yunus=10 | Hud=11 | Yusuf=12 | Ar-Rad=13 | Ibrahim=14 | Al-Hijr=15 | An-Nahl=16 | Al-Isra=17 | Al-Kahf=18 | Maryam=19 | Ta-Ha=20 | Al-Anbiya=21 | Al-Hajj=22 | Al-Muminun=23 | An-Nur=24 | Al-Furqan=25 | Ash-Shuara=26 | An-Naml=27 | Al-Qasas=28 | Al-Ankabut=29 | Ar-Rum=30 | Luqman=31 | As-Sajdah=32 | Al-Ahzab=33 | Saba=34 | Fatir=35 | Ya-Sin=36 | As-Saffat=37 | Sad=38 | Az-Zumar=39 | Ghafir=40 | Fussilat=41 | Ash-Shura=42 | Az-Zukhruf=43 | Ad-Dukhan=44 | Al-Jathiyah=45 | Al-Ahqaf=46 | Muhammad=47 | Al-Fath=48 | Al-Hujurat=49 | Qaf=50 | Adh-Dhariyat=51 | At-Tur=52 | An-Najm=53 | Al-Qamar=54 | Ar-Rahman=55 | Al-Waqiah=56 | Al-Hadid=57 | Al-Mujadila=58 | Al-Hashr=59 | Al-Mumtahanah=60 | As-Saf=61 | Al-Jumuah=62 | Al-Munafiqun=63 | At-Taghabun=64 | At-Talaq=65 | At-Tahrim=66 | Al-Mulk=67 | Al-Qalam=68 | Al-Haqqah=69 | Al-Maarij=70 | Nuh=71 | Al-Jinn=72 | Al-Muzzammil=73 | Al-Muddaththir=74 | Al-Qiyamah=75 | Al-Insan=76 | Al-Mursalat=77 | An-Naba=78 | An-Naziat=79 | Abasa=80 | At-Takwir=81 | Al-Infitar=82 | Al-Mutaffifin=83 | Al-Inshiqaq=84 | Al-Buruj=85 | At-Tariq=86 | Al-Ala=87 | Al-Ghashiyah=88 | Al-Fajr=89 | Al-Balad=90 | Ash-Shams=91 | Al-Layl=92 | Ad-Duha=93 | Ash-Sharh=94 | At-Tin=95 | Al-Alaq=96 | Al-Qadr=97 | Al-Bayyinah=98 | Az-Zalzalah=99 | Al-Adiyat=100 | Al-Qariah=101 | At-Takathur=102 | Al-Asr=103 | Al-Humazah=104 | Al-Fil=105 | Quraysh=106 | Al-Maun=107 | Al-Kawthar=108 | Al-Kafirun=109 | An-Nasr=110 | Al-Masad=111 | Al-Ikhlas=112 | Al-Falaq=113 | An-Nas=114\n\nRègles ABSOLUES:\n- surah_number OBLIGATOIRE entre 1 et 114\n- JAMAIS 0\n- verse_start minimum 1\n\nRéponds UNIQUEMENT avec ce JSON:\n{"surah_number":X,"verse_start":X,"verse_end":X,"confidence":X,"explanation":"nom de la sourate"}';
+
 
   var mr = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
     headers: { Authorization: 'Bearer ' + GROQ, 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'llama-3.3-70b-versatile',
+      model: 'llama-3.1-8b-instant',
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.0,
       max_tokens: 120,
@@ -483,7 +484,7 @@ async function fetchTafsirFr(surahNum, verseNum){
       method:'POST',
       headers:{Authorization:'Bearer '+GROQ,'Content-Type':'application/json'},
       body:JSON.stringify({
-        model:'llama-3.3-70b-versatile',
+        model:'llama-3.1-8b-instant',
         messages:[
           {role:'system',content:'Tu es un expert islamique francophone. Traduis TOUT en français sans exception. Réponds uniquement avec la traduction.'},
           {role:'user',content:'Traduis en français:\n\n'+enText.slice(0,1500)}
@@ -603,7 +604,7 @@ async function toggleAya(){
   if(!ayaOn){
     ayaOn = true; ayaCycleN = 0; ayaBusy = false;
     document.getElementById('ayaBtn').classList.add('listening');
-    document.getElementById('ayaIcon').textContent = 'Ecoute';
+    document.getElementById('ayaIcon').textContent = '🎙️';
     document.getElementById('ayaLbl').textContent = 'Écoute…';
     document.getElementById('ayaStatus').textContent = 'Écoute en cours…';
     document.getElementById('ayaStatus').className = 'aya-status active';
@@ -642,7 +643,7 @@ function ayaCycle(stream){
     ayaBusy = true; ayaCycleN++;
     document.getElementById('ayaBtn').classList.remove('listening');
     document.getElementById('ayaBtn').classList.add('analyzing');
-    document.getElementById('ayaIcon').textContent = 'Ana';
+    document.getElementById('ayaIcon').textContent = '🔍';
     document.getElementById('ayaLbl').textContent = 'Analyse…';
     document.getElementById('ayaStatus').className = 'aya-status analyzing';
     document.getElementById('ayaCycles').textContent = 'Tentative ' + ayaCycleN;
@@ -658,7 +659,7 @@ function ayaCycle(stream){
       if(ayaOn){
         document.getElementById('ayaBtn').classList.remove('analyzing');
         document.getElementById('ayaBtn').classList.add('listening');
-        document.getElementById('ayaIcon').textContent = 'Mic';
+        document.getElementById('ayaIcon').textContent = '🎙️';
         document.getElementById('ayaLbl').textContent = 'Écoute…';
         document.getElementById('ayaStatus').textContent = err.message;
         document.getElementById('ayaStatus').className = 'aya-status retry';
@@ -685,7 +686,7 @@ function stopAya(){
   stopViz();
   document.getElementById('viz-aya').classList.remove('on');
   document.getElementById('ayaBtn').classList.remove('listening','analyzing');
-  document.getElementById('ayaIcon').textContent = 'Go';
+  document.getElementById('ayaIcon').textContent = '🎙️';
   document.getElementById('ayaLbl').textContent = 'Toucher';
   document.getElementById('ayaStatus').textContent = 'Appuyez pour identifier une récitation';
   document.getElementById('ayaStatus').className = 'aya-status';
