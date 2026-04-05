@@ -415,32 +415,41 @@ async function transcribeAudio(blob){
   return trans;
 }
 
-// ===== IDENTIFICATION VIA GROQ — TEXTE TRANSCRIT DIRECT =====
+// ===== IDENTIFICATION VIA GROQ =====
 async function identifyWithGroq(trans){
-  var prompt = 'Tu es un hafiz du Coran. On t\'a transcrit automatiquement ce texte arabe depuis une récitation:\n\n"' + trans + '"\n\nIdentifie de quelle sourate et quel verset il s\'agit. Cherche les mots-clés dans le texte et trouve la correspondance exacte dans le Coran.\n\nRéponds UNIQUEMENT avec ce JSON (surah_number entre 1 et 114, jamais 0):\n{"surah_number":X,"verse_start":X,"verse_end":X,"confidence":X,"explanation":"nom de la sourate en français"}';
+
+  var systemPrompt = [
+    'Tu es un hafiz du Coran avec une mémorisation parfaite des 114 sourates.',
+    'On te donne un texte arabe transcrit automatiquement par Whisper AI depuis une récitation.',
+    'La transcription peut avoir des erreurs légères (harakat manquants, mots déformés).',
+    'Tu dois identifier la sourate et le verset avec précision en cherchant les mots-clés dans ta mémoire du Coran.',
+    'Tu réponds UNIQUEMENT avec un JSON valide, rien d\'autre.'
+  ].join(' ');
+
+  var userPrompt = 'Texte arabe transcrit: "' + trans + '"\n\nQuelle sourate et quel verset ? JSON: {"surah_number":X,"verse_start":X,"verse_end":X,"confidence":X,"explanation":"nom sourate"}';
 
   var mr = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
     headers: { Authorization: 'Bearer ' + GROQ, 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'llama-3.1-8b-instant',
+      model: 'llama-3.3-70b-versatile',
       messages: [
-        { role: 'system', content: 'Tu es un expert du Coran qui connait parfaitement les 114 sourates et 6236 versets. Quand on te donne un texte arabe transcrit automatiquement (avec possibles erreurs), tu identifies la sourate et le verset correspondant. Tu réponds UNIQUEMENT en JSON valide.' },
-        { role: 'user', content: prompt }
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt }
       ],
       temperature: 0.0,
-      max_tokens: 150,
+      max_tokens: 120,
       response_format: { type: 'json_object' }
     })
   });
 
   var md = await mr.json();
-  if(!mr.ok) throw new Error('Erreur Groq ' + mr.status + ': ' + (md.error ? md.error.message : ''));
+  if(!mr.ok) throw new Error('Erreur API ' + mr.status + ': ' + (md.error ? md.error.message : JSON.stringify(md)));
 
   var raw = (md.choices && md.choices[0] && md.choices[0].message) ? md.choices[0].message.content : '{}';
   var match;
   try { match = JSON.parse(raw.replace(/```json|```/g,'').trim()); }
-  catch(e) { throw new Error('Réponse invalide du modèle.'); }
+  catch(e) { throw new Error('Réponse invalide.'); }
 
   match.surah_number = Math.max(1, Math.min(114, Math.abs(parseInt(match.surah_number) || 1)));
   match.verse_start  = Math.max(1, Math.abs(parseInt(match.verse_start) || 1));
@@ -453,6 +462,10 @@ async function identifyWithGroq(trans){
 async function identify(blob, stepFn){
   stepFn('🎙️ Transcription Whisper AI...');
   var trans = await transcribeAudio(blob);
+
+  // Affiche toujours la transcription
+  stepFn('📝 Whisper a entendu : ' + trans);
+  await new Promise(function(r){ setTimeout(r, 3000); });
 
   stepFn('🧠 Identification de la sourate...');
   var match = await identifyWithGroq(trans);
