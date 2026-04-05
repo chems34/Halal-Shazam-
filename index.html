@@ -418,15 +418,9 @@ async function transcribeAudio(blob){
 // ===== IDENTIFICATION VIA GROQ =====
 async function identifyWithGroq(trans){
 
-  var systemPrompt = [
-    'Tu es un hafiz du Coran avec une mémorisation parfaite des 114 sourates.',
-    'On te donne un texte arabe transcrit automatiquement par Whisper AI depuis une récitation.',
-    'La transcription peut avoir des erreurs légères (harakat manquants, mots déformés).',
-    'Tu dois identifier la sourate et le verset avec précision en cherchant les mots-clés dans ta mémoire du Coran.',
-    'Tu réponds UNIQUEMENT avec un JSON valide, rien d\'autre.'
-  ].join(' ');
+  var systemPrompt = 'Tu es un hafiz du Coran. On te donne un texte arabe transcrit par Whisper AI depuis une récitation. Tu dois identifier la sourate et le verset. Si tu n\'es PAS certain à plus de 60%, mets confidence à 0 et surah_number à 0. Ne devine JAMAIS au hasard. Réponds UNIQUEMENT en JSON valide.';
 
-  var userPrompt = 'Texte arabe transcrit: "' + trans + '"\n\nQuelle sourate et quel verset ? JSON: {"surah_number":X,"verse_start":X,"verse_end":X,"confidence":X,"explanation":"nom sourate"}';
+  var userPrompt = 'Texte transcrit: "' + trans + '"\n\nJSON: {"surah_number":X,"verse_start":X,"verse_end":X,"confidence":X,"explanation":"nom sourate ou raison si non identifié"}';
 
   var mr = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
@@ -449,12 +443,12 @@ async function identifyWithGroq(trans){
   var raw = (md.choices && md.choices[0] && md.choices[0].message) ? md.choices[0].message.content : '{}';
   var match;
   try { match = JSON.parse(raw.replace(/```json|```/g,'').trim()); }
-  catch(e) { throw new Error('Réponse invalide.'); }
+  catch(e) { throw new Error('Réponse invalide du modèle.'); }
 
-  match.surah_number = Math.max(1, Math.min(114, Math.abs(parseInt(match.surah_number) || 1)));
+  match.surah_number = parseInt(match.surah_number) || 0;
   match.verse_start  = Math.max(1, Math.abs(parseInt(match.verse_start) || 1));
   match.verse_end    = Math.max(match.verse_start, Math.abs(parseInt(match.verse_end) || match.verse_start));
-  match.confidence   = Math.max(1, parseInt(match.confidence) || 70);
+  match.confidence   = Math.max(0, parseInt(match.confidence) || 0);
   return match;
 }
 
@@ -463,12 +457,31 @@ async function identify(blob, stepFn){
   stepFn('🎙️ Transcription Whisper AI...');
   var trans = await transcribeAudio(blob);
 
-  // Affiche toujours la transcription
+  // Affiche la transcription 3 secondes
   stepFn('📝 Whisper a entendu : ' + trans);
   await new Promise(function(r){ setTimeout(r, 3000); });
 
   stepFn('🧠 Identification de la sourate...');
   var match = await identifyWithGroq(trans);
+
+  // Si confidence = 0 ou surah_number = 0 → on n'affiche RIEN, on explique pourquoi
+  if(match.confidence < 40 || match.surah_number < 1 || match.surah_number > 114){
+    // Analyser la cause probable
+    var arabicChars = (trans.match(/[\u0600-\u06FF]/g) || []).length;
+    var totalChars = trans.replace(/\s/g,'').length;
+    var arabicRatio = totalChars > 0 ? arabicChars / totalChars : 0;
+    var wordCount = trans.trim().split(/\s+/).length;
+
+    var raison = '';
+    if(arabicRatio < 0.5){
+      raison = '⚠️ Le son capté ne semble pas être de l\'arabe. Vérifiez que la récitation est bien audible et que le micro est proche.';
+    } else if(wordCount < 4){
+      raison = '⏱️ La récitation est trop courte. Enregistrez au moins 5 à 10 secondes de récitation pour une identification fiable.';
+    } else {
+      raison = '🔉 La récitation n\'a pas été reconnue. Elle est peut-être trop faible, trop bruitée, ou le passage est trop rare. Rapprochez le micro et réessayez.';
+    }
+    throw new Error(raison);
+  }
 
   stepFn('📡 Récupération des versets...');
   var sn = match.surah_number;
